@@ -1,0 +1,116 @@
+.silvercart-fieldmodifier-container {
+    border:                         1px #86a26c solid;
+    margin:                         0px 0px 0px 40px;
+}
+.silvercart-fieldmodifier-head {
+    text-align:                     left;
+    background-color:               #bce398;
+}
+tr.inactive .silvercart-fieldmodifier-head {
+    background-color:               #fafafa;
+}
+.right form .silvercart-fieldmodifier-head h4 {
+    position:                       relative;
+    height:                         1.7em;
+    font-size:                      9px;
+    font-weight:                    normal;
+    color:                          #666;
+    margin:                         0px;
+    padding:                        3px 8px 1px 8px;
+}
+.right form .silvercart-fieldmodifier-head h4 input {
+    position:                       absolute;
+    top:                            0px;
+    right:                          0px;
+    font-size:                      9px;
+}
+.silvercart-fieldmodifier-editarea {
+    text-align:                     left;
+    background-color:               #bce398;
+    padding:                        4px 8px;
+}
+tr.inactive .silvercart-fieldmodifier-editarea {
+    background-color:               #fafafa;
+}
+.silvercartAttributeTableListField h3 {
+    margin-top:                     30px;
+}
+.silvercartAttributeTableListField h3:first-child {
+    margin-top:                     10px;
+}
+.attributeTableSwitch {
+    position:                       relative;
+    width:                          700px;
+    background-color:               #fff;
+    border:                         1px #999 solid;
+    margin:                         4px 0px 0px 0px;
+}
+.attributeTableSwitch a {
+    display:                        block;
+    font-size:                      11px;
+    text-decoration:                none;
+    color:                          #333;
+    background:                     #f2f2f2;
+    padding:                        4px 8px 4px 24px;
+}
+.attributeTableSwitch a.opened {
+    background:                     url("/silvercart_product_attributes/images/button_opened.png") 4px center no-repeat;
+}
+.attributeTableSwitch a.closed {
+    background:                     url("/silvercart_product_attributes/images/button_closed.png") 4px center no-repeat;
+}
+.attributeTableSwitchActions {
+    position:                       absolute;
+    right:                          0px;
+    top:                            0px;
+    padding:                        1px 4px 0px 0px;
+}
+.attributeTableSwitchActions input {
+}
+.attributeTableContainer {
+    display:                        none;
+    width:                          702px;
+}
+.attributeTable {
+    width:                          100%;
+    background-color:               #fff;
+    border:                         1px #999 solid;
+}
+.attributeTable thead tr th {
+    text-align:                     right;
+    font-weight:                    bold;
+    vertical-align:                 center;
+    color:                          #fff;
+    background-color:               #999;
+    border-bottom:                  1px #bbb solid;
+    padding:                        3px 5px;
+}
+.attributeTable thead tr th {
+    text-align:                     left;
+}
+.attributeTable thead tr th.right {
+    text-align:                     right;
+}
+.attributeTable tbody tr td {
+    text-align:                     right;
+    vertical-align:                 center;
+    background-color:               #fff;
+    border-bottom:                  1px #ccc solid;
+    padding:                        3px 5px;
+}
+.attributeTable tbody tr td.left {
+    text-align:                     left;
+}
+.attributeTable tbody  td.silvercart-fieldmodifier-cell {
+    background-color:               #dcffbc;
+}
+.attributeTable tbody tr.attributeRow td {
+    background-color:               #dcffbc;
+    border-bottom:                  none;
+}
+.attributeTable tbody tr.inactive td {
+    color:                          #777;
+    background-color:               #f2f2f2;
+    border-bottom-color:            #ddd;
+}
+
