@@ -95,19 +95,6 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
         );
     }
     
-    /**
-     * Updates the summary fields
-     *
-     * @param array &$fields Fields to update
-     * 
-     * @return void
-     *
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 16.03.2012
-     */
-    public function updateSummaryFields(&$fields) {
-        
-    }
 }
 
 /**

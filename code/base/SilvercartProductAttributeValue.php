@@ -145,4 +145,20 @@ class SilvercartProductAttributeValue extends DataObject {
         return $summaryFields;
     }
     
+    /**
+     * Checks wheter the value is used by the current context filter
+     *
+     * @return bool
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 16.03.2012
+     */
+    public function IsFilterValue() {
+        $isFilterValue = false;
+        if (Controller::curr()->hasMethod('isFilterValue')) {
+            $isFilterValue = Controller::curr()->isFilterValue($this);
+        }
+        return $isFilterValue;
+    }
+    
 }

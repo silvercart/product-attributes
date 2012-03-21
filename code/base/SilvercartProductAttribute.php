@@ -177,6 +177,47 @@ class SilvercartProductAttribute extends DataObject {
     }
     
     /**
+     * Assigns the given values to the assigned values
+     *
+     * @param DataObjectSet $valuesToAssign Values to assign
+     * 
+     * @return void
+     *
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 15.03.2012
+     */
+    public function assignValues($valuesToAssign) {
+        if (is_null($this->assignedValues)) {
+            $this->setAssignedValues(new DataObjectSet());
+        }
+        foreach ($valuesToAssign as $value) {
+            if ($this->assignedValues->find('ID', $value->ID)) {
+                continue;
+            } elseif ($value->SilvercartProductAttribute()->ID == $this->ID) {
+                $this->assignedValues->push($value);
+            }
+        }
+    }
+    
+    /**
+     * Returns whether this attribute has assigned values in a product or
+     * product group context.
+     *
+     * @return boolean 
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 15.03.2012
+     */
+    public function hasAssignedValues() {
+        $hasAssignedValues = false;
+        if (!is_null($this->assignedValues) &&
+            $this->assignedValues->Count() > 0) {
+            $hasAssignedValues = true;
+        }
+        return $hasAssignedValues;
+    }
+
+    /**
      * Returns the assigned values in relation to a context product
      *
      * @return DataObjectSet

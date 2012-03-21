@@ -65,11 +65,18 @@ $lang['de_DE']['SilvercartProductAttributeTableListField']['UNASSIGNEDATTRIBUTES
 $lang['de_DE']['SilvercartProductAttributeTableListField']['ACTION_ACTIVATEMATRIX_LABEL']   = 'Aktivieren';
 $lang['de_DE']['SilvercartProductAttributeTableListField']['ACTION_DEACTIVATEMATRIX_LABEL'] = 'Deaktivieren';
 $lang['de_DE']['SilvercartProductAttributeTableListField']['ACTION_REMOVE_LABEL']           = 'Entfernen';
-$lang['de_DE']['SilvercartProductAttributeTableListField']['ACTION_SETDEFAULT_LABEL']       = 'Als Vorgabe';
 $lang['de_DE']['SilvercartProductAttributeTableListField']['ACTIONBAR_LABEL']               = 'Aktionen';
 $lang['de_DE']['SilvercartProductAttributeTableListField']['ISACTIVE_LABEL']                = 'Ist aktiv';
-$lang['de_DE']['SilvercartProductAttributeTableListField']['ISDEFAULT_LABEL']               = 'Ist Vorgabe';
 $lang['de_DE']['SilvercartProductAttributeTableListField']['VALUE_LABEL']                   = 'Wert';
 $lang['de_DE']['SilvercartProductAttributeTableListField']['YES_LABEL']                     = 'ja';
 $lang['de_DE']['SilvercartProductAttributeTableListField']['NOVALUESATTRIBUTED']            = 'Es wurden noch keine Werte zugewiesen.';
 $lang['de_DE']['SilvercartProductAttributeTableListField']['NOVALUESUNATTRIBUTED']          = 'Es wurden keine nicht-zugewiesenen Werte gefunden.';
+
+$lang['de_DE']['SilvercartProductAttributeFilterWidget']['TITLE']               = 'Artikelmerkmal-Filter';
+$lang['de_DE']['SilvercartProductAttributeFilterWidget']['CMSTITLE']            = 'Artikelmerkmal-Filter';
+$lang['de_DE']['SilvercartProductAttributeFilterWidget']['DESCRIPTION']         = 'Liefert eine gruppierte Auswahl von Filtern, die anhand der zugewiesenen Artikelmerkmale der aktuellen Produktgruppe erstellt wird.';
+$lang['de_DE']['SilvercartProductAttributeFilterWidget']['DISABLE_FILTER_FOR']  = 'Alle Filter für &quot;%s&quot; aufheben';
+$lang['de_DE']['SilvercartProductAttributeFilterWidget']['FILTERBEHAVIOUR']     = 'Filter-Verhalten';
+$lang['de_DE']['SilvercartProductAttributeFilterWidget']['FB_HINT']             = 'Das Feld "Filter-Verhalten" legt fest, wie der Filter reagiert.<br/><b>Mehrfachauswahl:</b> Der Kunde kann mehrere Werte eines Merkmals gleichzeitig auswählen. Zum Beipiel können alle Produkte, deren Farbe rot ODER schwarz ist, angezeigt werden. Es sind immer alle Filter-Merkmal-Werte einer Produktgruppe auswählbar.<br/><b>Einfachauswahl:</b> Der Kunde kann nur einen Wert eines Merkmals auswählen. Die verfügbaren Filter-Merkmal-Werte orientieren sich immer an der gefilterten Produktliste.';
+$lang['de_DE']['SilvercartProductAttributeFilterWidget']['FB_MULTIPLECHOICE']   = 'Mehrfachauswahl';
+$lang['de_DE']['SilvercartProductAttributeFilterWidget']['FB_SINGLECHOICE']     = 'Einfachauswahl';
