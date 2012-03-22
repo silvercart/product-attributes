@@ -191,9 +191,10 @@ class SilvercartProductAttribute extends DataObject {
             $this->setAssignedValues(new DataObjectSet());
         }
         foreach ($valuesToAssign as $value) {
-            if ($this->assignedValues->find('ID', $value->ID)) {
-                continue;
-            } elseif ($value->SilvercartProductAttribute()->ID == $this->ID) {
+            if ($value->SilvercartProductAttribute()->ID == $this->ID) {
+                if ($this->assignedValues->find('ID', $value->ID)) {
+                    continue;
+                }
                 $this->assignedValues->push($value);
             }
         }

@@ -92,13 +92,6 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
      */
     public function SilvercartProductAttributeFilter(SS_HTTPRequest $request) {
         if (Director::is_ajax()) {
-            $groupProducts = $this->owner->getGroupProducts();
-            if (is_array($groupProducts)) {
-                foreach ($groupProducts as $hash => $products) {
-                    $this->onAfterGetProducts($products);
-                    $this->owner->setGroupProducts($products, $hash);
-                }
-            }
             return $this->owner->renderWith('SilvercartProductGroupPage');
         } else {
             Director::redirectBack();
@@ -118,51 +111,6 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
     public function ClearSilvercartProductAttributeFilter(SS_HTTPRequest $request) {
         Session::clear('SilvercartProductAttributeFilterPlugin.' . $this->owner->ID);
         Session::clear('SilvercartProductAttributeFilterWidget.' . $this->owner->ID);
-    }
-    
-    /**
-     * Filters the products after getting them from database
-     *
-     * @param DataObjectSet &$groupProducts Products of the group
-     * 
-     * @return void
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 13.03.2012 
-     */
-    public function onAfterGetProducts(&$groupProducts) {
-        if ($this->filterEnabled()) {
-            $filterValues   = $this->getFilterValues();
-            if (is_array($filterValues) &&
-                count($filterValues) > 0) {
-                if (!(count($filterValues) == 1 &&
-                    empty($filterValues[0]))) {
-                    foreach ($groupProducts as $product) {
-                        $found = false;
-                        foreach ($filterValues as $value) {
-                            if ($this->getWidget() &&
-                            $this->getWidget()->FilterBehaviour == 'MultipleChoice') {
-                                if ($product->SilvercartProductAttributeValues()->find('ID', $value)) {
-                                    $found = true;
-                                    break;
-                                }
-                            } else {
-                                if ($product->SilvercartProductAttributeValues()->find('ID', $value)) {
-                                    $found = true;
-                                } else {
-                                    $found = false;
-                                    break;
-                                }
-                            }
-                        }
-                        if ($found) {
-                            continue;
-                        }
-                        $groupProducts->remove($product);
-                    }
-                }
-            }
-        }
     }
     
     /**

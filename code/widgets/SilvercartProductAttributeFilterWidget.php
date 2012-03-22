@@ -176,27 +176,65 @@ class SilvercartProductAttributeFilterWidget_Controller extends SilvercartWidget
             } else {
                 $products = Controller::curr()->getProducts(false, false, true);
             }
-            foreach ($products as $products) {
-                foreach ($products->SilvercartProductAttributes() as $relatedAttribute) {
-                    $existingAttribute = $attributes->find('ID', $relatedAttribute->ID);
-                    if ($existingAttribute) {
-                        $existingAttribute->assignValues($products->SilvercartProductAttributeValues());
-                        continue;
-                    }
-                    $relatedAttribute->assignValues($products->SilvercartProductAttributeValues());
-                    $attributes->push($relatedAttribute);
-                }
+            $productIDs = implode(',', $products->map('ID','ID'));
+            $records = DB::query(
+                sprintf(
+                    "SELECT DISTINCT
+                        SilvercartProductAttributeID
+                     FROM
+                        SilvercartProduct_SilvercartProductAttributes
+                     WHERE
+                        SilvercartProductID IN (%s)",
+                    $productIDs
+                )
+            );
+            
+            foreach ($records as $record) {
+                $attributeIDs[] = $record['SilvercartProductAttributeID'];
             }
-            foreach ($attributes as $attribute) {
-                if ($attribute->hasAssignedValues()) {
-                    continue;
+            $attributes = DataObject::get(
+                    'SilvercartProductAttribute',
+                    sprintf(
+                            "`ID` IN (%s)",
+                            implode(',', $attributeIDs)
+                    )
+            );
+            $records = DB::query(
+                sprintf(
+                    "SELECT DISTINCT
+                        SilvercartProductAttributeValueID
+                     FROM
+                        SilvercartProduct_SilvercartProductAttributeValues
+                     WHERE
+                        SilvercartProductID IN (%s)",
+                    $productIDs
+                )
+            );
+            foreach ($records as $record) {
+                $attributeValueIDs[] = $record['SilvercartProductAttributeValueID'];
+            }
+            $attributeValues = DataObject::get(
+                    'SilvercartProductAttributeValue',
+                    sprintf(
+                            "`ID` IN (%s)",
+                            implode(',', $attributeValueIDs)
+                    ),
+                    "`SilvercartProductAttributeID`"
+            );
+            $attributeValuesArray = $attributeValues->groupBy('SilvercartProductAttributeID');
+            foreach ($attributeValuesArray as $attributeID => $groupedAttributeValues) {
+                $attribute = $attributes->find('ID', $attributeID);
+                if ($attribute) {
+                    $attribute->assignValues($groupedAttributeValues);
+                    if (!$attribute->hasAssignedValues()) {
+                        $attributes->remove($attribute);
+                    }
                 }
-                $attributes->remove($attribute);
             }
             $this->setAttributes($attributes);
         }
     }
-    
+
     /**
      * Returns the widgets content
      *

@@ -24,3 +24,5 @@
 Object::add_extension('SilvercartProduct',                      'SilvercartProductAttributeProduct');
 Object::add_extension('SilvercartProduct_RecordController',     'SilvercartProductAttributeProduct_RecordController');
 Object::add_extension('SilvercartProductGroupPage_Controller',  'SilvercartProductAttributeProductGroupPage_Controller');
+
+SilvercartProductGroupPage_Controller::registerFilterPlugin('SilvercartProductAttributeProductFilterPlugin');
