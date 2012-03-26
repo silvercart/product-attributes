@@ -56,7 +56,8 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
         $request = $this->owner->getRequest();
         $allParams = $request->allParams();
         $action     = $allParams['Action'];
-        if ($action == 'SilvercartProductAttributeFilter') {
+        if ($action == 'SilvercartProductAttributeFilter' &&
+            $this->owner->getRequest()->isPOST()) {
             $this->initSilvercartProductAttributeFilter($request);
         }
     }
