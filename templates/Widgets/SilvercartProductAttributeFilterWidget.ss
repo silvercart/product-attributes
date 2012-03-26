@@ -99,6 +99,9 @@
             SilvercartProductAttributeFilterCall();
         });
         
+        if (jQuery(".silvercart-product-group-page-selectors")) {
+            jQuery(".silvercart-product-group-page-selectors input[type=submit]").hide();
+        }
         
 <% if CurrentPage.FilterValueDataObjectSet %>
     <% control CurrentPage.FilterValueDataObjectSet %>
