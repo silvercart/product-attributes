@@ -33,13 +33,15 @@
  */
 class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDecorator {
     
-    protected $filterEnabled    = true;
-
-    protected $filterValues     = null;
+    protected $filterEnabled                = true;
     
-    protected $widget           = null;
+    protected $filterDisabledPermanently    = false;
 
-    public static $allowed_actions = array(
+    protected $filterValues                 = null;
+    
+    protected $widget                       = null;
+
+    public static $allowed_actions          = array(
         'ClearSilvercartProductAttributeFilter',
         'SilvercartProductAttributeFilter',
     );
@@ -243,7 +245,9 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
      * @since 13.03.2012 
      */
     public function enableFilter() {
-        $this->filterEnabled = true;
+        if (!$this->permanentlyDisableFilter()) {
+            $this->filterEnabled = true;
+        }
     }
     
     /**
@@ -268,6 +272,31 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
      */
     public function filterEnabled() {
         return $this->filterEnabled;
+    }
+    
+    /**
+     * Returns whether the filter is permanently disabled
+     * 
+     * @return void
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 28.03.2012 
+     */
+    public function filterPermanentlyDisabled() {
+        return $this->filterDisabledPermanently;
+    }
+    
+    /**
+     * Disables the filter permanently
+     * 
+     * @return void
+     *
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 28.03.2012 
+     */
+    public function permanentlyDisableFilter() {
+        $this->filterDisabledPermanently = true;
+        $this->disableFilter();
     }
     
 }

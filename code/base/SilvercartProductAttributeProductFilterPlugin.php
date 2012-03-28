@@ -34,6 +34,12 @@
 class SilvercartProductAttributeProductFilterPlugin {
     
     /**
+     *
+     * @var SilvercartProductGroupPage_Controller 
+     */
+    protected $productGroup = null;
+    
+    /**
      * Returns the plugins filters
      * 
      * @return array
@@ -57,14 +63,22 @@ class SilvercartProductAttributeProductFilterPlugin {
         
         
     }
-    
+
     /**
      * Returns the controller of the current product group
      *
      * @return SilvercartProductGroupPage_Controller
      */
     public function getProductGroup() {
-        return Controller::curr();
+        if (is_null($this->productGroup)) {
+            $productGroup = Controller::curr();
+            if (!$productGroup instanceof SilvercartProductGroupPage_Controller) {
+                $productGroup = new SilvercartProductGroupPage_Controller();
+                $productGroup->permanentlyDisableFilter();
+            }
+            $this->productGroup = $productGroup;
+        }
+        return $this->productGroup;
     }
     
     /**
