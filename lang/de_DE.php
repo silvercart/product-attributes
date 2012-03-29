@@ -24,6 +24,8 @@
  * @ignore
  */
 
+global $lang;
+
 i18n::include_locale_file('silvercart_product_attributes', 'en_US');
 
 if (array_key_exists('de_DE', $lang) && is_array($lang['de_DE'])) {

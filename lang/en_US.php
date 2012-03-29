@@ -32,6 +32,8 @@ global $lang;
 
 
 
+
+
 $lang['en_US']['SilvercartProductAttribute']['PLURALNAME']                      = 'Product Attributes';
 $lang['en_US']['SilvercartProductAttribute']['SINGULARNAME']                    = 'Product Attribute';
 
