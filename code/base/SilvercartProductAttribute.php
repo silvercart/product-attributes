@@ -33,12 +33,9 @@
  */
 class SilvercartProductAttribute extends DataObject {
     
-    public static $db = array(
-        'Title'     => 'VarChar(64)',
-    );
-    
     public static $has_many = array(
-        'SilvercartProductAttributeValues'  => 'SilvercartProductAttributeValue',
+        'SilvercartProductAttributeLanguages'   => 'SilvercartProductAttributeLanguage',
+        'SilvercartProductAttributeValues'      => 'SilvercartProductAttributeValue',
     );
     
     public static $belongs_many_many = array(
@@ -47,6 +44,7 @@ class SilvercartProductAttribute extends DataObject {
     );
 
     public static $casting = array(
+        'Title'                                     => 'Text',
         'SilvercartProductAttributeSetsAsString'    => 'Text',
         'SilvercartProductAttributeValuesAsString'  => 'Text',
     );
@@ -56,6 +54,22 @@ class SilvercartProductAttribute extends DataObject {
     protected $assignedValues = null;
     
     protected $unAssignedValues = null;
+    
+    /**
+     * getter for the pseudo attribute title
+     *
+     * @return string the title in the corresponding frontend language 
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 04.05.2012
+     */
+    public function getTitle() {
+        $title = '';
+        if ($this->getLanguage()) {
+            $title = $this->getLanguage()->Title;
+        }
+        return $title;
+    }
 
     /**
      * Field labels for display in tables.
@@ -71,13 +85,36 @@ class SilvercartProductAttribute extends DataObject {
         $fieldLabels = array_merge(
             parent::fieldLabels($includerelations),
             array(
-                'Title'                             => _t('SilvercartProductAttribute.TITLE'),
-                'SilvercartProductAttributeValues'  => _t('SilvercartProductAttributeValue.PLURALNAME'),
+                'Title'                                 => _t('SilvercartProductAttribute.TITLE'),
+                'SilvercartProductAttributeLanguages'   => _t('SilvercartProductAttributeLanguage.PLURALNAME'),
+                'SilvercartProductAttributeValues'      => _t('SilvercartProductAttributeValue.PLURALNAME'),
+                'SilvercartProducts'                    => _t('SilvercartProduct.PLURALNAME'),
+                'SilvercartProductAttributeSets'        => _t('SilvercartProductAttributeSet.PLURALNAME'),
             )
         );
 
         $this->extend('updateFieldLabels', $fieldLabels);
         return $fieldLabels;
+    }
+    
+    /**
+     * Customized CMS fields
+     * 
+     * @param array $params Optional params to manuipulate the scaffolding behaviour
+     *
+     * @return FieldSet the fields for the backend
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 04.05.2012
+     */
+    public function getCMSFields($params = null) {
+        $fields = parent::getCMSFields($params);
+        
+        $languageFields = SilvercartLanguageHelper::prepareCMSFields($this->getLanguage());
+        foreach ($languageFields as $languageField) {
+            $fields->addFieldToTab('Root.Main', $languageField);
+        }
+        return $fields;
     }
     
     /**
