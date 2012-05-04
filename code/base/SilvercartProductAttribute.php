@@ -49,7 +49,7 @@ class SilvercartProductAttribute extends DataObject {
         'SilvercartProductAttributeValuesAsString'  => 'Text',
     );
     
-    public static $default_sort = "`Title`";
+    public static $default_sort = "`SilvercartProductAttributeLanguage`.`Title`";
     
     protected $assignedValues = null;
     

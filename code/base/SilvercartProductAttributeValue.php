@@ -49,6 +49,8 @@ class SilvercartProductAttributeValue extends DataObject {
         'Title' => 'Text',
     );
     
+    public static $default_sort = "`SilvercartProductAttributeValueLanguage`.`Title`";
+    
     /**
      * getter for the pseudo attribute title
      *

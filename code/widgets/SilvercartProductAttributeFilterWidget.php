@@ -195,7 +195,7 @@ class SilvercartProductAttributeFilterWidget_Controller extends SilvercartWidget
             $attributes = DataObject::get(
                     'SilvercartProductAttribute',
                     sprintf(
-                            "`ID` IN (%s)",
+                            "`SilvercartProductAttribute`.`ID` IN (%s)",
                             implode(',', $attributeIDs)
                     )
             );
@@ -216,10 +216,10 @@ class SilvercartProductAttributeFilterWidget_Controller extends SilvercartWidget
             $attributeValues = DataObject::get(
                     'SilvercartProductAttributeValue',
                     sprintf(
-                            "`ID` IN (%s)",
+                            "`SilvercartProductAttributeValue`.`ID` IN (%s)",
                             implode(',', $attributeValueIDs)
                     ),
-                    "`SilvercartProductAttributeID`"
+                    "`SilvercartProductAttributeID`, `SilvercartProductAttributeValueLanguage`.`Title`"
             );
             $attributeValuesArray = $attributeValues->groupBy('SilvercartProductAttributeID');
             foreach ($attributeValuesArray as $attributeID => $groupedAttributeValues) {
