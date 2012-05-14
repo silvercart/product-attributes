@@ -176,7 +176,8 @@ class SilvercartProductAttributeFilterWidget_Controller extends SilvercartWidget
             } else {
                 $products = Controller::curr()->getProducts(false, false, true);
             }
-            if ($products) {
+            if ($products &&
+                $products->Count() > 0) {
                 $productIDs = implode(',', $products->map('ID','ID'));
                 $records = DB::query(
                     sprintf(
