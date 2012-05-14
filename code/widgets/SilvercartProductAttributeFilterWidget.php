@@ -179,6 +179,7 @@ class SilvercartProductAttributeFilterWidget_Controller extends SilvercartWidget
             if ($products &&
                 $products->Count() > 0) {
                 $productIDs = implode(',', $products->map('ID','ID'));
+                $attributeIDs = array();
                 $records = DB::query(
                     sprintf(
                         "SELECT DISTINCT
@@ -194,42 +195,44 @@ class SilvercartProductAttributeFilterWidget_Controller extends SilvercartWidget
                 foreach ($records as $record) {
                     $attributeIDs[] = $record['SilvercartProductAttributeID'];
                 }
-                $attributes = DataObject::get(
-                        'SilvercartProductAttribute',
+                if (count($attributeIDs) > 0) {
+                    $attributes = DataObject::get(
+                            'SilvercartProductAttribute',
+                            sprintf(
+                                    "`SilvercartProductAttribute`.`ID` IN (%s)",
+                                    implode(',', $attributeIDs)
+                            )
+                    );
+                    $records = DB::query(
                         sprintf(
-                                "`SilvercartProductAttribute`.`ID` IN (%s)",
-                                implode(',', $attributeIDs)
+                            "SELECT DISTINCT
+                                SilvercartProductAttributeValueID
+                            FROM
+                                SilvercartProduct_SilvercartProductAttributeValues
+                            WHERE
+                                SilvercartProductID IN (%s)",
+                            $productIDs
                         )
-                );
-                $records = DB::query(
-                    sprintf(
-                        "SELECT DISTINCT
-                            SilvercartProductAttributeValueID
-                        FROM
-                            SilvercartProduct_SilvercartProductAttributeValues
-                        WHERE
-                            SilvercartProductID IN (%s)",
-                        $productIDs
-                    )
-                );
-                foreach ($records as $record) {
-                    $attributeValueIDs[] = $record['SilvercartProductAttributeValueID'];
-                }
-                $attributeValues = DataObject::get(
-                        'SilvercartProductAttributeValue',
-                        sprintf(
-                                "`SilvercartProductAttributeValue`.`ID` IN (%s)",
-                                implode(',', $attributeValueIDs)
-                        ),
-                        "`SilvercartProductAttributeID`, `SilvercartProductAttributeValueLanguage`.`Title`"
-                );
-                $attributeValuesArray = $attributeValues->groupBy('SilvercartProductAttributeID');
-                foreach ($attributeValuesArray as $attributeID => $groupedAttributeValues) {
-                    $attribute = $attributes->find('ID', $attributeID);
-                    if ($attribute) {
-                        $attribute->assignValues($groupedAttributeValues);
-                        if (!$attribute->hasAssignedValues()) {
-                            $attributes->remove($attribute);
+                    );
+                    foreach ($records as $record) {
+                        $attributeValueIDs[] = $record['SilvercartProductAttributeValueID'];
+                    }
+                    $attributeValues = DataObject::get(
+                            'SilvercartProductAttributeValue',
+                            sprintf(
+                                    "`SilvercartProductAttributeValue`.`ID` IN (%s)",
+                                    implode(',', $attributeValueIDs)
+                            ),
+                            "`SilvercartProductAttributeID`, `SilvercartProductAttributeValueLanguage`.`Title`"
+                    );
+                    $attributeValuesArray = $attributeValues->groupBy('SilvercartProductAttributeID');
+                    foreach ($attributeValuesArray as $attributeID => $groupedAttributeValues) {
+                        $attribute = $attributes->find('ID', $attributeID);
+                        if ($attribute) {
+                            $attribute->assignValues($groupedAttributeValues);
+                            if (!$attribute->hasAssignedValues()) {
+                                $attributes->remove($attribute);
+                            }
                         }
                     }
                 }
