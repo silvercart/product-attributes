@@ -62,16 +62,11 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
      */
     public function updateCMSFields(FieldSet &$fields) {
         if ($this->owner->ID > 0) {
-            if (SilvercartConfig::DisplayTypeOfProductAdminFlat()) {
-                $tabPath = 'Root.SilvercartProductAttributes';
-                $fields->removeByName('SilvercartProductAttributes');
-                $fields->removeByName('SilvercartProductAttributeValues');
-            } else {
-                $tabPath = 'Root.Main.SilvercartProductAttributes';
-            }
-            $fields->findOrMakeTab($tabPath, _t('SilvercartProductAttribute.TABNAME'));
+            $fields->removeByName('SilvercartProductAttributes');
+            $fields->removeByName('SilvercartProductAttributeValues');
+            $fields->findOrMakeTab('Root.SilvercartProductAttributes', _t('SilvercartProductAttribute.TABNAME'));
             $attributeField = new SilvercartProductAttributeTableListField($this->owner, 'SilvercartProductAttributes');
-            $fields->addFieldToTab($tabPath, $attributeField);
+            $fields->addFieldToTab('Root.SilvercartProductAttributes', $attributeField);
         }
     }
     
