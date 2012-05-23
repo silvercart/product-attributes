@@ -49,19 +49,20 @@ class SilvercartProductAttributeProductFilterPlugin {
      */
     public function filter() {
         $filters        = array();
-        $productGroup   = $this->getProductGroup();
-        if ($productGroup->filterEnabled()) {
-            $productIDs = $this->getProductIDs();
-            if (count($productIDs) > 0) {
-                $filters['SilvercartProductAttributeProductFilterPlugin'] = sprintf(
-                        "AND `SilvercartProduct`.`ID` IN (%s)",
-                        implode(',', $productIDs)
-                );
+        if (Controller::curr() instanceof SilvercartProductGroupPage_Controller &&
+            !Controller::curr()->isProductDetailView()) {
+            $productGroup   = $this->getProductGroup();
+            if ($productGroup->filterEnabled()) {
+                $productIDs = $this->getProductIDs();
+                if (count($productIDs) > 0) {
+                    $filters['SilvercartProductAttributeProductFilterPlugin'] = sprintf(
+                            "AND `SilvercartProduct`.`ID` IN (%s)",
+                            implode(',', $productIDs)
+                    );
+                }
             }
         }
         return $filters;
-        
-        
     }
 
     /**
@@ -103,7 +104,7 @@ class SilvercartProductAttributeProductFilterPlugin {
                                     `SilvercartProduct_SilvercartProductAttributeValues` AS SPSPAV
                                 WHERE
                                     SPSPAV.`SilvercartProductAttributeValueID` IN (%s)",
-                                implode(',', $filterValues)
+                                "'" . implode("','", $filterValues) . "'"
                         );
                         $records = DB::query($query);
                         foreach ($records as $record) {
