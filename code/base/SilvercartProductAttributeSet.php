@@ -48,19 +48,15 @@ class SilvercartProductAttributeSet extends DataObject {
     );
     
     /**
-     * getter for the pseudo attribute title
+     * Returns the translated title
      *
-     * @return string the title in the corresponding frontend language 
+     * @return string
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 04.05.2012
+     * @since 24.05.2012
      */
     public function getTitle() {
-        $title = '';
-        if ($this->getLanguage()) {
-            $title = $this->getLanguage()->Title;
-        }
-        return $title;
+        return $this->getLanguageFieldValue('Title');
     }
 
     /**
