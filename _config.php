@@ -35,3 +35,4 @@ Object::add_extension('SilvercartProductAttributeSet',              'SilvercartD
 Object::add_extension('SilvercartProductAttributeValue',            'SilvercartDataObjectMultilingualDecorator');
 // Register SilvercartPlugins
 SilvercartProductGroupPage_Controller::registerFilterPlugin('SilvercartProductAttributeProductFilterPlugin');
+SilvercartSearchResultsPage_Controller::registerFilterPlugin('SilvercartProductAttributeProductFilterPlugin');

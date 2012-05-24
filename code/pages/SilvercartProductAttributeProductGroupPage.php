@@ -95,7 +95,7 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
      */
     public function SilvercartProductAttributeFilter(SS_HTTPRequest $request) {
         if (Director::is_ajax()) {
-            return $this->owner->renderWith('SilvercartProductGroupPage');
+            return $this->owner->renderWith($this->owner->data()->ClassName);
         } else {
             Director::redirectBack();
         }
