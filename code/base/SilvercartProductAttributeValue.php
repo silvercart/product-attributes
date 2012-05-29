@@ -118,12 +118,7 @@ class SilvercartProductAttributeValue extends DataObject {
      * @since 14.03.2012
      */
     public function plural_name() {
-        if (_t($this->ClassName . '.PLURALNAME')) {
-            self::$plural_name = _t($this->ClassName . '.PLURALNAME');
-        } else {
-            self::$plural_name = parent::plural_name();
-        }
-        return self::$plural_name;
+        return SilvercartTools::plural_name_for($this);
     }
 
     /**
@@ -136,7 +131,7 @@ class SilvercartProductAttributeValue extends DataObject {
      */
     public function searchableFields() {
         $searchableFields = array(
-            'Title' => array(
+            'SilvercartProductAttributeValueLanguages.Title' => array(
                 'title'     => $this->fieldLabel('Title'),
                 'filter'    => 'PartialMatchFilter'
             ),
@@ -159,12 +154,7 @@ class SilvercartProductAttributeValue extends DataObject {
      * @since 14.03.2012
      */
     public function singular_name() {
-        if (_t($this->ClassName . '.SINGULARNAME')) {
-            self::$singular_name = _t($this->ClassName . 'SINGULARNAME');
-        } else {
-            self::$singular_name = parent::singular_name();
-        }
-        return self::$singular_name;
+        return SilvercartTools::singular_name_for($this);
     }
 
     /**
