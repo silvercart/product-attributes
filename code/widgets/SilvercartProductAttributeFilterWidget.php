@@ -167,6 +167,7 @@ class SilvercartProductAttributeFilterWidget_Controller extends SilvercartWidget
      */
     public function init() {
         parent::init();
+        Requirements::javascript(SilvercartTools::getBaseURLSegment() . 'silvercart_product_attributes/js/SilvercartProductAttributeFilterWidget.js');
         if (Controller::curr() instanceof SilvercartProductGroupPage_Controller &&
             !Controller::curr()->isProductDetailView()) {
             $this->setFormAction(Controller::curr()->Link() . 'SilvercartProductAttributeFilter');
