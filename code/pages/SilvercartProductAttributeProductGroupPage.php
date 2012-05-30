@@ -112,8 +112,8 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
      * @since 13.03.2012 
      */
     public function ClearSilvercartProductAttributeFilter(SS_HTTPRequest $request) {
-        Session::clear('SilvercartProductAttributeFilterPlugin.' . $this->owner->ID);
-        Session::clear('SilvercartProductAttributeFilterWidget.' . $this->owner->ID);
+        Session::clear('SilvercartProductAttributeFilterPlugin.' . $this->getSessionKey());
+        Session::clear('SilvercartProductAttributeFilterWidget.' . $this->getSessionKey());
     }
     
     /**
@@ -139,7 +139,7 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
      */
     public function getFilterValues() {
         if (is_null($this->filterValues)) {
-            $this->setFilterValues(Session::get('SilvercartProductAttributeFilterPlugin.' . $this->owner->ID));
+            $this->setFilterValues(Session::get('SilvercartProductAttributeFilterPlugin.' . $this->getSessionKey()));
         }
         return $this->filterValues;
     }
@@ -152,7 +152,7 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
      * @return void
      */
     public function setFilterValues($filterValues) {
-        Session::set('SilvercartProductAttributeFilterPlugin.' . $this->owner->ID, $filterValues);
+        Session::set('SilvercartProductAttributeFilterPlugin.' . $this->getSessionKey(), $filterValues);
         Session::save();
         $this->filterValues = $filterValues;
     }
@@ -164,7 +164,7 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
      */
     public function getWidget() {
         if (is_null($this->widget)) {
-            $this->setWidget(Session::get('SilvercartProductAttributeFilterWidget.' . $this->owner->ID));
+            $this->setWidget(Session::get('SilvercartProductAttributeFilterWidget.' . $this->getSessionKey()));
         }
         return $this->widget;
     }
@@ -177,7 +177,7 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
      * @return void
      */
     public function setWidget($widget) {
-        Session::set('SilvercartProductAttributeFilterWidget.' . $this->owner->ID, $widget);
+        Session::set('SilvercartProductAttributeFilterWidget.' . $this->getSessionKey(), $widget);
         Session::save();
         $this->widget = $widget;
     }
@@ -297,6 +297,20 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
     public function permanentlyDisableFilter() {
         $this->filterDisabledPermanently = true;
         $this->disableFilter();
+    }
+    
+    /**
+     * Builds and returns the session key dependant on the controller type
+     *
+     * @return string 
+     */
+    public function getSessionKey() {
+        $sessionKey = $this->owner->ID;
+        if ($this->owner instanceof SilvercartSearchResultsPage_Controller) {
+            $searchQuery = Convert::raw2sql(Session::get('searchQuery'));
+            $sessionKey .= md5($searchQuery) . sha1($searchQuery);
+        }
+        return $sessionKey;
     }
     
 }
