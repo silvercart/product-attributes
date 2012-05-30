@@ -119,7 +119,24 @@
             }
         }
         
+        var SilvercartProductAttributeFilterRefreshSelectedFilters  = function(checkbox) {
+            var checked     = checkbox.is(':checked');
+            var id          = checkbox.val();
+            var filterForm  = $('form[name="silvercart-product-attribute-filter-form"]');
+            var filterInput = $('input[name="silvercart-product-attribute-selected-values"]');
+            if (checked) {
+                SilvercartProductAttributeFilter.push(id);
+            } else {
+                SilvercartProductAttributeFilter = jQuery.grep(SilvercartProductAttributeFilter, function(value) {
+                    return value != id;
+                });
+            }
+            filterInput.val(SilvercartProductAttributeFilter.join(','));
+        }
+        
         $('.silvercart-product-attribute-value').change(function() {
+            SilvercartProductAttributeFilterRefreshSelectedFilters($(this));
+            /**
             var checkbox    = $(this);
             var checked     = checkbox.is(':checked');
             var id          = checkbox.val();
@@ -133,16 +150,20 @@
                 });
             }
             filterInput.val(SilvercartProductAttributeFilter.join(','));
+            /**/
             window.clearTimeout(SilvercartProductAttributeFilterCallbackTimeout);
             SilvercartProductAttributeFilterCallbackTimeout = window.setTimeout(SilvercartProductAttributeFilterCall, 800);
         });
         
-        $('.remove-filter').click(function() {
+        $('.remove-filter').click(function(event) {
+            event.preventDefault();
             var id = $(this).attr('rel');
             $('.silvercart-product-attribute-' + id).each(function() {
                 $(this).removeAttr('checked');
+                SilvercartProductAttributeFilterRefreshSelectedFilters($(this));
             });
             SilvercartProductAttributeFilterCall();
+            return false;
         });
         
         if (jQuery(".silvercart-product-group-page-selectors")) {
