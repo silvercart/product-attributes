@@ -60,9 +60,10 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
         $action     = $allParams['Action'];
         $widget     = $this->getWidget($this->getPreviousSessionKey());
         if ($widget instanceof SilvercartProductAttributeFilterWidget &&
-            $widget->RememberFilter &&
+            !$widget->RememberFilter &&
             $this->getSessionKey() != $this->getPreviousSessionKey()) {
             $this->clearFilter($this->getPreviousSessionKey());
+            $this->clearFilter($this->getSessionKey());
         }
         $this->setPreviousSessionKey($this->getSessionKey());
         if ($action == 'SilvercartProductAttributeFilter' &&
@@ -325,7 +326,7 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
      */
     public function clearFilter($sessionKey) {
         Session::clear('SilvercartProductAttributeFilterPlugin.' . $sessionKey);
-        Session::clear('SilvercartProductAttributeFilterWidget.' . $sessionKey);
+        Session::save();
     }
     
     /**
