@@ -82,6 +82,7 @@ $lang['de_DE']['SilvercartProductAttributeFilterWidget']['FILTERBEHAVIOUR']     
 $lang['de_DE']['SilvercartProductAttributeFilterWidget']['FB_HINT']             = 'Das Feld "Filter-Verhalten" legt fest, wie der Filter reagiert.<br/><b>Mehrfachauswahl:</b> Der Kunde kann mehrere Werte eines Merkmals gleichzeitig auswählen. Zum Beipiel können alle Produkte, deren Farbe rot ODER schwarz ist, angezeigt werden. Es sind immer alle Filter-Merkmal-Werte einer Produktgruppe auswählbar.<br/><b>Einfachauswahl:</b> Der Kunde kann nur einen Wert eines Merkmals auswählen. Die verfügbaren Filter-Merkmal-Werte orientieren sich immer an der gefilterten Produktliste.';
 $lang['de_DE']['SilvercartProductAttributeFilterWidget']['FB_MULTIPLECHOICE']   = 'Mehrfachauswahl';
 $lang['de_DE']['SilvercartProductAttributeFilterWidget']['FB_SINGLECHOICE']     = 'Einfachauswahl';
+$lang['de_DE']['SilvercartProductAttributeFilterWidget']['REMEMBERFILTER']      = 'Filter pro Produktgruppe merken';
 
 $lang['de_DE']['SilvercartProductAttributeLanguage']['PLURALNAME']              = _t('Silvercart.TRANSLATIONS');
 $lang['de_DE']['SilvercartProductAttributeLanguage']['SINGULARNAME']            = _t('Silvercart.TRANSLATION');

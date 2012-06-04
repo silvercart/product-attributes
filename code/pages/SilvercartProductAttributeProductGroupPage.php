@@ -55,9 +55,16 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
      * @since 13.03.2012 
      */
     public function onBeforeInit() {
-        $request = $this->owner->getRequest();
-        $allParams = $request->allParams();
+        $request    = $this->owner->getRequest();
+        $allParams  = $request->allParams();
         $action     = $allParams['Action'];
+        $widget     = $this->getWidget($this->getPreviousSessionKey());
+        if ($widget instanceof SilvercartProductAttributeFilterWidget &&
+            $widget->RememberFilter &&
+            $this->getSessionKey() != $this->getPreviousSessionKey()) {
+            $this->clearFilter($this->getPreviousSessionKey());
+        }
+        $this->setPreviousSessionKey($this->getSessionKey());
         if ($action == 'SilvercartProductAttributeFilter' &&
             $this->owner->getRequest()->isPOST()) {
             $this->initSilvercartProductAttributeFilter($request);
@@ -112,8 +119,7 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
      * @since 13.03.2012 
      */
     public function ClearSilvercartProductAttributeFilter(SS_HTTPRequest $request) {
-        Session::clear('SilvercartProductAttributeFilterPlugin.' . $this->getSessionKey());
-        Session::clear('SilvercartProductAttributeFilterWidget.' . $this->getSessionKey());
+        $this->clearFilter($this->getSessionKey());
     }
     
     /**
@@ -159,14 +165,22 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
     
     /**
      * Returns the filter widget. If not set it will be set out of session
+     * 
+     * @param string $sessionKey Optional session key to get widget for
      *
      * @return SilvercartProductAttributeFilterWidget 
      */
-    public function getWidget() {
-        if (is_null($this->widget)) {
-            $this->setWidget(Session::get('SilvercartProductAttributeFilterWidget.' . $this->getSessionKey()));
+    public function getWidget($sessionKey = null) {
+        if (is_null($sessionKey)) {
+            $sessionKey = $this->getSessionKey();
+            if (is_null($this->widget)) {
+                $this->setWidget(Session::get('SilvercartProductAttributeFilterWidget.' . $sessionKey));
+            }
+            $widget = $this->widget;
+        } else {
+            $widget = Session::get('SilvercartProductAttributeFilterWidget.' . $sessionKey);
         }
-        return $this->widget;
+        return $widget;
     }
     
     /**
@@ -300,6 +314,21 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
     }
     
     /**
+     * Clears the attribute filter with the given session key
+     *
+     * @param string $sessionKey Session key
+     * 
+     * @return void
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 04.06.2012 
+     */
+    public function clearFilter($sessionKey) {
+        Session::clear('SilvercartProductAttributeFilterPlugin.' . $sessionKey);
+        Session::clear('SilvercartProductAttributeFilterWidget.' . $sessionKey);
+    }
+    
+    /**
      * Builds and returns the session key dependant on the controller type
      *
      * @return string 
@@ -311,6 +340,27 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
             $sessionKey .= md5($searchQuery) . sha1($searchQuery);
         }
         return $sessionKey;
+    }
+    
+    /**
+     * Returns the previous session key
+     *
+     * @return string
+     */
+    public function getPreviousSessionKey() {
+        $previousSessionKey = Session::get('SilvercartProductAttributeFilterWidget.PreviousSessionKey');
+        return $previousSessionKey;
+    }
+    
+    /**
+     * Sets the previous session key
+     *
+     * @param string $previousSessionKey Previous session key
+     * 
+     * @return void
+     */
+    public function setPreviousSessionKey($previousSessionKey) {
+        Session::set('SilvercartProductAttributeFilterWidget.PreviousSessionKey', $previousSessionKey);
     }
     
 }

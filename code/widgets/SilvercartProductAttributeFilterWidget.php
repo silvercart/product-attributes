@@ -35,6 +35,7 @@ class SilvercartProductAttributeFilterWidget extends SilvercartWidget {
     
     public static $db = array(
         'FilterBehaviour'   => 'Enum("MultipleChoice,SingleChoice","MultipleChoice")',
+        'RememberFilter'    => 'Boolean(0)',
     );
 
 
@@ -106,7 +107,8 @@ class SilvercartProductAttributeFilterWidget extends SilvercartWidget {
         return array_merge(
                 parent::fieldLabels($includerelations),
                 array(
-                    'FilterBehaviour' => _t($this->ClassName() . '.FILTERBEHAVIOUR'),
+                    'FilterBehaviour'   => _t($this->ClassName() . '.FILTERBEHAVIOUR'),
+                    'RememberFilter'    => _t($this->ClassName() . '.REMEMBERFILTER'),
                 )
         );
     }
@@ -127,6 +129,9 @@ class SilvercartProductAttributeFilterWidget extends SilvercartWidget {
         $filterBehaviourField = new OptionsetField('FilterBehaviour', $this->fieldLabel('FilterBehaviour'), $items, $this->FilterBehaviour);
         $filterBehaviourField->setRightTitle(_t($this->ClassName() . '.FB_HINT'));
         $fields->push($filterBehaviourField);
+        
+        $rememberFilterField = new CheckboxField('RememberFilter', $this->fieldLabel('RememberFilter'));
+        $fields->push($rememberFilterField);
         return $fields;
     }
 }

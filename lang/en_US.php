@@ -82,6 +82,7 @@ $lang['en_US']['SilvercartProductAttributeFilterWidget']['FILTERBEHAVIOUR']     
 $lang['en_US']['SilvercartProductAttributeFilterWidget']['FB_HINT']             = 'The field &quot;Filter-Behaviour&quot; determines how the filter reacts on user input.<br/><b>Multiple Choice:</b> The customer can choose multiple values of one attribute at the same time. For example, the customer can display all products with the colors red OR black. All filter attribute values are selectable, independent of the currently set filter.<br/><b>Single Choice:</b> The customer can only choose ONE value of an attribute. The available filter attribute values will be constrained by the currently set filters.';
 $lang['en_US']['SilvercartProductAttributeFilterWidget']['FB_MULTIPLECHOICE']   = 'Multiple Choice';
 $lang['en_US']['SilvercartProductAttributeFilterWidget']['FB_SINGLECHOICE']     = 'Single Choice';
+$lang['en_US']['SilvercartProductAttributeFilterWidget']['REMEMBERFILTER']      = 'Remember filter by product group';
 
 $lang['en_US']['SilvercartProductAttributeLanguage']['PLURALNAME']              = _t('Silvercart.TRANSLATIONS');
 $lang['en_US']['SilvercartProductAttributeLanguage']['SINGULARNAME']            = _t('Silvercart.TRANSLATION');
