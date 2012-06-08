@@ -11,6 +11,8 @@ var SilvercartProductAttributeFilterCall                = function() {
     if (SilvercartProductAttributeFilterCallInProgress == false) {
         SilvercartProductAttributeFilterCallInProgress = true;
         SilvercartProductAttributeFilterCallback = false;
+        $('.silvercart-product-attribute-filter-mask').remove();
+        $('.silvercart-product-attribute-filter-loading-bar').remove();
         if ($('.silvercart-product-attribute-filter-mask').length == 0) {
             $('#main').append('<div class="silvercart-product-attribute-filter-mask"></div>');
             $('#main').append('<img class="silvercart-product-attribute-filter-loading-bar" src="/silvercart_product_attributes/images/loader.gif" title="" />');
@@ -21,12 +23,19 @@ var SilvercartProductAttributeFilterCall                = function() {
         $('.silvercart-product-attribute-filter-mask').css({
             width : $('#main').css('width'),
             height : $('#main').css('height'),
-            display : 'none'
+            position : 'absolute',
+            display : 'none',
+            top : '0px',
+            background : '#fff'
         });
         $('.silvercart-product-attribute-filter-loading-bar').css({
             display : 'none',
             left : (window.innerWidth / 2) - 64,
-            top : (window.innerHeight / 2) - 7
+            top : (window.innerHeight / 2) - 7,
+            display : 'none',
+            position : 'fixed',
+            width : 128,
+            height : 15
         });
         $('.silvercart-product-attribute-filter-mask').fadeTo('slow', 0.7, function() {
             $('.silvercart-product-attribute-filter-loading-bar').show();
@@ -76,29 +85,31 @@ var SilvercartProductAttributeFilterPush                = function(id) {
     SilvercartProductAttributeFilter.push(id);
 }
 $(function() {
-    if ($('.silvercart-product-attribute-filter-mask').length == 0) {
-        $('#main').append('<div class="silvercart-product-attribute-filter-mask"></div>');
-        $('#main').append('<img class="silvercart-product-attribute-filter-loading-bar" src="/silvercart_product_attributes/images/loader.gif" alt="Loading..." />');
-        $('#main').css({
-            position : 'relative'
-        });
-        $('.silvercart-product-attribute-filter-mask').css({
-            position : 'absolute',
-            width : $('#main').css('width'),
-            height : $('#main').css('height'),
-            display : 'none',
-            top : '0px',
-            background : '#fff'
-        });
-        $('.silvercart-product-attribute-filter-loading-bar').css({
-            display : 'none',
-            position : 'fixed',
-            left : (window.innerWidth / 2) - 64,
-            top : (window.innerHeight / 2) - 7,
-            width : 128,
-            height : 15
-        });
-    }
+    $(document).ready(function() {
+        if ($('.silvercart-product-attribute-filter-mask').length == 0) {
+            $('#main').append('<div class="silvercart-product-attribute-filter-mask"></div>');
+            $('#main').append('<img class="silvercart-product-attribute-filter-loading-bar" src="/silvercart_product_attributes/images/loader.gif" alt="Loading..." />');
+            $('#main').css({
+                position : 'relative'
+            });
+            $('.silvercart-product-attribute-filter-mask').css({
+                position : 'absolute',
+                width : $('#main').css('width'),
+                height : $('#main').css('height'),
+                display : 'none',
+                top : '0px',
+                background : '#fff'
+            });
+            $('.silvercart-product-attribute-filter-loading-bar').css({
+                display : 'none',
+                position : 'fixed',
+                left : (window.innerWidth / 2) - 64,
+                top : (window.innerHeight / 2) - 7,
+                width : 128,
+                height : 15
+            });
+        }
+    });
 
     $('.silvercart-product-attribute-value').live('change',function() {
         SilvercartProductAttributeFilterRefreshSelectedFilters($(this));

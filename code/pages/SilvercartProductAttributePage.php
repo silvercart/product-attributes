@@ -48,7 +48,7 @@ class SilvercartProductAttributePage_Controller extends DataObjectDecorator {
             $baseUrl . 'silvercart_product_attributes/css/SilvercartProductAttributePriceRangeFormField.css',
         );
         RequirementsEngine::combine_files_and_parse('silvercart_product_attributes.css', $requirements);
-        SilvercartCustomerRating::loadRequirements();
+        Requirements::javascript(SilvercartTools::getBaseURLSegment() . 'silvercart_product_attributes/js/SilvercartProductAttributeFilterWidget.js');
     }
     
 }
