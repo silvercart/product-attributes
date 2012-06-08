@@ -56,6 +56,7 @@ var SilvercartProductAttributeFilterCall                = function() {
                     }
                 },
                 'error':    function() {
+                    document.location.reload();
                     $('.silvercart-product-attribute-filter-loading-bar').hide('slow', function() {
                         $('.silvercart-product-attribute-filter-mask').fadeOut('slow');
                     });
