@@ -77,12 +77,21 @@ $lang['en_US']['SilvercartProductAttributeTableListField']['NOVALUESUNATTRIBUTED
 $lang['en_US']['SilvercartProductAttributeFilterWidget']['TITLE']               = 'Product Attribute Filter';
 $lang['en_US']['SilvercartProductAttributeFilterWidget']['CMSTITLE']            = 'Product Attribute Filter';
 $lang['en_US']['SilvercartProductAttributeFilterWidget']['DESCRIPTION']         = 'Provides a grouped selection of filters, created by the product attributes assigned onto the products of the current product group.';
-$lang['en_US']['SilvercartProductAttributeFilterWidget']['DISABLE_FILTER_FOR']  = 'Disable all filters for &quot;%s&quot;';
+$lang['en_US']['SilvercartProductAttributeFilterWidget']['DISABLE_FILTER_FOR']  = 'Reset all filters for &quot;%s&quot;';
 $lang['en_US']['SilvercartProductAttributeFilterWidget']['FILTERBEHAVIOUR']     = 'Filter-Behaviour';
 $lang['en_US']['SilvercartProductAttributeFilterWidget']['FB_HINT']             = 'The field &quot;Filter-Behaviour&quot; determines how the filter reacts on user input.<br/><b>Multiple Choice:</b> The customer can choose multiple values of one attribute at the same time. For example, the customer can display all products with the colors red OR black. All filter attribute values are selectable, independent of the currently set filter.<br/><b>Single Choice:</b> The customer can only choose ONE value of an attribute. The available filter attribute values will be constrained by the currently set filters.';
 $lang['en_US']['SilvercartProductAttributeFilterWidget']['FB_MULTIPLECHOICE']   = 'Multiple Choice';
 $lang['en_US']['SilvercartProductAttributeFilterWidget']['FB_SINGLECHOICE']     = 'Single Choice';
 $lang['en_US']['SilvercartProductAttributeFilterWidget']['REMEMBERFILTER']      = 'Remember filter by product group';
+
+$lang['en_US']['SilvercartProductAttributePriceFilterWidget']['TITLE']          = 'Price-Filter';
+$lang['en_US']['SilvercartProductAttributePriceFilterWidget']['CMSTITLE']       = 'Price-Filter';
+$lang['en_US']['SilvercartProductAttributePriceFilterWidget']['DESCRIPTION']    = 'Provides a widget which allows to enter a price range to filter a product list.';
+$lang['en_US']['SilvercartProductAttributePriceFilterWidget']['DISABLE_FILTER'] = 'Reset price filter';
+$lang['en_US']['SilvercartProductAttributePriceFilterWidget']['FRONTTITLE']     = 'Price';
+$lang['en_US']['SilvercartProductAttributePriceFilterWidget']['MIN_PRICE']      = 'From';
+$lang['en_US']['SilvercartProductAttributePriceFilterWidget']['MAX_PRICE']      = 'to';
+$lang['en_US']['SilvercartProductAttributePriceFilterWidget']['FILTER']         = 'Filter';
 
 $lang['en_US']['SilvercartProductAttributeLanguage']['PLURALNAME']              = _t('Silvercart.TRANSLATIONS');
 $lang['en_US']['SilvercartProductAttributeLanguage']['SINGULARNAME']            = _t('Silvercart.TRANSLATION');

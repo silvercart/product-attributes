@@ -61,6 +61,33 @@ class SilvercartProductAttributeProductFilterPlugin {
                     );
                 }
             }
+            $minPrice = Convert::raw2sql($productGroup->getMinPriceForWidget());
+            $maxPrice = Convert::raw2sql($productGroup->getMaxPriceForWidget());
+            $priceField = 'PriceGrossAmount';
+            if (SilvercartConfig::Pricetype() == 'net') {
+                $priceField = 'PriceNetAmount';
+            }
+            if (!empty($minPrice) &&
+                !empty($maxPrice)) {
+                $filters['SilvercartProductAttributeProductPriceFilterPlugin'] = sprintf(
+                        "AND `SilvercartProduct`.`%s` BETWEEN '%s' AND '%s'",
+                        $priceField,
+                        $minPrice,
+                        $maxPrice
+                );
+            } elseif (empty($minPrice)) {
+                $filters['SilvercartProductAttributeProductPriceFilterPlugin'] = sprintf(
+                        "AND `SilvercartProduct`.`%s` >= '%s'",
+                        $priceField,
+                        $minPrice
+                );
+            } elseif (empty($maxPrice)) {
+                $filters['SilvercartProductAttributeProductPriceFilterPlugin'] = sprintf(
+                        "AND `SilvercartProduct`.`%s` <= '%s'",
+                        $priceField,
+                        $maxPrice
+                );
+            }
         }
         return $filters;
     }

@@ -1,0 +1,47 @@
+
+
+  .yform.silvercart-widget-form {
+    background: none;
+    border: 0px;
+    margin:0;
+    padding:4px;
+    color: #666666;
+  }
+
+  .yform.silvercart-widget-form fieldset {
+    border: 0px;
+    background: none;
+    margin:0 0 1em 0;
+    padding: 0.5em;
+  }
+
+  .yform div.type-range {
+    
+  }
+  
+  .yform div.type-range {
+    margin:0.5em 0;
+    padding:3px 0.5em;  
+    position:relative;
+    overflow:hidden;
+  }
+  
+  .yform div.type-range label {
+    display: inline-block;
+  }
+  
+  .yform div.type-range input[type="text"] {
+    border:1px solid #ddd;
+    width:30px;
+  }
+  
+  .yform div.type-range input[type="submit"] {
+    height: 24px
+  }
+  
+  .yform div.type-range input:focus,
+  .yform div.type-range input:hover,
+  .yform div.type-range input:active {
+    border:1px #a66 solid;
+    background:#fff;
+  }

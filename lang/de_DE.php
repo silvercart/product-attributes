@@ -84,6 +84,15 @@ $lang['de_DE']['SilvercartProductAttributeFilterWidget']['FB_MULTIPLECHOICE']   
 $lang['de_DE']['SilvercartProductAttributeFilterWidget']['FB_SINGLECHOICE']     = 'Einfachauswahl';
 $lang['de_DE']['SilvercartProductAttributeFilterWidget']['REMEMBERFILTER']      = 'Filter pro Produktgruppe merken';
 
+$lang['de_DE']['SilvercartProductAttributePriceFilterWidget']['TITLE']                  = 'Preis-Filter';
+$lang['de_DE']['SilvercartProductAttributePriceFilterWidget']['CMSTITLE']               = 'Preis-Filter';
+$lang['de_DE']['SilvercartProductAttributePriceFilterWidget']['DESCRIPTION']            = 'Liefert ein Widget, welches die Eingabe einer Preisspanne erlaubt, nach der Produkte gefiltert werden.';
+$lang['de_DE']['SilvercartProductAttributePriceFilterWidget']['DISABLE_FILTER']         = 'Preis-Filter aufheben';
+$lang['de_DE']['SilvercartProductAttributePriceFilterWidget']['FRONTTITLE']             = 'Preis';
+$lang['de_DE']['SilvercartProductAttributePriceFilterWidget']['MIN_PRICE']              = 'Von';
+$lang['de_DE']['SilvercartProductAttributePriceFilterWidget']['MAX_PRICE']              = 'bis';
+$lang['de_DE']['SilvercartProductAttributePriceFilterWidget']['FILTER']                 = 'Filtern';
+
 $lang['de_DE']['SilvercartProductAttributeLanguage']['PLURALNAME']              = _t('Silvercart.TRANSLATIONS');
 $lang['de_DE']['SilvercartProductAttributeLanguage']['SINGULARNAME']            = _t('Silvercart.TRANSLATION');
 

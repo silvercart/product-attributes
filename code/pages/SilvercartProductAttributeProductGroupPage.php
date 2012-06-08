@@ -44,6 +44,7 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
     public static $allowed_actions          = array(
         'ClearSilvercartProductAttributeFilter',
         'SilvercartProductAttributeFilter',
+        'ClearSilvercartProductAttributePriceFilter',
     );
     
     /**
@@ -121,6 +122,22 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
      */
     public function ClearSilvercartProductAttributeFilter(SS_HTTPRequest $request) {
         $this->clearFilter($this->getSessionKey());
+    }
+    
+    /**
+     * Action to clear the attribute filter
+     *
+     * @param SS_HTTPRequest $request Request
+     * 
+     * @return void
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 13.03.2012 
+     */
+    public function ClearSilvercartProductAttributePriceFilter(SS_HTTPRequest $request) {
+        Session::clear('SilvercartProductAttributePriceRangeForm.MinPrice.' . $this->getSessionKey());
+        Session::clear('SilvercartProductAttributePriceRangeForm.MaxPrice.' . $this->getSessionKey());
+        Director::redirectBack();
     }
     
     /**
@@ -362,6 +379,48 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
      */
     public function setPreviousSessionKey($previousSessionKey) {
         Session::set('SilvercartProductAttributeFilterWidget.PreviousSessionKey', $previousSessionKey);
+    }
+    
+    /**
+     * Returns the min price
+     *
+     * @return string
+     */
+    public function getMinPriceForWidget() {
+        return Session::get('SilvercartProductAttributePriceRangeForm.MinPrice.' . $this->getSessionKey());
+    }
+    
+    /**
+     * Sets the min price
+     *
+     * @param string $minPrice Min price
+     * 
+     * @return void
+     */
+    public function setMinPriceForWidget($minPrice) {
+        Session::set('SilvercartProductAttributePriceRangeForm.MinPrice.' . $this->getSessionKey(), $minPrice);
+        Session::save();
+    }
+    
+    /**
+     * Returns the max price
+     *
+     * @return string
+     */
+    public function getMaxPriceForWidget() {
+        return Session::get('SilvercartProductAttributePriceRangeForm.MaxPrice.' . $this->getSessionKey());
+    }
+    
+    /**
+     * Sets the max price
+     *
+     * @param string $maxPrice Max price
+     * 
+     * @return void
+     */
+    public function setMaxPriceForWidget($maxPrice) {
+        Session::set('SilvercartProductAttributePriceRangeForm.MaxPrice.' . $this->getSessionKey(), $maxPrice);
+        Session::save();
     }
     
 }

@@ -22,6 +22,7 @@
  */
 
 // Register Extensions
+Object::add_extension('SilvercartPage_Controller',                  'SilvercartProductAttributePage_Controller');
 Object::add_extension('SilvercartProduct',                          'SilvercartProductAttributeProduct');
 Object::add_extension('SilvercartProduct_RecordController',         'SilvercartProductAttributeProduct_RecordController');
 Object::add_extension('SilvercartProductGroupPage_Controller',      'SilvercartProductAttributeProductGroupPage_Controller');
@@ -36,3 +37,5 @@ Object::add_extension('SilvercartProductAttributeValue',            'SilvercartD
 // Register SilvercartPlugins
 SilvercartProductGroupPage_Controller::registerFilterPlugin('SilvercartProductAttributeProductFilterPlugin');
 SilvercartSearchResultsPage_Controller::registerFilterPlugin('SilvercartProductAttributeProductFilterPlugin');
+
+CustomHtmlForm::registerModule('silvercart_product_attributes');
