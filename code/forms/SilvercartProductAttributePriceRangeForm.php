@@ -55,11 +55,18 @@ class SilvercartProductAttributePriceRangeForm extends CustomHtmlForm {
      * @since 06.06.2012
      */
     public function getFormFields() {
+        $minPrice = '';
+        $maxPrice = '';
+        if (Controller::curr() instanceof SilvercartProductGroupPage_Controller &&
+            !Controller::curr()->isProductDetailView()) {
+            $minPrice = $this->controller->getMinPriceForWidget();
+            $maxPrice = $this->controller->getMaxPriceForWidget();
+        }
         $this->formFields = array(
             'MinPrice' => array(
                 'type'              => 'TextField',
                 'title'             => _t('SilvercartProductAttributePriceFilterWidget.MIN_PRICE'),
-                'value'             => $this->controller->getMinPriceForWidget(),
+                'value'             => $minPrice,
                 'checkRequirements' => array(
                     'isFilledIn',
                 )
@@ -67,7 +74,7 @@ class SilvercartProductAttributePriceRangeForm extends CustomHtmlForm {
             'MaxPrice' => array(
                 'type'              => 'TextField',
                 'title'             => _t('SilvercartProductAttributePriceFilterWidget.MAX_PRICE'),
-                'value'             => $this->controller->getMaxPriceForWidget(),
+                'value'             => $maxPrice,
                 'checkRequirements' => array(
                     'isFilledIn',
                 )
