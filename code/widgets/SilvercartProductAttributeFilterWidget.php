@@ -178,8 +178,10 @@ class SilvercartProductAttributeFilterWidget_Controller extends SilvercartWidget
             $attributes = new DataObjectSet();
             if ($this->FilterBehaviour == 'MultipleChoice') {
                 $products = Controller::curr()->getUnfilteredProducts(false, false, true);
+                $products->merge(Controller::curr()->getInjectedProducts());
             } else {
                 $products = Controller::curr()->getProducts(false, false, true);
+                $products->merge(Controller::curr()->getInjectedProducts());
             }
             if ($products &&
                 $products->Count() > 0) {

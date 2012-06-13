@@ -37,5 +37,6 @@ Object::add_extension('SilvercartProductAttributeValue',            'SilvercartD
 // Register SilvercartPlugins
 SilvercartProductGroupPage_Controller::registerFilterPlugin('SilvercartProductAttributeProductFilterPlugin');
 SilvercartSearchResultsPage_Controller::registerFilterPlugin('SilvercartProductAttributeProductFilterPlugin');
+SilvercartWidget_Controller::registerFilterPlugin('SilvercartProductAttributeProductFilterPlugin');
 
 CustomHtmlForm::registerModule('silvercart_product_attributes');
