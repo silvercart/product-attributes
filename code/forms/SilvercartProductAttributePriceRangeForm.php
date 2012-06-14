@@ -116,7 +116,7 @@ class SilvercartProductAttributePriceRangeForm extends CustomHtmlForm {
      * @return string
      */
     public function getCurrencySymbol() {
-        $currency = new Zend_Currency();
+        $currency = new Zend_Currency(null, Translatable::get_current_locale());
         return $currency->getSymbol($this->getCurrency(), i18n::get_locale());
     }
     
