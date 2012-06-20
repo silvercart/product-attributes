@@ -101,12 +101,12 @@ class SilvercartProductAttribute extends DataObject {
      * @return FieldSet the fields for the backend
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 04.05.2012
+     * @since 20.06.2012
      */
     public function getCMSFields($params = null) {
         $fields = parent::getCMSFields($params);
         
-        $languageFields = SilvercartLanguageHelper::prepareCMSFields($this->getLanguage());
+        $languageFields = SilvercartLanguageHelper::prepareCMSFields($this->getLanguage(true));
         foreach ($languageFields as $languageField) {
             $fields->addFieldToTab('Root.Main', $languageField);
         }
