@@ -221,24 +221,29 @@ class SilvercartProductAttributeFilterWidget_Controller extends SilvercartWidget
                             $productIDs
                         )
                     );
+                    $attributeValueIDs = array();
                     foreach ($records as $record) {
                         $attributeValueIDs[] = $record['SilvercartProductAttributeValueID'];
                     }
-                    $attributeValues = DataObject::get(
-                            'SilvercartProductAttributeValue',
-                            sprintf(
-                                    "`SilvercartProductAttributeValue`.`ID` IN (%s)",
-                                    implode(',', $attributeValueIDs)
-                            ),
-                            "`SilvercartProductAttributeID`, `SilvercartProductAttributeValueLanguage`.`Title`"
-                    );
-                    $attributeValuesArray = $attributeValues->groupBy('SilvercartProductAttributeID');
-                    foreach ($attributeValuesArray as $attributeID => $groupedAttributeValues) {
-                        $attribute = $attributes->find('ID', $attributeID);
-                        if ($attribute) {
-                            $attribute->assignValues($groupedAttributeValues);
-                            if (!$attribute->hasAssignedValues()) {
-                                $attributes->remove($attribute);
+                    if (empty($attributeValueIDs)) {
+                        $attributes = new DataObjectSet();
+                    } else {
+                        $attributeValues = DataObject::get(
+                                'SilvercartProductAttributeValue',
+                                sprintf(
+                                        "`SilvercartProductAttributeValue`.`ID` IN (%s)",
+                                        implode(',', $attributeValueIDs)
+                                ),
+                                "`SilvercartProductAttributeID`, `SilvercartProductAttributeValueLanguage`.`Title`"
+                        );
+                        $attributeValuesArray = $attributeValues->groupBy('SilvercartProductAttributeID');
+                        foreach ($attributeValuesArray as $attributeID => $groupedAttributeValues) {
+                            $attribute = $attributes->find('ID', $attributeID);
+                            if ($attribute) {
+                                $attribute->assignValues($groupedAttributeValues);
+                                if (!$attribute->hasAssignedValues()) {
+                                    $attributes->remove($attribute);
+                                }
                             }
                         }
                     }
