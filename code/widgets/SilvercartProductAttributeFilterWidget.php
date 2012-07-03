@@ -161,6 +161,13 @@ class SilvercartProductAttributeFilterWidget_Controller extends SilvercartWidget
      * @var string
      */
     protected $formAction = null;
+    
+    /**
+     * Product list
+     *
+     * @var DataObjectSet
+     */
+    protected $products = null;
 
     /**
      * Initializes the widget controller
@@ -176,13 +183,7 @@ class SilvercartProductAttributeFilterWidget_Controller extends SilvercartWidget
             !Controller::curr()->isProductDetailView()) {
             $this->setFormAction(Controller::curr()->Link() . 'SilvercartProductAttributeFilter');
             $attributes = new DataObjectSet();
-            if ($this->FilterBehaviour == 'MultipleChoice') {
-                $products = Controller::curr()->getUnfilteredProducts(false, false, true);
-                $products->merge(Controller::curr()->getInjectedProducts());
-            } else {
-                $products = Controller::curr()->getProducts(false, false, true);
-                $products->merge(Controller::curr()->getInjectedProducts());
-            }
+            $products   = $this->getProducts();
             if ($products &&
                 $products->Count() > 0) {
                 $productIDs = implode(',', $products->map('ID','ID'));
@@ -308,5 +309,63 @@ class SilvercartProductAttributeFilterWidget_Controller extends SilvercartWidget
      */
     public function setFormAction($formAction) {
         $this->formAction = $formAction;
+    }
+
+    /**
+     * Returns all filter relevant products
+     *
+     * @return DataObjectSet
+     */
+    public function getProducts() {
+        if (is_null($this->products)) {
+            $products = new DataObjectSet();
+            if ($this->FilterBehaviour == 'MultipleChoice') {
+                $products = Controller::curr()->getUnfilteredProducts(false, false, true);
+                $products->merge(Controller::curr()->getInjectedProducts());
+            } else {
+                $products = Controller::curr()->getProducts(false, false, true);
+                $products->merge(Controller::curr()->getInjectedProducts());
+            }
+            $this->products = $products;
+        }
+        return $this->products;
+    }
+
+    /**
+     * Creates the cache key for this widget.
+     *
+     * @return string
+     *
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 03.07.2012
+     */
+    public function WidgetCacheKey() {
+        $key        = '';
+        $products   = $this->getProducts();
+        $attributes = $this->getAttributes();
+        
+        if ($products->Count() > 0) {
+            $productMap             = $products->map('ID', 'LastEdited');
+            $productMapIDs          = implode('-', array_keys($productMap));
+            sort($productMap);
+            $productMapLastEdited   = array_pop($productMap);
+            $attributesMapIDs       = '';
+            
+            if ($attributes->Count() > 0) {
+                $attributesMap      = $attributes->map('ID', 'ID');
+                $attributesMapIDs   = implode('-', $attributesMap);
+            }
+            
+            $keyParts = array(
+                i18n::get_locale(),
+                $productMapIDs,
+                $productMapLastEdited,
+                $this->LastEdited,
+                $attributesMapIDs,
+            );
+
+            $key = implode('_', $keyParts);
+        }
+        return $key;
     }
 }
