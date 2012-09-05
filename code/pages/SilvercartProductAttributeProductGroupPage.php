@@ -176,8 +176,17 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
      * @return void
      */
     public function setFilterValues($filterValues) {
-        Session::set('SilvercartProductAttributeFilterPlugin.' . $this->getSessionKey(), $filterValues);
+        $uniqueFilterValues = array_unique((array) $filterValues);
+        if (count($uniqueFilterValues) == 1 &&
+            array_key_exists(0, $uniqueFilterValues) &&
+            empty($uniqueFilterValues[0])) {
+            $uniqueFilterValues = array();
+        }
+        Session::set('SilvercartProductAttributeFilterPlugin.' . $this->getSessionKey(), $uniqueFilterValues);
         Session::save();
+        if (empty($uniqueFilterValues)) {
+            $this->clearFilter($this->getSessionKey());
+        }
         $this->filterValues = $filterValues;
     }
     
