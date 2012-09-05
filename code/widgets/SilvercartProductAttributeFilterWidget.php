@@ -242,12 +242,24 @@ class SilvercartProductAttributeFilterWidget_Controller extends SilvercartWidget
                             $attribute = $attributes->find('ID', $attributeID);
                             if ($attribute) {
                                 $attribute->assignValues($groupedAttributeValues);
-                                if (!$attribute->hasAssignedValues()) {
+                                if (!$attribute->hasAssignedValues() ||
+                                    ($attribute->getAssignedValues()->Count() == 1 &&
+                                    !$attribute->getAssignedValues()->First()->IsFilterValue())) {
                                     $attributes->remove($attribute);
                                 }
                             }
                         }
                     }
+                }
+            }
+            if ($attributes instanceof DataObjectSet) {
+                $groupedAttributes = $attributes->groupBy('HasSelectedValues');
+                krsort($groupedAttributes);
+                $attributes = new DataObjectSet();
+                foreach ($groupedAttributes as $groupedAttribute) {
+                    $groupedAttribute->sort('Title DESC');
+                    $groupedAttribute->sort('Title ASC');
+                    $attributes->merge($groupedAttribute);
                 }
             }
             $this->setAttributes($attributes);

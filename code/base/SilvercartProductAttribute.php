@@ -47,6 +47,7 @@ class SilvercartProductAttribute extends DataObject {
         'Title'                                     => 'Text',
         'SilvercartProductAttributeSetsAsString'    => 'Text',
         'SilvercartProductAttributeValuesAsString'  => 'Text',
+        'HasSelectedValues'                         => 'Boolean'
     );
     
     public static $default_sort = "`SilvercartProductAttributeLanguage`.`Title`";
@@ -279,6 +280,25 @@ class SilvercartProductAttribute extends DataObject {
      */
     public function setUnAssignedValues($unAssignedValues) {
         $this->unAssignedValues = $unAssignedValues;
+    }
+    
+    /**
+     * Returns whether this attribute has a selected value or not
+     * 
+     * @return boolean
+     */
+    public function getHasSelectedValues() {
+        $hasSelectedValues  = false;
+        $assignedValues     = $this->getAssignedValues();
+        if (!is_null($assignedValues)) {
+            foreach ($assignedValues as $assignedValue) {
+                if ($assignedValue->IsFilterValue()) {
+                    $hasSelectedValues = true;
+                    break;
+                }
+            }
+        }
+        return $hasSelectedValues;
     }
     
 }
