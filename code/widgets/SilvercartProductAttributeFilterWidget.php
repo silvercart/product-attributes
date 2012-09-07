@@ -168,6 +168,13 @@ class SilvercartProductAttributeFilterWidget_Controller extends SilvercartWidget
      * @var DataObjectSet
      */
     protected $products = null;
+    
+    /**
+     * ProductGroup Controller
+     *
+     * @var SilvercartProductGroupPage_Controller 
+     */
+    protected $productGroup = null;
 
     /**
      * Initializes the widget controller
@@ -344,6 +351,22 @@ class SilvercartProductAttributeFilterWidget_Controller extends SilvercartWidget
     }
 
     /**
+     * Returns the controller of the current product group
+     *
+     * @return SilvercartProductGroupPage_Controller
+     */
+    public function getProductGroup() {
+        if (is_null($this->productGroup)) {
+            $productGroup = Controller::curr();
+            if (!$productGroup instanceof SilvercartProductGroupPage_Controller) {
+                $productGroup = new SilvercartProductGroupPage_Controller();
+            }
+            $this->productGroup = $productGroup;
+        }
+        return $this->productGroup;
+    }
+
+    /**
      * Creates the cache key for this widget.
      *
      * @return string
@@ -362,6 +385,7 @@ class SilvercartProductAttributeFilterWidget_Controller extends SilvercartWidget
             sort($productMap);
             $productMapLastEdited   = array_pop($productMap);
             $attributesMapIDs       = '';
+            $filterValueMapIDs      = $this->getProductGroup()->getFilterValueList();
             
             if ($attributes->Count() > 0) {
                 $attributesMap      = $attributes->map('ID', 'ID');
@@ -374,6 +398,7 @@ class SilvercartProductAttributeFilterWidget_Controller extends SilvercartWidget
                 $productMapLastEdited,
                 $this->LastEdited,
                 $attributesMapIDs,
+                $filterValueMapIDs,
             );
 
             $key = implode('_', $keyParts);

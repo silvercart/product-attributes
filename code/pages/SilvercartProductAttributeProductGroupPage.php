@@ -187,7 +187,7 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
         if (empty($uniqueFilterValues)) {
             $this->clearFilter($this->getSessionKey());
         }
-        $this->filterValues = $filterValues;
+        $this->filterValues = $uniqueFilterValues;
     }
     
     /**
