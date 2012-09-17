@@ -33,27 +33,68 @@
  */
 class SilvercartProductAttribute extends DataObject {
     
+    /**
+     * DB attributes
+     *
+     * @var array
+     */
+    public static $db = array(
+        'CanBeUsedForVariants' => 'Boolean',
+    );
+
+    /**
+     * has-many relations
+     *
+     * @var array
+     */
     public static $has_many = array(
         'SilvercartProductAttributeLanguages'   => 'SilvercartProductAttributeLanguage',
         'SilvercartProductAttributeValues'      => 'SilvercartProductAttributeValue',
     );
     
+    /**
+     * belongs-many-many relations
+     *
+     * @var array
+     */
     public static $belongs_many_many = array(
         'SilvercartProducts'                => 'SilvercartProduct',
         'SilvercartProductAttributeSets'    => 'SilvercartProductAttributeSet',
     );
 
+    /**
+     * Castings
+     *
+     * @var array
+     */
     public static $casting = array(
         'Title'                                     => 'Text',
+        'PluralTitle'                               => 'Text',
         'SilvercartProductAttributeSetsAsString'    => 'Text',
         'SilvercartProductAttributeValuesAsString'  => 'Text',
-        'HasSelectedValues'                         => 'Boolean'
+        'HasSelectedValues'                         => 'Boolean',
+        'CanBeUsedForVariantsString'                => 'Text',
     );
     
-    public static $default_sort = "`SilvercartProductAttributeLanguage`.`Title`";
+    /**
+     * Default sort fields and directions
+     *
+     * @var string
+     */
+    public static $default_sort = "`SilvercartProductAttribute`.`CanBeUsedForVariants` DESC, `SilvercartProductAttributeLanguage`.`Title`";
     
+    /**
+     * Assigned values
+     *
+     * @var DataObjectSet
+     */
     protected $assignedValues = null;
     
+    /**
+     * Unassigned values
+     *
+     * @var DataObjectSet
+     */
     protected $unAssignedValues = null;
     
     /**
@@ -66,6 +107,23 @@ class SilvercartProductAttribute extends DataObject {
      */
     public function getTitle() {
         return $this->getLanguageFieldValue('Title');
+    }
+    
+    /**
+     * Returns the translated plural title
+     *
+     * @return string
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 14.09.2012
+     */
+    public function getPluralTitle() {
+        $pluralTitle = $this->getLanguageFieldValue('PluralTitle');
+        if (empty($pluralTitle)) {
+            // fall back to title
+            $pluralTitle = $this->getTitle();
+        }
+        return $pluralTitle;
     }
 
     /**
@@ -82,7 +140,9 @@ class SilvercartProductAttribute extends DataObject {
         $fieldLabels = array_merge(
             parent::fieldLabels($includerelations),
             array(
+                'CanBeUsedForVariants'                  => _t('SilvercartProductAttribute.CAN_BE_USED_FOR_VARIANTS'),
                 'Title'                                 => _t('SilvercartProductAttribute.TITLE'),
+                'PluralTitle'                           => _t('SilvercartProductAttribute.PLURALTITLE'),
                 'SilvercartProductAttributeLanguages'   => _t('SilvercartProductAttributeLanguage.PLURALNAME'),
                 'SilvercartProductAttributeValues'      => _t('SilvercartProductAttributeValue.PLURALNAME'),
                 'SilvercartProducts'                    => _t('SilvercartProduct.PLURALNAME'),
@@ -141,6 +201,10 @@ class SilvercartProductAttribute extends DataObject {
                 'title'     => $this->fieldLabel('Title'),
                 'filter'    => 'PartialMatchFilter'
             ),
+            'CanBeUsedForVariants' => array(
+                'title'     => $this->fieldLabel('CanBeUsedForVariants'),
+                'filter'    => 'ExactMatchFilter'
+            ),
         );
         $this->extend('updateSearchableFields', $searchableFields);
         return $searchableFields;
@@ -170,6 +234,8 @@ class SilvercartProductAttribute extends DataObject {
     public function summaryFields() {
         $summaryFields = array(
             'Title'                                     => $this->fieldLabel('Title'),
+            'PluralTitle'                               => $this->fieldLabel('PluralTitle'),
+            'CanBeUsedForVariantsString'                => $this->fieldLabel('CanBeUsedForVariants'),
             'SilvercartProductAttributeValuesAsString'  => $this->fieldLabel('SilvercartProductAttributeValues'),
         );
         
@@ -198,6 +264,20 @@ class SilvercartProductAttribute extends DataObject {
         $silvercartProductAttributeValuesAsString   = implode(', ', $silvercartProductAttributeValuesArray);
         $silvercartProductAttributeValuesAsString   = stripslashes($silvercartProductAttributeValuesAsString);
         return $silvercartProductAttributeValuesAsString;
+    }
+    
+    /**
+     * Returns a string to determine whether the attribute can be used for 
+     * variants
+     *
+     * @return string
+     */
+    public function getCanBeUsedForVariantsString() {
+        $CanBeUsedForVariants = _t('Boolean.NO');
+        if ($this->CanBeUsedForVariants) {
+            $CanBeUsedForVariants = _t('Boolean.YES');
+        }
+        return $CanBeUsedForVariants;
     }
     
     /**

@@ -39,7 +39,8 @@ class SilvercartProductAttributeLanguage extends DataObject {
      * @var array
      */
     public static $db = array(
-        'Title' => 'VarChar(64)'
+        'Title'         => 'VarChar(64)',
+        'PluralTitle'   => 'VarChar(64)',
     );
     
     /**
@@ -92,7 +93,8 @@ class SilvercartProductAttributeLanguage extends DataObject {
         $fieldLabels = array_merge(
             parent::fieldLabels($includerelations),
             array(
-                'Title' => _t('SilvercartProductAttribute.TITLE'),
+                'Title'         => _t('SilvercartProductAttribute.TITLE'),
+                'PluralTitle'   => _t('SilvercartProductAttribute.PLURALTITLE'),
             )
         );
 

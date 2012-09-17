@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with SilverCart.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package SilvercartProduct
+ * @package SilvercartProductAttributes
  * @subpackage FormFields
  */
 
@@ -25,7 +25,7 @@
  * A formfield that displays a list of product attributes and provides buttons
  * to easily add and remove attributes.
  *
- * @package SilvercartProduct
+ * @package SilvercartProductAttributes
  * @subpackage FormFields
  * @copyright pixeltricks GmbH
  * @author Sebastian Diel <sdiel@pixeltricks.de>

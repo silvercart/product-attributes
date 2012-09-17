@@ -37,8 +37,13 @@ if (array_key_exists('de_DE', $lang) && is_array($lang['de_DE'])) {
 $lang['de_DE']['SilvercartProductAttribute']['PLURALNAME']                      = 'Artikelmerkmale';
 $lang['de_DE']['SilvercartProductAttribute']['SINGULARNAME']                    = 'Artikelmerkmal';
 
+$lang['de_DE']['SilvercartProductAttribute']['CAN_BE_USED_FOR_VARIANTS']        = 'Kann für Varianten verwendet werden';
 $lang['de_DE']['SilvercartProductAttribute']['TABNAME']                         = 'Merkmale';
 $lang['de_DE']['SilvercartProductAttribute']['TITLE']                           = 'Name';
+$lang['de_DE']['SilvercartProductAttribute']['PLURALTITLE']                     = 'Pluralname';
+$lang['de_DE']['SilvercartProductAttribute']['AVAILABLE_VARIANT']               = 'verfügbare %s';
+
+$lang['de_DE']['SilvercartProductAttributeAddCartForm']['HEADLINE']             = 'Auswahlmöglichkeiten';
 
 $lang['de_DE']['SilvercartProductAttributeSet']['PLURALNAME']                   = 'Artikelmerkmal-Sets';
 $lang['de_DE']['SilvercartProductAttributeSet']['SINGULARNAME']                 = 'Artikelmerkmal-Set';
@@ -52,8 +57,10 @@ $lang['de_DE']['SilvercartProductAttributeValue']['SINGULARNAME']               
 $lang['de_DE']['SilvercartProductAttributeValue']['TABNAME']                    = 'Werte';
 $lang['de_DE']['SilvercartProductAttributeValue']['TITLE']                      = 'Name';
 
+$lang['de_DE']['SilvercartProductAttributeProduct']['MASTER_PRODUCT']           = 'Dieses Produkt ist eine Variante des Artikels mit der Artikelnummer';
 $lang['de_DE']['SilvercartProductAttributeProduct']['PRODUCT_ATTRIBUTES']       = 'Merkmale';
 $lang['de_DE']['SilvercartProductAttributeProduct']['PRODUCT_ATTRIBUTE_VALUES'] = 'Wert';
+$lang['de_DE']['SilvercartProductAttributeProduct']['SLAVE_PRODUCTS']           = 'Dieses Produkt hat folgende Varianten:';
 
 $lang['de_DE']['SilvercartProductAttributeTableListField']['ACTIVATE_ALL_LABEL']            = 'Alle aktivieren';
 $lang['de_DE']['SilvercartProductAttributeTableListField']['ASSIGN_LABEL']                  = 'Zuweisen';
@@ -101,3 +108,5 @@ $lang['de_DE']['SilvercartProductAttributeSetLanguage']['SINGULARNAME']         
 
 $lang['de_DE']['SilvercartProductAttributeValueLanguage']['PLURALNAME']         = _t('Silvercart.TRANSLATIONS');
 $lang['de_DE']['SilvercartProductAttributeValueLanguage']['SINGULARNAME']       = _t('Silvercart.TRANSLATION');
+
+$lang['de_DE']['SilvercartProductAttributeOrderDetailPage']['VARIANT_HEADLINE'] = 'Variante';

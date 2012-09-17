@@ -45,6 +45,7 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
         'ClearSilvercartProductAttributeFilter',
         'SilvercartProductAttributeFilter',
         'ClearSilvercartProductAttributePriceFilter',
+        'LoadVariant',
     );
     
     /**
@@ -138,6 +139,38 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
         Session::clear('SilvercartProductAttributePriceRangeForm.MinPrice.' . $this->getSessionKey());
         Session::clear('SilvercartProductAttributePriceRangeForm.MaxPrice.' . $this->getSessionKey());
         Director::redirectBack();
+    }
+    
+    /**
+     * Action to load the variant with the given parameters
+     *
+     * @param SS_HTTPRequest $request Request
+     * 
+     * @return void
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 12.09.2012 
+     */
+    public function LoadVariant(SS_HTTPRequest $request) {
+        $owner      = $this->owner;
+        $redirectTo = $owner->Link();
+        if ($owner->isProductDetailView()) {
+            $product            = $owner->getDetailViewProduct();
+            $variantAttributes  = $request->postVar('SilvercartProductAttributeValue');
+            if (is_array($variantAttributes)) {
+                foreach ($variantAttributes as $key => $value) {
+                    if (empty($value) ||
+                        !is_numeric($value)) {
+                        unset($variantAttributes[$key]);
+                    }
+                }
+                $variant = $product->getVariantBy($variantAttributes);
+                if ($variant) {
+                    $redirectTo = $variant->Link();
+                }
+            }
+        }
+        Director::redirect(Director::absoluteURL($redirectTo));
     }
     
     /**

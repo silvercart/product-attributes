@@ -1,0 +1,34 @@
+
+.silvercart-widget .silvercart-product-attribute-variant-list-title {
+    border-right: 1px solid #EEEEEE;
+}
+.silvercart-widget .silvercart-product-attribute-variant-list ul {
+    margin: 0;
+    padding: 0;
+}
+.silvercart-widget .silvercart-product-attribute-variant-list ul li {
+    border-bottom: 1px solid #EEEEEE;
+    margin: 0;
+    padding: 2px 0 0;
+}
+.silvercart-widget .silvercart-product-attribute-variant-list ul li:last-child {
+    border-bottom: medium none;
+}
+.silvercart-widget .silvercart-product-attribute-variant-list ul li span {
+    color: #666666;
+}
+.silvercart-shopping-cart-full .silvercart-product-attribute-variant-list .silvercart-product-attribute-variant-list-title ul {
+    margin: 0;
+    padding: 0;
+}
+.silvercart-shopping-cart-full .silvercart-product-attribute-variant-list .silvercart-product-attribute-variant-list-title ul li {
+    border-bottom: 1px solid #EEEEEE;
+    margin: 0;
+    padding: 2px 0 0;
+}
+.silvercart-shopping-cart-full .silvercart-product-attribute-variant-list .silvercart-product-attribute-variant-list-title ul li:last-child {
+    border-bottom: medium none;
+}
+.silvercart-shopping-cart-full .silvercart-product-attribute-variant-list .silvercart-product-attribute-variant-list-title ul li span {
+    color: #666666;
+}

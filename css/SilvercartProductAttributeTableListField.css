@@ -59,6 +59,9 @@ tr.inactive .silvercart-fieldmodifier-editarea {
 .attributeTableSwitch a.closed {
     background:                     url("/silvercart_product_attributes/images/button_closed.png") 4px center no-repeat;
 }
+.attributeTableSwitch a.canbeusedforvariants {
+    background-color:               #bce398;
+}
 .attributeTableSwitchActions {
     position:                       absolute;
     right:                          0px;

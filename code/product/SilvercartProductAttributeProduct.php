@@ -32,6 +32,13 @@
  * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License
  */
 class SilvercartProductAttributeProduct extends DataObjectDecorator {
+
+    /**
+     * Set of variants related with this product
+     *
+     * @var DataObjectSet 
+     */
+    protected $variants = null;
     
     /**
      * Adds som extra data model fields
@@ -61,12 +68,35 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
      * @since 16.03.2012
      */
     public function updateCMSFields(FieldSet &$fields) {
-        if ($this->owner->ID > 0) {
+        $owner  = $this->owner;
+        if ($owner->ID > 0) {
             $fields->removeByName('SilvercartProductAttributes');
             $fields->removeByName('SilvercartProductAttributeValues');
             $fields->findOrMakeTab('Root.SilvercartProductAttributes', _t('SilvercartProductAttribute.TABNAME'));
-            $attributeField = new SilvercartProductAttributeTableListField($this->owner, 'SilvercartProductAttributes');
+            $attributeField = new SilvercartProductAttributeTableListField($owner, 'SilvercartProductAttributes');
             $fields->addFieldToTab('Root.SilvercartProductAttributes', $attributeField);
+            
+            if ($this->CanBeUsedAsVariant()) {
+                if ($this->hasVariants()) {
+                    $slaveProductsLabel = new HeaderField('SilvercartSlaveProductsLabel', $owner->fieldLabel('SilvercartSlaveProducts'));
+                    $slaveProductsField = new SilvercartProductAttributeVariantTableListField(
+                            $this->owner,
+                            'SilvercartSlaveProducts'
+                    );
+                    $slaveProductsField->setPermissions(array());
+                    $fields->addFieldToTab('Root.SilvercartProductAttributes', $slaveProductsLabel);
+                    $fields->addFieldToTab('Root.SilvercartProductAttributes', $slaveProductsField);
+                }
+                if ($this->isSlaveProduct()) {
+                    $masterProductField = new SilvercartTextAutoCompleteField(
+                            $owner,
+                            'SilvercartMasterProductID',
+                            $owner->fieldLabel('SilvercartMasterProduct'),
+                            'SilvercartProduct.ProductNumberShop'
+                    );
+                    $fields->addFieldToTab('Root.SilvercartProductAttributes', $masterProductField);
+                }
+            }
         }
     }
     
@@ -84,10 +114,386 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
         $labels = array_merge(
                 $labels,
                 array(
+                    'SilvercartMasterProduct'           => _t('SilvercartProductAttributeProduct.MASTER_PRODUCT'),
                     'SilvercartProductAttributes'       => _t('SilvercartProductAttributeProduct.PRODUCT_ATTRIBUTES'),
                     'SilvercartProductAttributeValues'  => _t('SilvercartProductAttributeProduct.PRODUCT_ATTRIBUTE_VALUES'),
+                    'SilvercartSlaveProducts'           => _t('SilvercartProductAttributeProduct.SLAVE_PRODUCTS'),
                 )
         );
+    }
+    
+    /**
+     * Inherits the short description of the master product if not set
+     * 
+     * @param string &$shortDescription Original short description
+     * 
+     * @return void
+     *
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 12.09.2012
+     */
+    public function updateShortDescription(&$shortDescription) {
+        if (empty($shortDescription) &&
+            $this->isSlaveProduct()) {
+            $shortDescription = $this->owner->SilvercartMasterProduct()->ShortDescription;
+        }
+    }
+    
+    /**
+     * Inherits the long description of the master product if not set
+     * 
+     * @param string &$longDescription Original long description
+     * 
+     * @return void
+     *
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 12.09.2012
+     */
+    public function updateLongDescription(&$longDescription) {
+        if (empty($longDescription) &&
+            $this->isSlaveProduct()) {
+            $longDescription = $this->owner->SilvercartMasterProduct()->LongDescription;
+        }
+    }
+
+    /**
+     * Returns the products attributed values for the given attribute
+     * 
+     * @param SilvercartProductAttribute $attribute Attribute to get values for
+     * 
+     * @return DataObjectSet
+     */
+    public function getAttributedValuesFor($attribute) {
+        $assignedValues = array();
+        foreach ($attribute->SilvercartProductAttributeValues() as $value) {
+            if ($this->owner->SilvercartProductAttributeValues()->find('ID', $value->ID)) {
+                $assignedValues[] = $value;
+            }
+        }
+        $attributedValues = new DataObjectSet($assignedValues);
+        return $attributedValues;
+    }
+
+    /**
+     * Returns whether this product has variants or not
+     * 
+     * @return boolean
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 12.09.2012
+     */
+    public function hasVariants() {
+        $hasVariants    = false;
+        $variants       = $this->getVariants();
+        if (!is_null($variants) &&
+            $variants->Count() > 0) {
+            $hasVariants = true;
+        }
+        return $hasVariants;
+    }
+    
+    /**
+     * Returns the variants for the given Attribute ID
+     * 
+     * @param int $attributeID Attribute ID to get variants for
+     * 
+     * @return DataObjectSet
+     */
+    public function getVariantsFor($attributeID) {
+        $matchedVariants            = new DataObjectSet();
+        $matchingAttributeValues    = new DataObjectSet();
+        $variants                   = $this->getVariants();
+        $variantAttributes          = $this->getVariantAttributes();
+        $variantAttributes->remove($variantAttributes->find('ID', $attributeID));
+        foreach ($variantAttributes as $variantAttribute) {
+            $matchingAttributeValues->merge($this->owner->getAttributedValuesFor($variantAttribute));
+        }
+        
+        foreach ($variants as $variant) {
+            if ($variant->SilvercartProductAttributes()->find('ID', $attributeID)) {
+                $attributeValueMatches = array();
+                foreach ($matchingAttributeValues as $matchingAttributeValue) {
+                    if ($variant->SilvercartProductAttributeValues()->find('ID', $matchingAttributeValue->ID)) {
+                        $attributeValueMatches[] = true;
+                    }
+                }
+                if (count($attributeValueMatches) >= count($matchingAttributeValues)) {
+                    $matchedVariants->push($variant);
+                }
+            }
+        }
+        return $matchedVariants;
+    }
+    
+    /**
+     * Returns the products variant matching with the given attribute value IDs
+     * 
+     * @param array $attributeValueIDs IDs of the attribute values to match against
+     * 
+     * @return SilvercartProduct
+     */
+    public function getVariantBy($attributeValueIDs) {
+        $matchedVariant = null;
+        $variants       = $this->getVariants();
+        foreach ($variants as $variant) {
+            $matched = array();
+            foreach ($attributeValueIDs as $attributeValueID) {
+                if ($variant->SilvercartProductAttributeValues()->find('ID', $attributeValueID)) {
+                    $matched[] = true;
+                }
+            }
+            if (count($matched) == count($attributeValueIDs)) {
+                $matchedVariant = $variant;
+                break;
+            }
+        }
+        return $matchedVariant;
+    }
+    
+    /**
+     * Returns the product attributes which can be used for variants
+     * 
+     * @return DataObjectSet
+     */
+    public function getVariantAttributes() {
+        $variantAttributes  = new DataObjectSet();
+        $attributes         = $this->owner->SilvercartProductAttributes();
+        $groupedAttributes  = $attributes->groupBy('CanBeUsedForVariants');
+        if (array_key_exists(1, $groupedAttributes)) {
+            $variantAttributes = $groupedAttributes[1];
+        }
+        return $variantAttributes;
+    }
+    
+    /**
+     * Returns the product attributes which can be used for variants
+     * 
+     * @return DataObjectSet
+     */
+    public function getVariantAttributeValues() {
+        $variantAttributeValues = new DataObjectSet();
+        $variantAttributes      = $this->getVariantAttributes();
+        foreach ($variantAttributes as $variantAttribute) {
+            $variantAttributeValue = $this->owner->SilvercartProductAttributeValues()->find('SilvercartProductAttributeID', $variantAttribute->ID);
+            if ($variantAttributeValue) {
+                $variantAttributeValues->push($variantAttributeValue);
+            }
+        }
+        return $variantAttributeValues;
+    }
+
+    /**
+     * Returns the variants of this product
+     * 
+     * @return DataObjectSet
+     */
+    public function getVariants() {
+        if (is_null($this->variants) &&
+            $this->isVariant()) {
+            if ($this->isSlaveProduct()) {
+                $master = $this->owner->SilvercartMasterProduct();
+            } else {
+                $master = $this->owner;
+            }
+            $variants = $master->getSlaveProducts();
+            if ($this->isSlaveProduct()) {
+                $variants->remove($variants->find('ID', $this->owner->ID));
+                $variants->push($master);
+                $variants->removeDuplicates();
+            }
+            $groupedVariants = $variants->groupBy('isActive');
+            if (array_key_exists(1, $groupedVariants)) {
+                $this->variants = $groupedVariants[1];
+            }
+        }
+        return $this->variants;
+    }
+    
+    /**
+     * Sets the variants for this product
+     * 
+     * @param DataObjectSet $variants Variants to use
+     * 
+     * @return void
+     */
+    public function setVariants($variants) {
+        $this->variants = $variants;
+    }
+
+
+    /**
+     * Returns whether this product is a variant of another product
+     * 
+     * @return boolean
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 12.09.2012
+     */
+    public function isVariant() {
+        $isVariant = false;
+        if ($this->CanBeUsedAsVariant() &&
+            ($this->isMasterProduct() ||
+             $this->isSlaveProduct())) {
+            $isVariant = true;
+        }
+        return $isVariant;
+    }
+
+        /**
+     * Returns whether this product can be used as variant or not
+     * 
+     * @return boolean
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 12.09.2012
+     */
+    public function CanBeUsedAsVariant() {
+        $canBeUsedAsVariant         = false;
+        $owner                      = $this->owner;
+        $productAttributes          = $owner->SilvercartProductAttributes();
+        $groupedProductAttributes   = $productAttributes->groupBy('CanBeUsedForVariants');
+        if (array_key_exists(1, $groupedProductAttributes)) {
+            $canBeUsedAsVariant = true;
+        }
+        return $canBeUsedAsVariant;
+    }
+
+
+    /**
+     * Returns this products slave products if exists
+     * 
+     * @return DataObjectSet
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 12.09.2012
+     */
+    public function getSlaveProducts() {
+        $owner  = $this->owner;
+        $slaves = DataObject::get(
+                'SilvercartProduct',
+                sprintf(
+                        "`SilvercartMasterProductID` = '%s'",
+                        $owner->ID
+                )
+        );
+        return $slaves;
+    }
+    
+    /**
+     * Returns whether this is a master product or not
+     * 
+     * @return boolean
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 12.09.2012
+     */
+    public function isMasterProduct() {
+        $isMasterProduct    = false;
+        $slaves             = $this->getSlaveProducts();
+        if ($slaves &&
+            $slaves->Count() > 0) {
+            $isMasterProduct = true;
+        }
+        return $isMasterProduct;
+    }
+    
+    /**
+     * Returns whether this is a slave product or not
+     * 
+     * @return boolean
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 12.09.2012
+     */
+    public function isSlaveProduct() {
+        $isSlaveProduct = false;
+        $owner          = $this->owner;
+        if ($owner->SilvercartMasterProductID > 0) {
+            $isSlaveProduct = true;
+        }
+        return $isSlaveProduct;
+    }
+    
+    /**
+     * Returns the form fields for the choice of a products variant to use with 
+     * CustomHtmlForm
+     * 
+     * @return array
+     */
+    public function getVariantFormFields() {
+        $product    = $this->owner;
+        $fieldGroup = array();
+        if ($product->hasVariants()) {
+            $attributes         = $product->getVariantAttributes();
+            $fieldModifierNotes = array();
+
+            foreach ($attributes as $attribute) {
+                $values         = array();
+                $selectedValue  = 0;
+                $variants       = $product->getVariantsFor($attribute->ID);
+
+                $attributedValues = $product->getAttributedValuesFor($attribute);
+                if ($attributedValues->Count() > 0) {
+                    $selectedValue  = $attributedValues->First()->ID;
+                }
+                
+                foreach ($variants as $variant) {
+                    $addition = '';
+                    if ($variant->getPrice()->getAmount() > $product->getPrice()->getAmount()) {
+                        $additionMoney = new Money();
+                        $additionMoney->setAmount($variant->getPrice()->getAmount() - $product->getPrice()->getAmount());
+                        $additionMoney->setCurrency($product->getPrice()->getCurrency());
+                        $addition = '+' . $additionMoney->Nice();
+                    } elseif ($variant->getPrice()->getAmount() < $product->getPrice()->getAmount()) {
+                        $additionMoney = new Money();
+                        $additionMoney->setAmount($product->getPrice()->getAmount() - $variant->getPrice()->getAmount());
+                        $additionMoney->setCurrency($product->getPrice()->getCurrency());
+                        $addition = '-' . $additionMoney->Nice();
+                    }
+                    $attributedValues->merge($variant->getAttributedValuesFor($attribute));
+                    $variantMap = $variant->getAttributedValuesFor($attribute)->map('ID','ID');
+                    foreach ($variantMap as $ID) {
+                        if ($ID != $selectedValue) {
+                            $fieldModifierNotes[$ID] = $addition;
+                        }
+                    }
+                }
+
+                foreach ($attributedValues as $attributedValue) {
+                    $attributeName      = $attributedValue->Title;
+                    $fieldModifierNote  = '';
+                    if (array_key_exists($attributedValue->ID, $fieldModifierNotes)) {
+                        $fieldModifierNote = $fieldModifierNotes[$attributedValue->ID];
+                    }
+
+                    if (!empty($fieldModifierNote)) {
+                        $attributeName .= ' (' . $fieldModifierNote . ')';
+                    }
+
+                    $values[$attributedValue->ID] = $attributeName;
+                }
+
+                if (count($values) > 1) {
+                    $fieldType = 'SilvercartProductAttributeDropdownField';
+
+                    if (!empty($attribute->useCustomFormField)) {
+                        $fieldType = $attribute->useCustomFormField;
+                    }
+
+                    $checkRequirements = array();
+
+                    $fieldGroup['SilvercartProductAttribute' . $attribute->ID] = array(
+                        'type'              => $fieldType,
+                        'title'             => $attribute->Title,
+                        'value'             => $values,
+                        'selectedValue'     => $selectedValue,
+                        'silvercartProduct' => $product,
+                        'checkRequirements' => $checkRequirements
+                    );
+                }
+            }
+        }
+        return $fieldGroup;
     }
     
 }

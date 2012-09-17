@@ -37,8 +37,13 @@ global $lang;
 $lang['en_US']['SilvercartProductAttribute']['PLURALNAME']                      = 'Product Attributes';
 $lang['en_US']['SilvercartProductAttribute']['SINGULARNAME']                    = 'Product Attribute';
 
+$lang['en_US']['SilvercartProductAttribute']['CAN_BE_USED_FOR_VARIANTS']        = 'Can be used for variants';
 $lang['en_US']['SilvercartProductAttribute']['TABNAME']                         = 'Attributes';
 $lang['en_US']['SilvercartProductAttribute']['TITLE']                           = 'Title';
+$lang['en_US']['SilvercartProductAttribute']['PLURALTITLE']                     = 'Plural title';
+$lang['en_US']['SilvercartProductAttribute']['AVAILABLE_VARIANT']               = 'available %s';
+
+$lang['en_US']['SilvercartProductAttributeAddCartForm']['HEADLINE']             = 'Variants';
 
 $lang['en_US']['SilvercartProductAttributeSet']['PLURALNAME']                   = 'Product Attribute Sets';
 $lang['en_US']['SilvercartProductAttributeSet']['SINGULARNAME']                 = 'Product Attribute Set';
@@ -52,8 +57,10 @@ $lang['en_US']['SilvercartProductAttributeValue']['SINGULARNAME']               
 $lang['en_US']['SilvercartProductAttributeValue']['TABNAME']                    = 'Values';
 $lang['en_US']['SilvercartProductAttributeValue']['TITLE']                      = 'Title';
 
+$lang['en_US']['SilvercartProductAttributeProduct']['MASTER_PRODUCT']           = 'This product is a variant of the product with the following product number';
 $lang['en_US']['SilvercartProductAttributeProduct']['PRODUCT_ATTRIBUTES']       = 'Attribute';
 $lang['en_US']['SilvercartProductAttributeProduct']['PRODUCT_ATTRIBUTE_VALUES'] = 'Value';
+$lang['en_US']['SilvercartProductAttributeProduct']['SLAVE_PRODUCTS']           = 'This product has the following variants:';
 
 $lang['en_US']['SilvercartProductAttributeTableListField']['ACTIVATE_ALL_LABEL']            = 'Activate all';
 $lang['en_US']['SilvercartProductAttributeTableListField']['ASSIGN_LABEL']                  = 'Assign';
@@ -101,3 +108,5 @@ $lang['en_US']['SilvercartProductAttributeSetLanguage']['SINGULARNAME']         
 
 $lang['en_US']['SilvercartProductAttributeValueLanguage']['PLURALNAME']         = _t('Silvercart.TRANSLATIONS');
 $lang['en_US']['SilvercartProductAttributeValueLanguage']['SINGULARNAME']       = _t('Silvercart.TRANSLATION');
+
+$lang['en_US']['SilvercartProductAttributeOrderDetailPage']['VARIANT_HEADLINE'] = 'Variant';

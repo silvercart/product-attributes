@@ -20,7 +20,11 @@
         <% if AttributedAttributes %>
             <% control AttributedAttributes %>
                 <div class="attributeTableSwitch" id="attributeTableSwitch{$ID}">
+                    <% if CanBeUsedForVariants %>
+                    <a href="#" rel="$ID" class="closed canbeusedforvariants"><strong>$Title</strong> <i>(<% _t('SilvercartProductAttribute.CAN_BE_USED_FOR_VARIANTS') %>)</i></a>
+                    <% else %>
                     <a href="#" rel="$ID" class="closed"><strong>$Title</strong></a>
+                    <% end_if %>
                     <div class="attributeTableSwitchActions">
                         <input type="submit" name="action_doSPAPRemoveAssignedAttribute" rel="$ID" value="<% _t('SilvercartProductAttributeTableListField.REMOVE_LABEL') %>" />
                     </div>
