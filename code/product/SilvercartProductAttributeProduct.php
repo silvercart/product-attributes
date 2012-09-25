@@ -87,7 +87,7 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
                     $fields->addFieldToTab('Root.SilvercartProductAttributes', $slaveProductsLabel);
                     $fields->addFieldToTab('Root.SilvercartProductAttributes', $slaveProductsField);
                 }
-                if ($this->isSlaveProduct()) {
+                if (!$this->isMasterProduct()) {
                     $masterProductField = new SilvercartTextAutoCompleteField(
                             $owner,
                             'SilvercartMasterProductID',
