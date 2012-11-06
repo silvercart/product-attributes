@@ -109,4 +109,6 @@ $lang['de_DE']['SilvercartProductAttributeSetLanguage']['SINGULARNAME']         
 $lang['de_DE']['SilvercartProductAttributeValueLanguage']['PLURALNAME']         = _t('Silvercart.TRANSLATIONS');
 $lang['de_DE']['SilvercartProductAttributeValueLanguage']['SINGULARNAME']       = _t('Silvercart.TRANSLATION');
 
+$lang['de_DE']['SilvercartProductAttributeOrderPosition']['VARIANTDEFINITION']  = 'Variantenbeschreibung';
+
 $lang['de_DE']['SilvercartProductAttributeOrderDetailPage']['VARIANT_HEADLINE'] = 'Variante';

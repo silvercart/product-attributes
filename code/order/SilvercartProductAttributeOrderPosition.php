@@ -34,6 +34,13 @@
 class SilvercartProductAttributeOrderPosition extends DataObjectDecorator {
     
     /**
+     * indicator whether the cms fields are already updated or not
+     *
+     * @var bool
+     */
+    protected $cmsFieldsUpdated = false;
+    
+    /**
      * Extends the database fields and relations of the decorated class.
      *
      * @return array
@@ -45,6 +52,45 @@ class SilvercartProductAttributeOrderPosition extends DataObjectDecorator {
         return array(
             'db' => array(
                 'ProductAttributeVariantDefinition' => 'Text'
+            )
+        );
+    }
+    
+    /**
+     * CMS fields
+     *
+     * @param FieldSet $fields Fields to update
+     *
+     * @return void
+     *
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 06.11.2012
+     */
+    public function updateCMSFields(FieldSet $fields) {
+        if (!$this->cmsFieldsUpdated) {
+            if ($this->owner->ID > 0) {
+                
+            }
+            $this->cmsFieldsUpdated = true;
+        }
+    }
+
+    /**
+     * Field labels for display in tables.
+     *
+     * @param array &$labels Field labels to update
+     *
+     * @return void
+     *
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 06.11.2012
+     */
+    public function updateFieldLabels(&$labels) {
+        parent::updateFieldLabels($labels);
+        $labels = array_merge(
+            $labels,
+            array(
+                'ProductAttributeVariantDefinition' => _t('SilvercartProductAttributeOrderPosition.VARIANTDEFINITION'),
             )
         );
     }
