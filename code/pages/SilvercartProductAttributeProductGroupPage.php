@@ -75,6 +75,20 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
     }
     
     /**
+     * Adds a hash of the filter values to the product group cache key
+     * 
+     * @param array &$cacheKeyParts Cache key parts to update
+     * 
+     * @return void
+     *
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 23.11.2012
+     */
+    public function updateCacheKeyParts(&$cacheKeyParts) {
+        $cacheKeyParts[] = sha1(implode('-', $this->getFilterValues()));;
+    }
+
+        /**
      * Initializes the attribute filter
      *
      * @param SS_HTTPRequest $request Request
