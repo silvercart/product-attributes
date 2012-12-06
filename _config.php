@@ -23,7 +23,6 @@
 
 // Register Extensions
 Object::add_extension('SilvercartOrderPosition',                                'SilvercartProductAttributeOrderPosition');
-Object::add_extension('SilvercartPage_Controller',                              'SilvercartProductAttributePage_Controller');
 Object::add_extension('SilvercartProduct',                                      'SilvercartProductAttributeProduct');
 Object::add_extension('SilvercartProduct_RecordController',                     'SilvercartProductAttributeProduct_RecordController');
 Object::add_extension('SilvercartProductGroupPage_Controller',                  'SilvercartProductAttributeProductGroupPage_Controller');
@@ -46,5 +45,12 @@ SilvercartSearchResultsPage_Controller::registerFilterPlugin('SilvercartProductA
 SilvercartWidget_Controller::registerFilterPlugin('SilvercartProductAttributeProductFilterPlugin');
 // register module to use with CustomHtmlForm
 CustomHtmlForm::registerModule('silvercart_product_attributes');
-// load global requirements
-Requirements::themedCSS('SilvercartProductAttribute');
+// ----------------------------------------------------------------------------
+// Register CSS requirements
+// ----------------------------------------------------------------------------
+RequirementsEngine::registerThemedCssFile('SilvercartProductAttribute');
+RequirementsEngine::registerThemedCssFile('SilvercartProductAttributePriceRangeFormField');
+// ----------------------------------------------------------------------------
+// Register JS requirements
+// ----------------------------------------------------------------------------
+RequirementsEngine::registerJsFile(SilvercartTools::getBaseURLSegment() . 'silvercart_product_attributes/js/SilvercartProductAttributeFilterWidget.js');
