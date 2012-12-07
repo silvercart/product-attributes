@@ -102,6 +102,15 @@ class SilvercartProductAttributePriceRangeForm extends CustomHtmlForm {
     }
     
     /**
+     * Returns the cache key extension for this form
+     * 
+     * @return string
+     */
+    public function getCacheKeyExtension() {
+        return md5($this->controller->getMinPriceForWidget() . $this->controller->getMaxPriceForWidget());
+    }
+    
+    /**
      * Returns the currency
      *
      * @return string
