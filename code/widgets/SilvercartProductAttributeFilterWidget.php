@@ -331,13 +331,14 @@ class SilvercartProductAttributeFilterWidget_Controller extends SilvercartWidget
             $products = new DataObjectSet();
             if ($this->FilterBehaviour == 'MultipleChoice') {
                 $products = Controller::curr()->getUnfilteredProducts(false, false, true);
-                $products->merge(Controller::curr()->getInjectedProducts());
+                $products->merge(Controller::curr()->getInjectedProducts(array('SilvercartProductAttributeFilterWidget')));
             } else {
                 $products = Controller::curr()->getProducts(false, false, true);
-                $products->merge(Controller::curr()->getInjectedProducts());
+                $products->merge(Controller::curr()->getInjectedProducts(array('SilvercartProductAttributeFilterWidget')));
             }
             $this->products = $products;
         }
+
         return $this->products;
     }
 
