@@ -39,7 +39,9 @@ class SilvercartProductAttribute extends DataObject {
      * @var array
      */
     public static $db = array(
-        'CanBeUsedForVariants' => 'Boolean',
+        'CanBeUsedForFilterWidget'  => 'Boolean(1)',
+        'CanBeUsedForDataSheet'     => 'Boolean(1)',
+        'CanBeUsedForVariants'      => 'Boolean',
     );
 
     /**
@@ -73,7 +75,20 @@ class SilvercartProductAttribute extends DataObject {
         'SilvercartProductAttributeSetsAsString'    => 'Text',
         'SilvercartProductAttributeValuesAsString'  => 'Text',
         'HasSelectedValues'                         => 'Boolean',
+        'CanBeUsedForFilterWidgetString'            => 'Text',
+        'CanBeUsedForDataSheetString'               => 'Text',
         'CanBeUsedForVariantsString'                => 'Text',
+    );
+    
+    /**
+     * DB indexes
+     * 
+     * @var array 
+     */
+    public static $indexes = array(
+        'CanBeUsedForFilterWidget'  => 'INDEX (CanBeUsedForFilterWidget)',
+        'CanBeUsedForDataSheet'     => 'INDEX (CanBeUsedForDataSheet)',
+        'CanBeUsedForVariants'      => 'INDEX (CanBeUsedForVariants)',
     );
     
     /**
@@ -140,6 +155,8 @@ class SilvercartProductAttribute extends DataObject {
         $fieldLabels = array_merge(
             parent::fieldLabels($includerelations),
             array(
+                'CanBeUsedForFilterWidget'              => _t('SilvercartProductAttribute.CAN_BE_USED_FOR_FILTERWIDGET'),
+                'CanBeUsedForDataSheet'                 => _t('SilvercartProductAttribute.CAN_BE_USED_FOR_DATASHEET'),
                 'CanBeUsedForVariants'                  => _t('SilvercartProductAttribute.CAN_BE_USED_FOR_VARIANTS'),
                 'Title'                                 => _t('SilvercartProductAttribute.TITLE'),
                 'PluralTitle'                           => _t('SilvercartProductAttribute.PLURALTITLE'),
@@ -235,6 +252,8 @@ class SilvercartProductAttribute extends DataObject {
         $summaryFields = array(
             'Title'                                     => $this->fieldLabel('Title'),
             'PluralTitle'                               => $this->fieldLabel('PluralTitle'),
+            'CanBeUsedForFilterWidgetString'            => $this->fieldLabel('CanBeUsedForFilterWidget'),
+            'CanBeUsedForDataSheetString'               => $this->fieldLabel('CanBeUsedForDataSheet'),
             'CanBeUsedForVariantsString'                => $this->fieldLabel('CanBeUsedForVariants'),
             'SilvercartProductAttributeValuesAsString'  => $this->fieldLabel('SilvercartProductAttributeValues'),
         );
@@ -268,6 +287,34 @@ class SilvercartProductAttribute extends DataObject {
     
     /**
      * Returns a string to determine whether the attribute can be used for 
+     * filter widget
+     *
+     * @return string
+     */
+    public function getCanBeUsedForFilterWidgetString() {
+        $CanBeUsedForFilterWidget = _t('Boolean.NO');
+        if ($this->CanBeUsedForFilterWidget) {
+            $CanBeUsedForFilterWidget = _t('Boolean.YES');
+        }
+        return $CanBeUsedForFilterWidget;
+    }
+    
+    /**
+     * Returns a string to determine whether the attribute can be used for 
+     * data sheet
+     *
+     * @return string
+     */
+    public function getCanBeUsedForDataSheetString() {
+        $CanBeUsedForDataSheet = _t('Boolean.NO');
+        if ($this->CanBeUsedForDataSheet) {
+            $CanBeUsedForDataSheet = _t('Boolean.YES');
+        }
+        return $CanBeUsedForDataSheet;
+    }
+    
+    /**
+     * Returns a string to determine whether the attribute can be used for 
      * variants
      *
      * @return string
@@ -288,20 +335,13 @@ class SilvercartProductAttribute extends DataObject {
      * @return void
      *
      * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 15.03.2012
+     * @since 13.12.2012
      */
     public function assignValues($valuesToAssign) {
         if (is_null($this->assignedValues)) {
             $this->setAssignedValues(new DataObjectSet());
         }
-        foreach ($valuesToAssign as $value) {
-            if ($value->SilvercartProductAttribute()->ID == $this->ID) {
-                if ($this->assignedValues->find('ID', $value->ID)) {
-                    continue;
-                }
-                $this->assignedValues->push($value);
-            }
-        }
+        $this->assignedValues->merge($valuesToAssign);
     }
     
     /**
