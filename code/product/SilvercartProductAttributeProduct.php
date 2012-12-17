@@ -41,6 +41,28 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
     protected $variants = null;
     
     /**
+     * A set of the products attributes with the related values
+     *
+     * @var DataObjectSet 
+     */
+    protected $attributesWithValues = null;
+    
+    
+    /**
+     * A request cached map of attribute value IDs
+     *
+     * @var array
+     */
+    protected $relatedAttributeValueMap = null;
+    
+    /**
+     * A request cached list of attributed values
+     *
+     * @var array
+     */
+    protected $attributedValues = array();
+    
+    /**
      * Adds som extra data model fields
      *
      * @return array
@@ -118,6 +140,8 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
                     'SilvercartProductAttributes'       => _t('SilvercartProductAttributeProduct.PRODUCT_ATTRIBUTES'),
                     'SilvercartProductAttributeValues'  => _t('SilvercartProductAttributeProduct.PRODUCT_ATTRIBUTE_VALUES'),
                     'SilvercartSlaveProducts'           => _t('SilvercartProductAttributeProduct.SLAVE_PRODUCTS'),
+                    'SilvercartProductAttribute'        => _t('SilvercartProductAttributeProduct.PRODUCT_ATTRIBUTE'),
+                    'SilvercartProductAttributeValue'   => _t('SilvercartProductAttributeProduct.PRODUCT_ATTRIBUTE_VALUE'),
                 )
         );
     }
@@ -157,6 +181,31 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
     }
 
     /**
+     * Returns the products attributes with related values
+     * 
+     * @return DataObjectSet
+     */
+    public function getAttributesWithValues() {
+        if (is_null($this->attributesWithValues)) {
+            $this->attributesWithValues = new DataObjectSet();
+            foreach ($this->owner->SilvercartProductAttributes() as $attribute) {
+                $attributedValues = $this->getAttributedValuesFor($attribute);
+                if ($attributedValues->Count() > 0) {
+                    $this->attributesWithValues->push(
+                            new ArrayData(
+                                    array(
+                                        'Attribute' => $attribute,
+                                        'Values'    => $attributedValues,
+                                    )
+                            )
+                    );
+                }
+            }
+        }
+        return $this->attributesWithValues;
+    }
+
+    /**
      * Returns the products attributed values for the given attribute
      * 
      * @param SilvercartProductAttribute $attribute Attribute to get values for
@@ -164,14 +213,32 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
      * @return DataObjectSet
      */
     public function getAttributedValuesFor($attribute) {
-        $assignedValues = array();
-        foreach ($attribute->SilvercartProductAttributeValues() as $value) {
-            if ($this->owner->SilvercartProductAttributeValues()->find('ID', $value->ID)) {
-                $assignedValues[] = $value;
+        if (!array_key_exists($attribute->ID, $this->attributedValues)) {
+            $assignedValueIDs   = array();
+            if (is_null($this->relatedAttributeValueMap)) {
+                $this->relatedAttributeValueMap = $this->owner->SilvercartProductAttributeValues()->map('ID', 'ID');
             }
+            $attributeMap = $attribute->SilvercartProductAttributeValues()->map('ID', 'ID');
+
+            foreach ($this->relatedAttributeValueMap as $attributeValueID) {
+                if (array_key_exists($attributeValueID, $attributeMap)) {
+                    $assignedValueIDs[] = $attributeValueID;
+                }
+            }
+            if (count($assignedValueIDs) > 0) {
+                $attributedValues = DataObject::get(
+                        'SilvercartProductAttributeValue',
+                        sprintf(
+                                "SilvercartProductAttributeValue.ID IN (%s)",
+                                implode(',', $assignedValueIDs)
+                        )
+                );
+            } else {
+                $attributedValues = new DataObjectSet();
+            }
+            $this->attributedValues[$attribute->ID] = $attributedValues;
         }
-        $attributedValues = new DataObjectSet($assignedValues);
-        return $attributedValues;
+        return $this->attributedValues[$attribute->ID];
     }
 
     /**
