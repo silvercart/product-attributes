@@ -25,6 +25,7 @@
 Object::add_extension('SilvercartOrderPosition',                                'SilvercartProductAttributeOrderPosition');
 Object::add_extension('SilvercartProduct',                                      'SilvercartProductAttributeProduct');
 Object::add_extension('SilvercartProduct_RecordController',                     'SilvercartProductAttributeProduct_RecordController');
+Object::add_extension('SilvercartProductPluginProvider',                        'SilvercartProductAttributeProductPlugin');
 Object::add_extension('SilvercartProductGroupPage_Controller',                  'SilvercartProductAttributeProductGroupPage_Controller');
 // DataObject Translations
 Object::add_extension('SilvercartProductAttributeLanguage',                     'SilvercartLanguageDecorator');
