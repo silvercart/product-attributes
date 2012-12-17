@@ -53,6 +53,15 @@ class SilvercartProductAttributeLanguage extends DataObject {
     );
     
     /**
+     * DB indexes
+     * 
+     * @var array 
+     */
+    public static $indexes = array(
+        'Title' => 'Fulltext (Title)',
+    );
+    
+    /**
      * Returns the translated singular name of the object. If no translation exists
      * the class name will be returned.
      * 
