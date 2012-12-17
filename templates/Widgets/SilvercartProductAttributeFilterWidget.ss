@@ -1,6 +1,17 @@
 <% cached WidgetCacheKey %>
     <% if Attributes %>
         <% control Attributes %>
+            <% if First %>
+            <% else %>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="widget">
+        <div class="widget_content">
+            <div class="silvercart-widget">
+                <div class="silvercart-widget_content">
+            <% end_if %>
                     <h2>$Title</h2>
                     <div class="silvercart-widget-content_frame">
                         <ul class="vlist silvercart-product-attribute">
@@ -15,19 +26,7 @@
                         </ul>
                         <a href="#" rel="$ID" class="remove-filter"><% sprintf(_t('SilvercartProductAttributeFilterWidget.DISABLE_FILTER_FOR'),$Title) %></a>
                     </div>
-            <% if Last %>
-            <% else %>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="widget">
-        <div class="widget_content">
-            <div class="silvercart-widget">
-                <div class="silvercart-widget_content">
-            <% end_if %>
         <% end_control %>
-    <% end_if %>
 
     <form name="silvercart-product-attribute-filter-form" method="post" action="$FormAction">
         <input type="hidden" name="silvercart-product-attribute-selected-values" value="$CurrentPage.FilterValueList" />
@@ -47,4 +46,5 @@
 <% end_if %>
     });
 </script>
+    <% end_if %>
 <% end_cached %>
