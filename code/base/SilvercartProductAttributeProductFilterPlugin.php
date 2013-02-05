@@ -75,13 +75,13 @@ class SilvercartProductAttributeProductFilterPlugin {
                         $minPrice,
                         $maxPrice
                 );
-            } elseif (empty($minPrice)) {
+            } elseif (!empty($minPrice)) {
                 $filters['SilvercartProductAttributeProductPriceFilterPlugin'] = sprintf(
                         "AND `SilvercartProduct`.`%s` >= '%s'",
                         $priceField,
                         $minPrice
                 );
-            } elseif (empty($maxPrice)) {
+            } elseif (!empty($maxPrice)) {
                 $filters['SilvercartProductAttributeProductPriceFilterPlugin'] = sprintf(
                         "AND `SilvercartProduct`.`%s` <= '%s'",
                         $priceField,

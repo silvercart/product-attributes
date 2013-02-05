@@ -32,7 +32,7 @@
  * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License
  */
 class SilvercartProductAttributePriceRangeForm extends CustomHtmlForm {
-    
+
     /**
      * Set some field values and button labels.
      *
@@ -107,7 +107,7 @@ class SilvercartProductAttributePriceRangeForm extends CustomHtmlForm {
      * @return string
      */
     public function getCacheKeyExtension() {
-        return md5($this->controller->getMinPriceForWidget() . $this->controller->getMaxPriceForWidget());
+        return md5($this->controller->ID . '-' . $this->controller->getMinPriceForWidget() . '-' . $this->controller->getMaxPriceForWidget());
     }
     
     /**
