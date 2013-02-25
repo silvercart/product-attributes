@@ -372,7 +372,7 @@ class SilvercartProductAttributeFilterWidget_Controller extends SilvercartWidget
         $attributes = $this->getAttributes();
         
         if ($products->Count() > 0) {
-            $productMap             = $products->map('ID', 'LastEdited');
+            $productMap             = $products->map('ID', 'LastEditedForCache');
             $productMapIDs          = implode('-', array_keys($productMap));
             sort($productMap);
             $productMapLastEdited   = array_pop($productMap);
