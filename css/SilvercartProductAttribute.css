@@ -32,3 +32,47 @@
 .silvercart-shopping-cart-full .silvercart-product-attribute-variant-list .silvercart-product-attribute-variant-list-title ul li span {
     color: #666666;
 }
+
+
+
+#col1 .widget.silvercart-product-attribute-filter-widget {
+    display: inline-block;
+    width: auto;
+}
+#col1 .widget.silvercart-product-attribute-filter-widget .widget_content {
+    padding: 0;
+}
+#col1 .widget.silvercart-product-attribute-filter-widget .silvercart-widget_content {
+    border: 1px solid #CFCFCF;
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: none;
+}
+#col1 .widget.silvercart-product-attribute-filter-widget .silvercart-widget_content h2 {
+    cursor : pointer;
+}
+#col1 .widget.silvercart-product-attribute-filter-widget .silvercart-widget-content_frame {
+    position: absolute;
+    z-index: 15;
+    background: #fff;
+    border: 1px solid #CFCFCF;
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 0 -1px 4px #D2D2D2;
+    display: none;
+}
+#col1 .widget.silvercart-product-attribute-filter-widget:hover .silvercart-widget-content_frame {
+    display: block;
+}
+#col1 .widget.silvercart-product-attribute-filter-widget ul.vlist.silvercart-product-attribute {
+    max-height:                     200px;
+    min-width:                      200px;
+    overflow:                       auto;
+}
+
+#col1 .widget.silvercart-product-attribute-filter-widget .silvercart-widget_content h2.has-selected-values {
+    background:                     #adadad;
+    background:                     -webkit-gradient(linear, left top, left bottom, from(#adadad), to(#8d8d8d));
+    background:                     -moz-linear-gradient(top,  #adadad, #8d8d8d);
+    background:                     -o-linear-gradient(top,  #adadad,  #8d8d8d);
+    filter:                         progid:DXImageTransform.Microsoft.gradient(startColorstr='#adadad', endColorstr='#8d8d8d');
+    color:                          #fff;
+}

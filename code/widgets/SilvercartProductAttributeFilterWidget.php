@@ -77,6 +77,18 @@ class SilvercartProductAttributeFilterWidget extends SilvercartWidget {
     }
     
     /**
+     * Returns the extra css classes.
+     * 
+     * @return string
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 22.04.2013
+     */
+    public function ExtraCssClasses() {
+        return 'silvercart-product-attribute-filter-widget';
+    }
+
+    /**
      * Returns the widgets content
      *
      * @return string

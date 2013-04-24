@@ -7,13 +7,13 @@
             </div>
         </div>
     </div>
-    <div class="widget">
+    <div class="widget {$Top.ExtraCssClasses}">
         <div class="widget_content">
             <div class="silvercart-widget">
                 <div class="silvercart-widget_content">
             <% end_if %>
-                    <h2>$Title</h2>
-                    <div class="silvercart-widget-content_frame">
+                    <h2 class="<% if HasSelectedValues %>has-selected-values<% else %>has-no-selected-values<% end_if %>">$Title</h2>
+                    <div class="silvercart-widget-content_frame silvercart-product-attribute-filter-widget">
                         <ul class="vlist silvercart-product-attribute">
             <% if AssignedValues %>
                 <% control AssignedValues %>
