@@ -218,6 +218,14 @@ class SilvercartProductAttribute extends DataObject {
                 'title'     => $this->fieldLabel('Title'),
                 'filter'    => 'PartialMatchFilter'
             ),
+            'CanBeUsedForFilterWidget' => array(
+                'title'     => $this->fieldLabel('CanBeUsedForFilterWidget'),
+                'filter'    => 'ExactMatchFilter'
+            ),
+            'CanBeUsedForDataSheet' => array(
+                'title'     => $this->fieldLabel('CanBeUsedForDataSheet'),
+                'filter'    => 'ExactMatchFilter'
+            ),
             'CanBeUsedForVariants' => array(
                 'title'     => $this->fieldLabel('CanBeUsedForVariants'),
                 'filter'    => 'ExactMatchFilter'
