@@ -287,10 +287,20 @@ class SilvercartProductAttribute extends DataObject {
      * @return string
      */
     public function getSilvercartProductAttributeValuesAsString() {
-        $silvercartProductAttributeValuesArray      = $this->SilvercartProductAttributeValues()->map();
-        $silvercartProductAttributeValuesAsString   = implode(', ', $silvercartProductAttributeValuesArray);
-        $silvercartProductAttributeValuesAsString   = stripslashes($silvercartProductAttributeValuesAsString);
-        return $silvercartProductAttributeValuesAsString;
+        $limit                                      = 3;
+        $silvercartProductAttributeValuesAsString   = '';
+        $addition                                   = '';
+        if ($this->SilvercartProductAttributeValues()->Count() > 0) {
+            if ($this->SilvercartProductAttributeValues()->Count() > $limit) {
+                $silvercartProductAttributeValuesArray      = $this->SilvercartProductAttributeValues()->getRange(0, $limit)->map();
+                $addition = ' (und ' . ($this->SilvercartProductAttributeValues()->Count() - $limit) . ' weitere)';
+            } else {
+                $silvercartProductAttributeValuesArray      = $this->SilvercartProductAttributeValues()->map();
+            }
+            $silvercartProductAttributeValuesAsString   = '"' . implode('", "', $silvercartProductAttributeValuesArray) . '"';
+            $silvercartProductAttributeValuesAsString   = stripslashes($silvercartProductAttributeValuesAsString);
+        }
+        return $silvercartProductAttributeValuesAsString . $addition;
     }
     
     /**
