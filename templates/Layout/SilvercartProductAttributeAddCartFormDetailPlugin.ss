@@ -19,6 +19,19 @@
                 action: $(this).attr('rel'),
                 method: 'POST'
             });
+            var originalForm = $(this).closest('form'),
+                div = $('<div/>').css({
+                        position: 'absolute',
+                        left: '0px',
+                        top: '0px',
+                        opacity: '0.5',
+                        backgroundColor: '#ffffff',
+                        backgroundImage: 'url(/silvercart/images/loader.gif)',
+                        backgroundPosition: 'center center',
+                        backgroundRepeat: 'no-repeat',
+                        width: originalForm.css('width'),
+                        height: originalForm.css('height')
+                });
             
             $('select', parent).each(function() {
                 form.append($('<input/>', {
@@ -27,6 +40,11 @@
                     value: $(this).val()
                 }));    
             });
+            
+                
+            originalForm.css('position', 'relative');
+            originalForm.append(div);
+            
             form.appendTo('body').submit();
         });
     });
