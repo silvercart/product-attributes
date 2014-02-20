@@ -56,13 +56,6 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
     protected $relatedAttributeValueMap = null;
     
     /**
-     * A request cached list of attributed values
-     *
-     * @var array
-     */
-    protected $attributedValues = array();
-    
-    /**
      * Adds som extra data model fields
      *
      * @return array
@@ -213,32 +206,29 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
      * @return DataObjectSet
      */
     public function getAttributedValuesFor($attribute) {
-        if (!array_key_exists($attribute->ID, $this->attributedValues)) {
-            $assignedValueIDs   = array();
-            if (is_null($this->relatedAttributeValueMap)) {
-                $this->relatedAttributeValueMap = $this->owner->SilvercartProductAttributeValues()->map('ID', 'ID');
-            }
-            $attributeMap = $attribute->SilvercartProductAttributeValues()->map('ID', 'ID');
-
-            foreach ($this->relatedAttributeValueMap as $attributeValueID) {
-                if (array_key_exists($attributeValueID, $attributeMap)) {
-                    $assignedValueIDs[] = $attributeValueID;
-                }
-            }
-            if (count($assignedValueIDs) > 0) {
-                $attributedValues = DataObject::get(
-                        'SilvercartProductAttributeValue',
-                        sprintf(
-                                "SilvercartProductAttributeValue.ID IN (%s)",
-                                implode(',', $assignedValueIDs)
-                        )
-                );
-            } else {
-                $attributedValues = new DataObjectSet();
-            }
-            $this->attributedValues[$attribute->ID] = $attributedValues;
+        $assignedValueIDs   = array();
+        if (is_null($this->relatedAttributeValueMap)) {
+            $this->relatedAttributeValueMap = $this->owner->SilvercartProductAttributeValues()->map('ID', 'ID');
         }
-        return $this->attributedValues[$attribute->ID];
+        $attributeMap = $attribute->SilvercartProductAttributeValues()->map('ID', 'ID');
+
+        foreach ($this->relatedAttributeValueMap as $attributeValueID) {
+            if (array_key_exists($attributeValueID, $attributeMap)) {
+                $assignedValueIDs[] = $attributeValueID;
+            }
+        }
+        if (count($assignedValueIDs) > 0) {
+            $attributedValues = DataObject::get(
+                    'SilvercartProductAttributeValue',
+                    sprintf(
+                            "SilvercartProductAttributeValue.ID IN (%s)",
+                            implode(',', $assignedValueIDs)
+                    )
+            );
+        } else {
+            $attributedValues = new DataObjectSet();
+        }
+        return $attributedValues;
     }
 
     /**
@@ -284,9 +274,7 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
                         $attributeValueMatches[] = true;
                     }
                 }
-                if (count($attributeValueMatches) >= count($matchingAttributeValues)) {
-                    $matchedVariants->push($variant);
-                }
+                $matchedVariants->push($variant);
             }
         }
         return $matchedVariants;
@@ -405,8 +393,47 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
         }
         return $isVariant;
     }
+    
+    /**
+     * Returns the variants for the given Attribute ID
+     * 
+     * @param SilvercartProduct          $product   Product to check variation for
+     * @param SilvercartProductAttribute $attribute Attribute to check variation for
+     * 
+     * @return DataObjectSet
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 13.02.2014
+     */
+    public function isVariantOf($product, $attribute) {
+        $isVariantOf = false;
+        if ($this->owner->isVariant()) {
+            
+            $a = $this->owner->getAttributedValuesFor($attribute);
+            $b = $product->getAttributedValuesFor($attribute);
+            if (array_shift(array_keys($a->map())) != array_shift(array_keys($b->map()))) {
+                $isVariantOf       = true;
+                $variantAttributes = $this->getVariantAttributes();
+                $variantAttributes->remove($variantAttributes->find('ID', $attribute->ID));
 
-        /**
+                if ($variantAttributes->Count() > 0) {
+                    $matchesWithAll = true;
+                    foreach ($variantAttributes as $variantAttribute) {
+                        $a = $this->owner->getAttributedValuesFor($variantAttribute);
+                        $b = $product->getAttributedValuesFor($variantAttribute);
+
+                        if (array_shift(array_keys($a->map())) != array_shift(array_keys($b->map()))) {
+                            $matchesWithAll = false;
+                        }
+                    }
+                    $isVariantOf = $matchesWithAll;
+                }
+            }
+        }
+        return $isVariantOf;
+    }
+
+    /**
      * Returns whether this product can be used as variant or not
      * 
      * @return boolean
@@ -517,14 +544,17 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
                         $additionMoney->setCurrency($product->getPrice()->getCurrency());
                         $addition = '-' . $additionMoney->Nice();
                     }
-                    $attributedValues->merge($variant->getAttributedValuesFor($attribute));
-                    $variantMap = $variant->getAttributedValuesFor($attribute)->map('ID','ID');
-                    foreach ($variantMap as $ID) {
-                        if ($ID != $selectedValue) {
-                            $fieldModifierNotes[$ID] = $addition;
+                    if ($product->isVariantOf($variant, $attribute)) {
+                        $attributedValues->merge($variant->getAttributedValuesFor($attribute));
+                        $variantMap = $variant->getAttributedValuesFor($attribute)->map('ID','ID');
+                        foreach ($variantMap as $ID) {
+                            if ($ID != $selectedValue) {
+                                $fieldModifierNotes[$ID] = $addition;
+                            }
                         }
                     }
                 }
+                $attributedValues->sort('Title');
 
                 foreach ($attributedValues as $attributedValue) {
                     $attributeName      = $attributedValue->Title;
@@ -540,7 +570,7 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
                     $values[$attributedValue->ID] = $attributeName;
                 }
 
-                if (count($values) > 1) {
+                if (count($values) > 0) {
                     $fieldType = 'SilvercartProductAttributeDropdownField';
 
                     if (!empty($attribute->useCustomFormField)) {
