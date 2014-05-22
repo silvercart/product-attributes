@@ -1,6 +1,7 @@
 
 <% if SilvercartProduct %>
     <% control SilvercartProduct %>
+        <% if VariantAttributeValues %>
 <div class="silvercart-product-attribute-variant-list">
     <div class="silvercart-product-attribute-variant-list-title">
         <ul>
@@ -10,5 +11,6 @@
         </ul>
     </div>
 </div>
+        <% end_if %>
     <% end_control %>
 <% end_if %>
