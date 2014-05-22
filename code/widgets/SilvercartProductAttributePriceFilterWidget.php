@@ -161,7 +161,8 @@ class SilvercartProductAttributePriceFilterWidget_Controller extends SilvercartW
     public function Content() {
         $content = false;
         if (Controller::curr() instanceof SilvercartProductGroupPage_Controller &&
-            !Controller::curr()->isProductDetailView()) {
+            !Controller::curr()->isProductDetailView() &&
+            Controller::curr()->HasMoreProductsThan(0)) {
             $content = parent::Content();
         }
         return $content;
