@@ -49,6 +49,20 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
     );
     
     /**
+     * Min price limit.
+     *
+     * @var float
+     */
+    protected $minPriceLimit = null;
+    
+    /**
+     * Max price limit.
+     *
+     * @var float
+     */
+    protected $maxPriceLimit = null;
+    
+    /**
      * Initializes the attribute filter before the real controller is initialized
      * 
      * @return void
@@ -477,6 +491,38 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
     public function setMaxPriceForWidget($maxPrice) {
         Session::set('SilvercartProductAttributePriceRangeForm.MaxPrice.' . $this->getSessionKey(), $maxPrice);
         Session::save();
+    }
+
+    /**
+     * Returns the min price limit
+     *
+     * @return string
+     */
+    public function getMinPriceLimit() {
+        if (is_null($this->minPriceLimit)) {
+            SilvercartProductAttributeProductFilterPlugin::$skip_filter_once = true;
+            $priceType = SilvercartConfig::PriceType();
+            $prices    = $this->owner->getProducts(false, false, true, true)->map('ID', 'Price' . ucfirst($priceType) . 'Amount');
+            sort($prices);
+            $this->minPriceLimit = array_shift($prices);
+        }
+        return $this->minPriceLimit;
+    }
+    
+    /**
+     * Returns the max price limit
+     *
+     * @return string
+     */
+    public function getMaxPriceLimit() {
+        if (is_null($this->maxPriceLimit)) {
+            SilvercartProductAttributeProductFilterPlugin::$skip_filter_once = true;
+            $priceType = SilvercartConfig::PriceType();
+            $prices    = $this->owner->getProducts(false, false, true, true)->map('ID', 'Price' . ucfirst($priceType) . 'Amount');
+            rsort($prices);
+            $this->maxPriceLimit = array_shift($prices);
+        }
+        return $this->maxPriceLimit;
     }
     
 }

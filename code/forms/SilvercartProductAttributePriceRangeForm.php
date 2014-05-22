@@ -61,6 +61,11 @@ class SilvercartProductAttributePriceRangeForm extends CustomHtmlForm {
             !Controller::curr()->isProductDetailView()) {
             $minPrice = $this->controller->getMinPriceForWidget();
             $maxPrice = $this->controller->getMaxPriceForWidget();
+            
+            if (is_null($minPrice)) {
+                $minPrice = round(Controller::curr()->getMinPriceLimit(), 2);
+                $maxPrice = round(Controller::curr()->getMaxPriceLimit(), 2);
+            }
         }
         $this->formFields = array(
             'MinPrice' => array(
