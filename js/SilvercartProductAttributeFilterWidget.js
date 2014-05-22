@@ -8,12 +8,12 @@ var SilvercartProductAttributeFilterCall                = function() {
     var filterForm      = $('form[name="silvercart-product-attribute-filter-form"]');
     var filterInput     = $('input[name="silvercart-product-attribute-selected-values"]');
     var filterWidget    = $('input[name="silvercart-product-attribute-widget"]');
-    if (SilvercartProductAttributeFilterCallInProgress == false) {
+    if (SilvercartProductAttributeFilterCallInProgress === false) {
         SilvercartProductAttributeFilterCallInProgress = true;
         SilvercartProductAttributeFilterCallback = false;
         $('.silvercart-product-attribute-filter-mask').remove();
         $('.silvercart-product-attribute-filter-loading-bar').remove();
-        if ($('.silvercart-product-attribute-filter-mask').length == 0) {
+        if ($('.silvercart-product-attribute-filter-mask').length === 0) {
             $('#main').append('<div class="silvercart-product-attribute-filter-mask"></div>');
             $('#main').append('<img class="silvercart-product-attribute-filter-loading-bar" src="/silvercart_product_attributes/images/loader.gif" title="" />');
             $('#main').css({
@@ -32,7 +32,6 @@ var SilvercartProductAttributeFilterCall                = function() {
             display : 'none',
             left : (window.innerWidth / 2) - 64,
             top : (window.innerHeight / 2) - 7,
-            display : 'none',
             position : 'fixed',
             width : 128,
             height : 15
@@ -66,7 +65,7 @@ var SilvercartProductAttributeFilterCall                = function() {
     } else {
         SilvercartProductAttributeFilterCallback = true;
     }
-}
+};
 
 var SilvercartProductAttributeFilterRefreshSelectedFilters  = function(checkbox) {
     var checked     = checkbox.is(':checked');
@@ -77,17 +76,17 @@ var SilvercartProductAttributeFilterRefreshSelectedFilters  = function(checkbox)
         SilvercartProductAttributeFilter.push(id);
     } else {
         SilvercartProductAttributeFilter = jQuery.grep(SilvercartProductAttributeFilter, function(value) {
-            return value != id;
+            return value !== id;
         });
     }
     filterInput.val(SilvercartProductAttributeFilter.join(','));
-}
+};
 var SilvercartProductAttributeFilterPush                = function(id) {
     SilvercartProductAttributeFilter.push(id);
-}
+};
 $(function() {
     $(document).ready(function() {
-        if ($('.silvercart-product-attribute-filter-mask').length == 0) {
+        if ($('.silvercart-product-attribute-filter-mask').length === 0) {
             $('#main').append('<div class="silvercart-product-attribute-filter-mask"></div>');
             $('#main').append('<img class="silvercart-product-attribute-filter-loading-bar" src="/silvercart_product_attributes/images/loader.gif" alt="Loading..." />');
             $('#main').css({
@@ -112,13 +111,13 @@ $(function() {
         }
     });
 
-    $('.silvercart-product-attribute-value').live('change',function() {
+    var triggerFilter = function() {
         SilvercartProductAttributeFilterRefreshSelectedFilters($(this));
         window.clearTimeout(SilvercartProductAttributeFilterCallbackTimeout);
         SilvercartProductAttributeFilterCallbackTimeout = window.setTimeout(SilvercartProductAttributeFilterCall, 800);
-    });
+    };
 
-    $('.remove-filter').live('click', function(event) {
+    var removeFilter = function(event) {
         event.preventDefault();
         var id = $(this).attr('rel');
         $('.silvercart-product-attribute-' + id).each(function() {
@@ -127,5 +126,13 @@ $(function() {
         });
         SilvercartProductAttributeFilterCall();
         return false;
-    });
+    };
+    
+    if (typeof $('.silvercart-product-attribute-value').live === 'function') {
+        $('.silvercart-product-attribute-value').live('change', triggerFilter);
+        $('.remove-filter').live('click', removeFilter);
+    } else if (typeof $('.silvercart-product-attribute-value').on === 'function') {
+        $('.silvercart-product-attribute-value').on('change', triggerFilter);
+        $('.remove-filter').on('click', removeFilter);
+    }
 });
