@@ -34,6 +34,20 @@
 class SilvercartProductAttributeProductFilterPlugin {
     
     /**
+     * Set this to true to skip filter
+     *
+     * @var bool
+     */
+    public static $skip_filter = false;
+    
+    /**
+     * Set this to true to skip filter once
+     *
+     * @var bool
+     */
+    public static $skip_filter_once = false;
+
+    /**
      *
      * @var SilvercartProductGroupPage_Controller 
      */
@@ -48,6 +62,13 @@ class SilvercartProductAttributeProductFilterPlugin {
      * @since 22.03.2012 
      */
     public function filter() {
+        if (self::$skip_filter) {
+            return;
+        }
+        if (self::$skip_filter_once) {
+            self::$skip_filter_once = false;
+            return;
+        }
         $filters        = array();
         if (Controller::curr() instanceof SilvercartProductGroupPage_Controller &&
             !Controller::curr()->isProductDetailView()) {
