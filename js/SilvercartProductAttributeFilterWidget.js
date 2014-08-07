@@ -76,7 +76,7 @@ var SilvercartProductAttributeFilterRefreshSelectedFilters  = function(checkbox)
         SilvercartProductAttributeFilter.push(id);
     } else {
         SilvercartProductAttributeFilter = jQuery.grep(SilvercartProductAttributeFilter, function(value) {
-            return value !== parseInt(id);
+            return parseInt(value) !== parseInt(id);
         });
     }
     filterInput.val(SilvercartProductAttributeFilter.join(','));
