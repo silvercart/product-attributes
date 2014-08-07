@@ -12,7 +12,7 @@
             <div class="silvercart-widget">
                 <div class="silvercart-widget_content">
             <% end_if %>
-                    <h2 class="<% if HasSelectedValues %>has-selected-values<% else %>has-no-selected-values<% end_if %>">$Title</h2>
+                    <strong class="h2 <% if HasSelectedValues %>has-selected-values<% else %>has-no-selected-values<% end_if %>">{$Title}</strong>
                     <div class="silvercart-widget-content_frame silvercart-product-attribute-filter-widget">
                         <ul class="vlist silvercart-product-attribute">
             <% if AssignedValues %>

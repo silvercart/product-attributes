@@ -1,2 +1,2 @@
-<h2>$FrontTitle</h2>
+<strong class="h2">{$FrontTitle}</strong>
 $InsertCustomHtmlForm

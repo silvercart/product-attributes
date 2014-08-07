@@ -47,7 +47,7 @@
     border-radius: 3px 3px 3px 3px;
     box-shadow: none;
 }
-#col1 .widget.silvercart-product-attribute-filter-widget .silvercart-widget_content h2 {
+#col1 .widget.silvercart-product-attribute-filter-widget .silvercart-widget_content strong.h2 {
     cursor : pointer;
 }
 #col1 .widget.silvercart-product-attribute-filter-widget .silvercart-widget-content_frame {
@@ -68,7 +68,7 @@
     overflow:                       auto;
 }
 
-#col1 .widget.silvercart-product-attribute-filter-widget .silvercart-widget_content h2.has-selected-values {
+#col1 .widget.silvercart-product-attribute-filter-widget .silvercart-widget_content strong.h2.has-selected-values {
     background:                     #adadad;
     background:                     -webkit-gradient(linear, left top, left bottom, from(#adadad), to(#8d8d8d));
     background:                     -moz-linear-gradient(top,  #adadad, #8d8d8d);
