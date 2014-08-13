@@ -76,6 +76,9 @@ class SilvercartProductAttributeProductFilterPlugin {
             if ($productGroup->filterEnabled()) {
                 $productIDs = $this->getProductIDs();
                 if (count($productIDs) > 0) {
+                    if (class_exists('SilvercartGroupBehaviorProductGroupPage_Controller')) {
+                        SilvercartGroupBehaviorProductGroupPage_Controller::$disable_filter = true;
+                    }
                     $filters['SilvercartProductAttributeProductFilterPlugin'] = sprintf(
                             "AND `SilvercartProduct`.`ID` IN (%s)",
                             implode(',', $productIDs)

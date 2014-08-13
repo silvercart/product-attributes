@@ -340,15 +340,21 @@ class SilvercartProductAttributeFilterWidget_Controller extends SilvercartWidget
      */
     public function getProducts() {
         if (is_null($this->products)) {
+            if (class_exists('SilvercartGroupBehaviorProductGroupPage_Controller')) {
+                SilvercartGroupBehaviorProductGroupPage_Controller::$disable_filter = true;
+            }
             $products = new DataObjectSet();
             if ($this->FilterBehaviour == 'MultipleChoice') {
                 $products = Controller::curr()->getUnfilteredProducts(false, false, true);
                 $products->merge(Controller::curr()->getInjectedProducts(array('SilvercartProductAttributeFilterWidget')));
             } else {
-                $products = Controller::curr()->getProducts(false, false, true);
+                $products = Controller::curr()->getProducts(false, false, true, true);
                 $products->merge(Controller::curr()->getInjectedProducts(array('SilvercartProductAttributeFilterWidget')));
             }
             $this->products = $products;
+            if (class_exists('SilvercartGroupBehaviorProductGroupPage_Controller')) {
+                SilvercartGroupBehaviorProductGroupPage_Controller::$disable_filter = false;
+            }
         }
 
         return $this->products;

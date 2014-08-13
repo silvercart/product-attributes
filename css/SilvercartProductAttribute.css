@@ -76,3 +76,28 @@
     filter:                         progid:DXImageTransform.Microsoft.gradient(startColorstr='#adadad', endColorstr='#8d8d8d');
     color:                          #fff;
 }
+
+
+.silvercart-product-attribute-variant-table {
+    
+}
+.silvercart-product-attribute-variant-table table {
+    
+}
+.silvercart-product-attribute-variant-table table tr:hover td {
+    background-color: #dddddd;
+}
+.silvercart-product-attribute-variant-table table td {
+    cursor: pointer;
+    padding: 0px;
+}
+.silvercart-product-attribute-variant-table table td a {
+    text-decoration: none;
+    display: block;
+    padding: 8px 6px;
+    color: #333333;
+}
+.silvercart-product-attribute-variant-table table td.Price a {
+    font-weight: bold;
+    color: #008554;
+}
