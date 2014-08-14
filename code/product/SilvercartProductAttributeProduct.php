@@ -306,13 +306,28 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
     }
     
     /**
+     * Returns the context product to get variant data for.
+     * 
+     * @return SilvercartProduct
+     */
+    public function getVariantAttributeContext() {
+        $context = $this->owner;
+        if ($context->IsNotBuyable &&
+            $context->hasVariants()) {
+            $context = $context->getVariants()->First();
+        }
+        return $context;
+    }
+    
+    /**
      * Returns the product attributes which can be used for variants
      * 
      * @return DataObjectSet
      */
     public function getVariantAttributes() {
+        $context            = $this->getVariantAttributeContext();
         $variantAttributes  = new DataObjectSet();
-        $attributes         = $this->owner->SilvercartProductAttributes();
+        $attributes         = $context->SilvercartProductAttributes();
         $groupedAttributes  = $attributes->groupBy('CanBeUsedForVariants');
         if (array_key_exists(1, $groupedAttributes)) {
             $variantAttributes = $groupedAttributes[1];
@@ -326,10 +341,11 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
      * @return DataObjectSet
      */
     public function getVariantAttributeValues() {
+        $context                = $this->getVariantAttributeContext();
         $variantAttributeValues = new DataObjectSet();
         $variantAttributes      = $this->getVariantAttributes();
         foreach ($variantAttributes as $variantAttribute) {
-            $variantAttributeValue = $this->owner->SilvercartProductAttributeValues()->find('SilvercartProductAttributeID', $variantAttribute->ID);
+            $variantAttributeValue = $context->SilvercartProductAttributeValues()->find('SilvercartProductAttributeID', $variantAttribute->ID);
             if ($variantAttributeValue) {
                 $variantAttributeValues->push($variantAttributeValue);
             }
@@ -446,7 +462,8 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
         $owner                      = $this->owner;
         $productAttributes          = $owner->SilvercartProductAttributes();
         $groupedProductAttributes   = $productAttributes->groupBy('CanBeUsedForVariants');
-        if (array_key_exists(1, $groupedProductAttributes)) {
+        if (array_key_exists(1, $groupedProductAttributes) ||
+            $this->owner->IsNotBuyable) {
             $canBeUsedAsVariant = true;
         }
         return $canBeUsedAsVariant;
@@ -515,7 +532,8 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
      * @return array
      */
     public function getVariantFormFields() {
-        $product    = $this->owner;
+        $product    = $this->getVariantAttributeContext();
+        //$product    = $this->owner;
         $fieldGroup = array();
         if ($product->hasVariants()) {
             $attributes         = $product->getVariantAttributes();
@@ -578,13 +596,21 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
                     }
 
                     $checkRequirements = array();
-
+                    $contextProduct    = $product;
+                    
+                    if ($product->ID != $this->owner->ID &&
+                        $this->owner->IsNotBuyable) {
+                        $values         = array('' => _t('SilvercartOrderSearchForm.PLEASECHOOSE')) + $values;
+                        $selectedValue  = _t('SilvercartOrderSearchForm.PLEASECHOOSE');
+                        $contextProduct = $this->owner;
+                    }
+                    
                     $fieldGroup['SilvercartProductAttribute' . $attribute->ID] = array(
                         'type'              => $fieldType,
                         'title'             => $attribute->Title,
                         'value'             => $values,
                         'selectedValue'     => $selectedValue,
-                        'silvercartProduct' => $product,
+                        'silvercartProduct' => $contextProduct,
                         'checkRequirements' => $checkRequirements
                     );
                 }

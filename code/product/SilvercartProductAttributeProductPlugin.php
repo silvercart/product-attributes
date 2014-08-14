@@ -159,6 +159,9 @@ class SilvercartProductAttributeProductPlugin extends DataObjectDecorator {
         }
         $variants->sort('Title');
         foreach ($variants as $variant) {
+            if ($variant->IsNotBuyable) {
+                $variants->remove($variant);
+            }
             $variant->Fields = $this->Fields($variant);
         }
         return $variants;
