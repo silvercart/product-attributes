@@ -1,21 +1,8 @@
 <?php
 /**
- * Copyright 2012 pixeltricks GmbH
+ * Copyright 2014 pixeltricks GmbH
  *
  * This file is part of SilverCart.
- *
- * SilverCart is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * SilverCart is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with SilverCart.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @package Silvercart
  * @subpackage Deals FormFields
@@ -29,7 +16,7 @@
  * @author Sebastian Diel <sdiel@pixeltricks.de>
  * @copyright 2012 pixeltricks GmbH
  * @since 13.09.2012
- * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License
+ * @license see license file in modules root directory
  */
 class SilvercartProductAttributeVariantTableListField extends TableListField {
 
@@ -89,7 +76,7 @@ class SilvercartProductAttributeVariantTableListField extends TableListField {
         );
         if (empty($sourceFilter)) {
             $sourceFilter = sprintf(
-                    "(`SilvercartMasterProductID` = '%s' OR `SilvercartProduct`.`ID` = '%s')%s",
+                    '("SilvercartMasterProductID" = \'%s\' OR "SilvercartProduct"."ID" = \'%s\')%s',
                     $master->ID,
                     $master->ID,
                     $addToSourceFilter
@@ -97,7 +84,7 @@ class SilvercartProductAttributeVariantTableListField extends TableListField {
         }
         if ($ignoreBaseItem) {
             $sourceFilter .= sprintf(
-                " AND `SilvercartProduct`.`ID` != '%s'",
+                ' AND "SilvercartProduct"."ID" != \'%s\'',
                 $baseItem->ID
         );
         }
@@ -107,14 +94,14 @@ class SilvercartProductAttributeVariantTableListField extends TableListField {
     /**
      * Adds the variation data to the headings and returns them
      * 
-     * @return DataObjectSet
+     * @return ArrayList
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 13.09.2012
+     * @since 18.09.2014
      */
     public function Headings() {
         $headings = parent::Headings();
-        $variantAttributes = new DataObjectSet();
+        $variantAttributes = new ArrayList();
         $items = $this->sourceItems();
         if ($items) {
             foreach ($items as $item) {
@@ -204,7 +191,7 @@ class SilvercartProductAttributeVariantTableListField extends TableListField {
  * @author Sebastian Diel <sdiel@pixeltricks.de>
  * @copyright 2012 pixeltricks GmbH
  * @since 13.09.2012
- * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License
+ * @license see license file in modules root directory
  */
 class SilvercartProductAttributeVariantTableListField_Item extends TableListField_Item {
 
@@ -213,7 +200,7 @@ class SilvercartProductAttributeVariantTableListField_Item extends TableListFiel
      * 
      * @param bool $xmlSafe Return the data XML safe?
      * 
-     * @return DataObjectSet
+     * @return ArrayList
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 13.09.2012

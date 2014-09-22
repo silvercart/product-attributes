@@ -1,21 +1,8 @@
 <?php
 /**
- * Copyright 2012 pixeltricks GmbH
+ * Copyright 2014 pixeltricks GmbH
  *
  * This file is part of SilverCart.
- *
- * SilverCart is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * SilverCart is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with SilverCart.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @package Silvercart
  * @subpackage Products
@@ -29,9 +16,9 @@
  * @author Sebastian Diel <sdiel@pixeltricks.de>
  * @copyright 2012 pixeltricks GmbH
  * @since 11.12.2012
- * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License
+ * @license see license file in modules root directory
  */
-class SilvercartProductAttributeProductPlugin extends DataObjectDecorator {
+class SilvercartProductAttributeProductPlugin extends DataExtension {
     
     /**
      * Field list vor variation data
@@ -100,20 +87,20 @@ class SilvercartProductAttributeProductPlugin extends DataObjectDecorator {
     /**
      * Adds the variation data to the headings and returns them
      * 
-     * @param DataObjectSet $variants Variants
+     * @param DataList $variants Variants
      * 
-     * @return DataObjectSet
+     * @return ArrayList
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 11.08.2014
      */
     public function Headings($variants) {
         $product  = singleton('SilvercartProduct');
-        $headings = new DataObjectSet();
+        $headings = new ArrayList();
         $headings->push(new ArrayData(array("Name" => 'ProductNumber', "Title" => $product->fieldLabel('ProductNumberShop'))));
         $headings->push(new ArrayData(array("Name" => 'Title',         "Title" => $product->fieldLabel('Title'))));
         
-        $variantAttributes = new DataObjectSet();
+        $variantAttributes = new ArrayList();
         foreach ($variants as $item) {
             if ($item) {
                 $variantAttributes->merge($item->getVariantAttributes());
@@ -145,10 +132,10 @@ class SilvercartProductAttributeProductPlugin extends DataObjectDecorator {
     /**
      * Returns the items.
      * 
-     * @param DataObjectSet     $variants Variants
+     * @param ArrayList         $variants Variants
      * @param SilvercartProduct $original Original product
      * 
-     * @return DataObjectSet
+     * @return ArrayList
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 11.08.2014
@@ -172,13 +159,13 @@ class SilvercartProductAttributeProductPlugin extends DataObjectDecorator {
      * 
      * @param SilvercartProduct $product Product
      * 
-     * @return DataObjectSet
+     * @return ArrayList
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 13.09.2012
      */
     public function Fields($product) {
-        $fields = new DataObjectSet();
+        $fields = new ArrayList();
         $fields->push(new ArrayData(array("Name" => 'ProductNumber', "Value" => $product->ProductNumberShop, "Link" => $product->Link())));
         $fields->push(new ArrayData(array("Name" => 'Title',         "Value" => $product->Title,             "Link" => $product->Link())));
         

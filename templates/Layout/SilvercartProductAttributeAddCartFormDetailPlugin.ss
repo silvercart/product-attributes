@@ -2,11 +2,11 @@
     <div class="clearfix silvercart-product-page-productvariant-box">
         <h3><% _t('SilvercartProductAttributeAddCartForm.HEADLINE') %>:</h3>
 
-        <% control Form %>
-            <% control CustomHtmlFormFieldsByGroup(SilvercartProductAttributes,CustomHtmlFormFieldSelect) %>
+        <% with Form %>
+            <% loop CustomHtmlFormFieldsByGroup(SilvercartProductAttributes,CustomHtmlFormFieldSelect) %>
                 $CustomHtmlFormField
-            <% end_control %>
-        <% end_control %>
+            <% end_loop %>
+        <% end_with %>
     </div>
 
 

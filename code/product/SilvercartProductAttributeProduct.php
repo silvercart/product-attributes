@@ -1,21 +1,8 @@
 <?php
 /**
- * Copyright 2012 pixeltricks GmbH
+ * Copyright 2014 pixeltricks GmbH
  *
  * This file is part of SilverCart.
- *
- * SilverCart is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * SilverCart is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with SilverCart.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @package Silvercart
  * @subpackage Products
@@ -29,21 +16,31 @@
  * @author Sebastian Diel <sdiel@pixeltricks.de>
  * @copyright 2012 pixeltricks GmbH
  * @since 13.03.2012
- * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License
+ * @license see license file in modules root directory
  */
-class SilvercartProductAttributeProduct extends DataObjectDecorator {
+class SilvercartProductAttributeProduct extends DataExtension {
+    
+    /**
+     * Many to many relations
+     *
+     * @var array
+     */
+    private static $many_many = array(
+        'SilvercartProductAttributes'       => 'SilvercartProductAttribute',
+        'SilvercartProductAttributeValues'  => 'SilvercartProductAttributeValue',
+    );
 
     /**
      * Set of variants related with this product
      *
-     * @var DataObjectSet 
+     * @var ArrayList 
      */
     protected $variants = null;
     
     /**
      * A set of the products attributes with the related values
      *
-     * @var DataObjectSet 
+     * @var ArrayList 
      */
     protected $attributesWithValues = null;
     
@@ -56,33 +53,34 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
     protected $relatedAttributeValueMap = null;
     
     /**
-     * Adds som extra data model fields
+     * Indicator whether updateCMSFields is already called
      *
-     * @return array
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 14.03.2012
+     * @var bool
      */
-    public function extraStatics() {
-        return array(
-            'many_many'  => array(
-                'SilvercartProductAttributes'       => 'SilvercartProductAttribute',
-                'SilvercartProductAttributeValues'  => 'SilvercartProductAttributeValue',
-            ),
-        );
-    }
+    protected $updateCMSFieldsIsCalled = false;
     
     /**
      * Updates the CMS fields
      *
-     * @param FieldSet &$fields Fields to update
+     * @param FieldList $fields Fields to update
      * 
      * @return void
      *
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 16.03.2012
      */
-    public function updateCMSFields(FieldSet &$fields) {
+    public function updateCMSFields(FieldList $fields) {
+        if (!$this->updateCMSFieldsIsCalled) {
+            $this->updateCMSFieldsIsCalled = true;
+            $fields->removeByName('SilvercartProductAttributeValues');
+            if ($this->owner->exists()) {
+                $attributeField = $fields->dataFieldByName('SilvercartProductAttributes');
+                /* @var $attributeField GridField */
+                $subObjectComponent = new SilvercartGridFieldSubObjectHandler($this->owner, 'SilvercartProductAttributeValue', $this->owner->SilvercartProductAttributeValues());
+                $attributeField->getConfig()->addComponent($subObjectComponent);
+            }
+        }
+        return;
         $owner  = $this->owner;
         if ($owner->ID > 0) {
             $fields->removeByName('SilvercartProductAttributes');
@@ -176,14 +174,14 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
     /**
      * Returns the products attributes with related values
      * 
-     * @return DataObjectSet
+     * @return ArrayList
      */
     public function getAttributesWithValues() {
         if (is_null($this->attributesWithValues)) {
-            $this->attributesWithValues = new DataObjectSet();
+            $this->attributesWithValues = new ArrayList();
             foreach ($this->owner->SilvercartProductAttributes() as $attribute) {
                 $attributedValues = $this->getAttributedValuesFor($attribute);
-                if ($attributedValues->Count() > 0) {
+                if ($attributedValues->count() > 0) {
                     $this->attributesWithValues->push(
                             new ArrayData(
                                     array(
@@ -203,14 +201,14 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
      * 
      * @param SilvercartProductAttribute $attribute Attribute to get values for
      * 
-     * @return DataObjectSet
+     * @return DataList
      */
     public function getAttributedValuesFor($attribute) {
         $assignedValueIDs   = array();
         if (is_null($this->relatedAttributeValueMap)) {
-            $this->relatedAttributeValueMap = $this->owner->SilvercartProductAttributeValues()->map('ID', 'ID');
+            $this->relatedAttributeValueMap = $this->owner->SilvercartProductAttributeValues()->map('ID', 'ID')->toArray();
         }
-        $attributeMap = $attribute->SilvercartProductAttributeValues()->map('ID', 'ID');
+        $attributeMap = $attribute->SilvercartProductAttributeValues()->map('ID', 'ID')->toArray();
 
         foreach ($this->relatedAttributeValueMap as $attributeValueID) {
             if (array_key_exists($attributeValueID, $attributeMap)) {
@@ -218,15 +216,15 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
             }
         }
         if (count($assignedValueIDs) > 0) {
-            $attributedValues = DataObject::get(
-                    'SilvercartProductAttributeValue',
-                    sprintf(
-                            "SilvercartProductAttributeValue.ID IN (%s)",
-                            implode(',', $assignedValueIDs)
-                    )
-            );
+            $attributedValues = SilvercartProductAttributeValue::get()
+                    ->where(
+                            sprintf(
+                                    "SilvercartProductAttributeValue.ID IN (%s)",
+                                    implode(',', $assignedValueIDs)
+                            )
+                    );
         } else {
-            $attributedValues = new DataObjectSet();
+            $attributedValues = new ArrayList();
         }
         return $attributedValues;
     }
@@ -254,11 +252,11 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
      * 
      * @param int $attributeID Attribute ID to get variants for
      * 
-     * @return DataObjectSet
+     * @return ArrayList
      */
     public function getVariantsFor($attributeID) {
-        $matchedVariants            = new DataObjectSet();
-        $matchingAttributeValues    = new DataObjectSet();
+        $matchedVariants            = new ArrayList();
+        $matchingAttributeValues    = new ArrayList();
         $variants                   = $this->getVariants();
         $variantAttributes          = $this->getVariantAttributes();
         $variantAttributes->remove($variantAttributes->find('ID', $attributeID));
@@ -322,11 +320,11 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
     /**
      * Returns the product attributes which can be used for variants
      * 
-     * @return DataObjectSet
+     * @return ArrayList
      */
     public function getVariantAttributes() {
         $context            = $this->getVariantAttributeContext();
-        $variantAttributes  = new DataObjectSet();
+        $variantAttributes  = new ArrayList();
         $attributes         = $context->SilvercartProductAttributes();
         $groupedAttributes  = $attributes->groupBy('CanBeUsedForVariants');
         if (array_key_exists(1, $groupedAttributes)) {
@@ -338,11 +336,11 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
     /**
      * Returns the product attributes which can be used for variants
      * 
-     * @return DataObjectSet
+     * @return ArrayList
      */
     public function getVariantAttributeValues() {
         $context                = $this->getVariantAttributeContext();
-        $variantAttributeValues = new DataObjectSet();
+        $variantAttributeValues = new ArrayList();
         $variantAttributes      = $this->getVariantAttributes();
         foreach ($variantAttributes as $variantAttribute) {
             $variantAttributeValue = $context->SilvercartProductAttributeValues()->find('SilvercartProductAttributeID', $variantAttribute->ID);
@@ -356,7 +354,7 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
     /**
      * Returns the variants of this product
      * 
-     * @return DataObjectSet
+     * @return DataList
      */
     public function getVariants() {
         if (is_null($this->variants) &&
@@ -372,9 +370,10 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
                 $variants->push($master);
                 $variants->removeDuplicates();
             }
-            $groupedVariants = $variants->groupBy('isActive');
-            if (array_key_exists(1, $groupedVariants)) {
-                $this->variants = $groupedVariants[1];
+            $activeVariants = $variants->filter('isActive',1);
+            if (!is_null($activeVariants) &&
+                $activeVariants->exists()) {
+                $this->variants = $activeVariants;
             }
         }
         return $this->variants;
@@ -383,7 +382,7 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
     /**
      * Sets the variants for this product
      * 
-     * @param DataObjectSet $variants Variants to use
+     * @param DataList $variants Variants to use
      * 
      * @return void
      */
@@ -416,7 +415,7 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
      * @param SilvercartProduct          $product   Product to check variation for
      * @param SilvercartProductAttribute $attribute Attribute to check variation for
      * 
-     * @return DataObjectSet
+     * @return boolean
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 13.02.2014
@@ -455,14 +454,15 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
      * @return boolean
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 12.09.2012
+     * @since 18.09.2014
      */
     public function CanBeUsedAsVariant() {
         $canBeUsedAsVariant         = false;
         $owner                      = $this->owner;
         $productAttributes          = $owner->SilvercartProductAttributes();
-        $groupedProductAttributes   = $productAttributes->groupBy('CanBeUsedForVariants');
-        if (array_key_exists(1, $groupedProductAttributes) ||
+        $variantProductAttributes   = $productAttributes->filter('CanBeUsedForVariants',1);
+        if ((!is_null($variantProductAttributes) &&
+             $variantProductAttributes->exists()) ||
             $this->owner->IsNotBuyable) {
             $canBeUsedAsVariant = true;
         }
@@ -473,20 +473,13 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
     /**
      * Returns this products slave products if exists
      * 
-     * @return DataObjectSet
+     * @return DataList
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 12.09.2012
+     * @since 18.09.2014
      */
     public function getSlaveProducts() {
-        $owner  = $this->owner;
-        $slaves = DataObject::get(
-                'SilvercartProduct',
-                sprintf(
-                        "`SilvercartMasterProductID` = '%s'",
-                        $owner->ID
-                )
-        );
+        $slaves = SilvercartProduct::get()->filter('SilvercartMasterProductID', $this->owner->ID);
         return $slaves;
     }
     
@@ -619,172 +612,4 @@ class SilvercartProductAttributeProduct extends DataObjectDecorator {
         return $fieldGroup;
     }
     
-}
-
-/**
- * The SilvercartProductAttributeProduct_RecordController record controller.
- *
- * @package Silvercart
- * @subpackage Backend
- * @author Sebastian Diel <sdiel@pixeltricks.de>
- * @copyright 2012 pixeltricks GmbH
- * @since 14.03.2012
- * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License
- */
-class SilvercartProductAttributeProduct_RecordController extends DataObjectDecorator {
-    
-    /**
-     * Adds the abillity to execute additional actions to the model admin's
-     * action handling.
-     *
-     * @param SS_HTTPRequest $request The request object
-     * 
-     * @return mixed
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 14.03.2012
-     */
-    public function handleAction(SS_HTTPRequest $request) {
-        $allRequestParams = $request->allParams();
-        
-        if (array_key_exists('ID', $allRequestParams)) {
-            $action = str_replace('action_', '', $allRequestParams['ID']);
-        }
-        if (array_key_exists('OtherID', $allRequestParams)) {
-            $otherId = $allRequestParams['OtherID'];
-        }
-        
-        switch ($action) {
-            case 'doSPAPAddUnAssignedAttribute':
-                return $this->doAddUnAssignedAttribute($request, $otherId);
-                break;
-            case 'doSPAPRemoveAssignedAttribute':
-                return $this->doRemoveAssignedAttribute($request, $otherId);
-                break;
-            case 'doSPAPAddUnAssignedValue':
-                return $this->doAddUnAssignedValue($request, $otherId);
-                break;
-            case 'doSPAPRemoveAssignedValue':
-                return $this->doRemoveAssignedValue($request, $otherId);
-                break;
-            default:
-                return false;
-        }
-    }
-    
-    /**
-     * Adds an unassigned attribute set to a product.
-     *
-     * @param SS_HTTPRequest $request     The request object
-     * @param int            $attributeID The ID of the attributeset
-     * 
-     * @return void
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 14.03.2012
-     */
-    public function doAddUnAssignedAttribute(SS_HTTPRequest $request, $attributeID) {
-        $silvercartProduct  = $this->owner->currentRecord;
-        $attribute          = DataObject::get_by_id('SilvercartProductAttribute', $attributeID);
-        
-        if ($attribute) {
-            if (!$silvercartProduct->SilvercartProductAttributes()->find('ID', $attribute->ID)) {
-                $silvercartProduct->SilvercartProductAttributes()->add($attribute);
-            }
-        }
-        
-        return $this->returnTableFieldForAjaxRequests($attribute->ID);
-    }
-    
-    /**
-     * Removes an assigned attribute set to a product.
-     *
-     * @param SS_HTTPRequest $request     The request object
-     * @param int            $attributeID The ID of the attributed attribute
-     * 
-     * @return void
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 14.03.2012
-     */
-    public function doRemoveAssignedAttribute(SS_HTTPRequest $request, $attributeID) {
-        $silvercartProduct  = $this->owner->currentRecord;
-        $attribute          = DataObject::get_by_id('SilvercartProductAttribute', $attributeID);
-        
-        if ($attribute) {
-            $silvercartProduct->SilvercartProductAttributes()->remove($attribute);
-            foreach ($silvercartProduct->SilvercartProductAttributeValues() as $value) {
-                if ($value->SilvercartProductAttributeID == $attribute->ID) {
-                    $silvercartProduct->SilvercartProductAttributeValues()->remove($value);
-                    $silvercartProduct->write();
-                }
-            }
-        }
-        
-        return $this->returnTableFieldForAjaxRequests();
-    }
-    
-    /**
-     * Adds an unassigned attribute value to a product.
-     *
-     * @param SS_HTTPRequest $request          The request object
-     * @param int            $attributeValueID The ID of the attribute value
-     * 
-     * @return void
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 14.03.2012
-     */
-    public function doAddUnAssignedValue(SS_HTTPRequest $request, $attributeValueID) {
-        $silvercartProduct  = $this->owner->currentRecord;
-        $attributeValue     = DataObject::get_by_id('SilvercartProductAttributeValue', $attributeValueID);
-        
-        if ($attributeValue) {
-            if (!$silvercartProduct->SilvercartProductAttributeValues()->find('ID', $attributeValue->ID)) {
-                $silvercartProduct->SilvercartProductAttributeValues()->add($attributeValue);
-            }
-        }
-        
-        return $this->returnTableFieldForAjaxRequests($attributeValue->SilvercartProductAttribute()->ID);
-    }
-    
-    /**
-     * Adds an unassigned attribute value to a product.
-     *
-     * @param SS_HTTPRequest $request          The request object
-     * @param int            $attributeValueID The ID of the attribute value
-     * 
-     * @return void
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 14.03.2012
-     */
-    public function doRemoveAssignedValue(SS_HTTPRequest $request, $attributeValueID) {
-        $silvercartProduct  = $this->owner->currentRecord;
-        $attributeValue     = DataObject::get_by_id('SilvercartProductAttributeValue', $attributeValueID);
-        
-        if ($attributeValue) {
-            if ($silvercartProduct->SilvercartProductAttributeValues()->find('ID', $attributeValue->ID)) {
-                $silvercartProduct->SilvercartProductAttributeValues()->remove($attributeValue);
-            }
-        }
-        
-        return $this->returnTableFieldForAjaxRequests($attributeValue->SilvercartProductAttribute()->ID);
-    }
-    
-    /**
-     * Returns the SilvercartProductAttributeTableListField for ajax requests as 
-     * HTML code.
-     *
-     * @param int $activeAttributeID The ID of the active attribute
-     *
-     * @return string
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 14.03.2012
-     */
-    protected function returnTableFieldForAjaxRequests($activeAttributeID = null) {
-        $data = SilvercartProductAttributeTableListField::getFieldData($this->owner->currentRecord, $activeAttributeID);
-        return $this->owner->customise($data)->renderWith('SilvercartProductAttributeTableListField');
-    }
 }

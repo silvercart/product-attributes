@@ -1,11 +1,11 @@
 <div id="{$FormName}_{$FieldName}_Box" class="type-range<% if errorMessage %> error<% end_if %><% if isRequiredField %> requiredField<% end_if %>">
     <% if errorMessage %>
         <div class="errorList">
-            <% control errorMessage %>
+            <% with errorMessage %>
             <strong class="message">
                 {$message}
             </strong>
-            <% end_control %>
+            <% end_with %>
         </div>
     <% end_if %>
 
@@ -14,11 +14,11 @@
     
     &nbsp;
     
-    <% control Parent %>
+    <% with Parent %>
         $CustomHtmlFormFieldByName(MaxPrice, CustomHtmlFormFieldPlain) $CurrencySymbol
         
-        <% control Actions %>
+        <% loop Actions %>
             $Field
-        <% end_control %>
-    <% end_control %>
+        <% end_loop %>
+    <% end_with %>
 </div>

@@ -1,21 +1,8 @@
 <?php
 /**
- * Copyright 2012 pixeltricks GmbH
+ * Copyright 2014 pixeltricks GmbH
  *
  * This file is part of SilverCart.
- *
- * SilverCart is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * SilverCart is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with SilverCart.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @package Silvercart
  * @subpackage Widgets
@@ -28,12 +15,12 @@
  * @subpackage Widgets
  * @author Sebastian Diel <sdiel@pixeltricks.de>
  * @since 15.03.2012
- * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License
+ * @license see license file in modules root directory
  * @copyright 2012 pixeltricks GmbH
  */
 class SilvercartProductAttributeFilterWidget extends SilvercartWidget {
     
-    public static $db = array(
+    private static $db = array(
         'FilterBehaviour'   => 'Enum("MultipleChoice,SingleChoice","MultipleChoice")',
         'RememberFilter'    => 'Boolean(0)',
     );
@@ -155,7 +142,7 @@ class SilvercartProductAttributeFilterWidget extends SilvercartWidget {
  * @subpackage Widgets
  * @author Sebastian Diel <sdiel@pixeltricks.de>
  * @since 15.03.2012
- * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License
+ * @license see license file in modules root directory
  * @copyright 2011 pixeltricks GmbH
  */
 class SilvercartProductAttributeFilterWidget_Controller extends SilvercartWidget_Controller {
@@ -163,7 +150,7 @@ class SilvercartProductAttributeFilterWidget_Controller extends SilvercartWidget
     /**
      * Possible filter attributes
      *
-     * @var DataObjectSet 
+     * @var ArrayList 
      */
     protected $attributes = null;
     
@@ -177,7 +164,7 @@ class SilvercartProductAttributeFilterWidget_Controller extends SilvercartWidget
     /**
      * Product list
      *
-     * @var DataObjectSet
+     * @var ArrayList
      */
     protected $products = null;
     
@@ -194,83 +181,75 @@ class SilvercartProductAttributeFilterWidget_Controller extends SilvercartWidget
      * @return void
      *
      * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 15.03.2012 
+     * @since 18.09.2014
      */
     public function init() {
         parent::init();
         if (Controller::curr() instanceof SilvercartProductGroupPage_Controller &&
             !Controller::curr()->isProductDetailView()) {
             $this->setFormAction(Controller::curr()->Link() . 'SilvercartProductAttributeFilter');
-            $attributes = new DataObjectSet();
+            $attributes = new ArrayList();
             $products   = $this->getProducts();
             if ($products &&
                 $products->Count() > 0) {
                 $productIDs = implode(',', $products->map('ID','ID'));
-                $attributes = DataObject::get(
-                        'SilvercartProductAttribute',
-                        sprintf(
-                                "`SilvercartProductAttribute`.`ID` IN (%s) AND `SilvercartProductAttribute`.`CanBeUsedForFilterWidget` = 1",
+                $attributeList = SilvercartProductAttribute::get()
+                        ->where(
                                 sprintf(
-                                        "SELECT DISTINCT
-                                            SilvercartProductAttributeID
-                                        FROM
-                                            SilvercartProduct_SilvercartProductAttributes
-                                        WHERE
-                                            SilvercartProductID IN (%s)",
-                                        $productIDs
+                                        '"SilvercartProductAttribute"."ID" IN (%s) AND "SilvercartProductAttribute"."CanBeUsedForFilterWidget" = 1',
+                                        sprintf(
+                                                "SELECT DISTINCT
+                                                    SilvercartProductAttributeID
+                                                FROM
+                                                    SilvercartProduct_SilvercartProductAttributes
+                                                WHERE
+                                                    SilvercartProductID IN (%s)",
+                                                $productIDs
+                                        )
                                 )
-                        )
-                );
-                if ($attributes) {
-                    $attributeValues    = DataObject::get(
-                            'SilvercartProductAttributeValue',
-                            sprintf(
-                                    "`SilvercartProductAttributeValue`.`ID` IN (%s)",
+                        )->sort('"SilvercartProductAttributeLanguage"."Title" ASC');
+                if ($attributeList->count() > 0) {
+                    $attributeValues    = SilvercartProductAttributeValue::get()
+                            ->where(
                                     sprintf(
-                                            "SELECT DISTINCT
-                                                SilvercartProductAttributeValueID
-                                            FROM
-                                                SilvercartProduct_SilvercartProductAttributeValues
-                                            WHERE
-                                                SilvercartProductID IN (%s)",
-                                            $productIDs
+                                            '"SilvercartProductAttributeValue"."ID" IN (%s)',
+                                            sprintf(
+                                                    "SELECT DISTINCT
+                                                        SilvercartProductAttributeValueID
+                                                    FROM
+                                                        SilvercartProduct_SilvercartProductAttributeValues
+                                                    WHERE
+                                                        SilvercartProductID IN (%s)",
+                                                    $productIDs
+                                            )
                                     )
-                            ),
-                            "`SilvercartProductAttributeID`, `SilvercartProductAttributeValueLanguage`.`Title`"
-                    );
+                            )->sort('"SilvercartProductAttributeID","SilvercartProductAttributeValueLanguage"."Title"');
                     if ($attributeValues) {
-                        $attributeValuesArray = $attributeValues->groupBy('SilvercartProductAttributeID');
-                        foreach ($attributes as $attribute) {
-                            if (array_key_exists($attribute->ID, $attributeValuesArray)) {
-                                $attribute->assignValues($attributeValuesArray[$attribute->ID]);
-                                if (!$attribute->hasAssignedValues() ||
-                                    ($attribute->getAssignedValues()->Count() == 1 &&
-                                    !$attribute->getAssignedValues()->First()->IsFilterValue())) {
-                                    $attributes->remove($attribute);
+                        foreach ($attributeList as $attribute) {
+                            $values = $attributeValues->filter('SilvercartProductAttributeID', $attribute->ID);
+                            if ($values->count() > 0) {
+                                $attribute->assignValues($values);
+                                if (!(!$attribute->hasAssignedValues() ||
+                                      ($attribute->getAssignedValues()->Count() == 1 &&
+                                      !$attribute->getAssignedValues()->First()->IsFilterValue()))) {
+                                    
+                                    $attributes->push($attribute);
                                 }
-                            } else {
-                                $attributes->remove($attribute);
                             }
                         }
                     } else {
-                        $attributes = new DataObjectSet();
+                        $attributes = new ArrayList();
                     }
                 }
             }
-            if ($attributes instanceof DataObjectSet) {
-                $groupedAttributes = $attributes->groupBy('HasSelectedValues');
-                if (count($groupedAttributes) > 1) {
-                    krsort($groupedAttributes);
-                    $attributes = new DataObjectSet();
-                    foreach ($groupedAttributes as $groupedAttribute) {
-                        $groupedAttribute->sort('Title');
-                        $attributes->merge($groupedAttribute);
-                    }
-                }
+            if ($attributes instanceof ArrayList) {
+                $attributes = $attributes->sort(array(
+                    'HasSelectedValues' => 'DESC',
+                    'Title' => 'ASC',
+                ));
             } else {
-                $attributes = new DataObjectSet();
+                $attributes = new ArrayList();
             }
-            $attributes->resetItemIndexes();
             $this->setAttributes($attributes);
         }
     }
@@ -296,7 +275,7 @@ class SilvercartProductAttributeFilterWidget_Controller extends SilvercartWidget
     /**
      * Returns the attributes
      *
-     * @return DataObjectSet 
+     * @return ArrayList 
      */
     public function getAttributes() {
         return $this->attributes;
@@ -305,7 +284,7 @@ class SilvercartProductAttributeFilterWidget_Controller extends SilvercartWidget
     /**
      * Sets the Attributes
      *
-     * @param DataObjectSet $attributes Attributes
+     * @param ArrayList $attributes Attributes
      * 
      * @return void
      */
@@ -336,20 +315,19 @@ class SilvercartProductAttributeFilterWidget_Controller extends SilvercartWidget
     /**
      * Returns all filter relevant products
      *
-     * @return DataObjectSet
+     * @return ArrayList
      */
     public function getProducts() {
         if (is_null($this->products)) {
             if (class_exists('SilvercartGroupBehaviorProductGroupPage_Controller')) {
                 SilvercartGroupBehaviorProductGroupPage_Controller::$disable_filter = true;
             }
-            $products = new DataObjectSet();
             if ($this->FilterBehaviour == 'MultipleChoice') {
-                $products = Controller::curr()->getUnfilteredProducts(false, false, true);
-                $products->merge(Controller::curr()->getInjectedProducts(array('SilvercartProductAttributeFilterWidget')));
+                $products = new ArrayList(Controller::curr()->getUnfilteredProducts(false, false, true)->toArray());
+                $products->merge(new ArrayList(Controller::curr()->getInjectedProducts(array('SilvercartProductAttributeFilterWidget'))->toArray()));
             } else {
-                $products = Controller::curr()->getProducts(false, false, true, true);
-                $products->merge(Controller::curr()->getInjectedProducts(array('SilvercartProductAttributeFilterWidget')));
+                $products = new ArrayList(Controller::curr()->getProducts(false, false, true, true)->toArray());
+                $products->merge(new ArrayList(Controller::curr()->getInjectedProducts(array('SilvercartProductAttributeFilterWidget'))->toArray()));
             }
             $this->products = $products;
             if (class_exists('SilvercartGroupBehaviorProductGroupPage_Controller')) {

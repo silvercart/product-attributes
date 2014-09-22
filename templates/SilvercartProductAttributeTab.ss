@@ -10,16 +10,16 @@
         <th>{$fieldLabel(SilvercartProductAttribute)}</th>
         <th>{$fieldLabel(SilvercartProductAttributeValue)}</th>
     </tr>
-    <% control AttributesWithValues %>
+    <% loop AttributesWithValues %>
     <tr class="$EvenOdd">
         <td class="align_top padding_right">{$Attribute.Title}</td>
         <td class="align_top padding_right">
-            <% control Values %>
+            <% loop Values %>
                 <% if First %><% else %>, <% end_if %>{$Title}
-            <% end_control %>
+            <% end_loop %>
         </td>
     </tr>
-    <% end_control %>
+    <% end_loop %>
 </table>
 <% end_if %>
 <% end_if %>

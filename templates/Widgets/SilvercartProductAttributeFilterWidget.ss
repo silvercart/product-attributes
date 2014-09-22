@@ -1,6 +1,6 @@
 <% cached WidgetCacheKey %>
     <% if Attributes %>
-        <% control Attributes %>
+        <% loop Attributes %>
             <% if First %>
             <% else %>
                 </div>
@@ -16,17 +16,17 @@
                     <div class="silvercart-widget-content_frame silvercart-product-attribute-filter-widget">
                         <ul class="vlist silvercart-product-attribute">
             <% if AssignedValues %>
-                <% control AssignedValues %>
+                <% loop AssignedValues %>
                             <li>
                                 <input type="checkbox" name="silvercart-product-attribute-value-{$ID}" id="silvercart-product-attribute-value-{$ID}" class="silvercart-product-attribute-value silvercart-product-attribute-{$SilvercartProductAttribute.ID}" value="$ID" <% if IsFilterValue %>checked="checked"<% end_if %> />
                                 <label for="silvercart-product-attribute-value-{$ID}">$Title</label>
                             </li>
-                <% end_control %>
+                <% end_loop %>
             <% end_if %>
                         </ul>
                         <a href="#" rel="$ID" class="remove-filter"><% sprintf(_t('SilvercartProductAttributeFilterWidget.DISABLE_FILTER_FOR'),$Title) %></a>
                     </div>
-        <% end_control %>
+        <% end_loop %>
 
     <form name="silvercart-product-attribute-filter-form" method="post" action="$FormAction">
         <input type="hidden" name="silvercart-product-attribute-selected-values" value="$CurrentPage.FilterValueList" />
@@ -39,10 +39,10 @@
         if (jQuery(".silvercart-product-group-page-selectors")) {
             jQuery(".silvercart-product-group-page-selectors input[type=submit]").hide();
         }
-<% if CurrentPage.FilterValueDataObjectSet %>
-    <% control CurrentPage.FilterValueDataObjectSet %>
+<% if CurrentPage.FilterValueArrayList %>
+    <% loop CurrentPage.FilterValueArrayList %>
             SilvercartProductAttributeFilterPush($ID);
-    <% end_control %>
+    <% end_loop %>
 <% end_if %>
     });
 </script>

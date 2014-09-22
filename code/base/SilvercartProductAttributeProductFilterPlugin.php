@@ -1,21 +1,8 @@
 <?php
 /**
- * Copyright 2012 pixeltricks GmbH
+ * Copyright 2014 pixeltricks GmbH
  *
  * This file is part of SilverCart.
- *
- * SilverCart is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * SilverCart is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with SilverCart.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @package Silvercart
  * @subpackage ProductFilterPlugins
@@ -28,7 +15,7 @@
  * @subpackage ProductFilterPlugins
  * @author Sebastian Diel <sdiel@pixeltricks.de>
  * @since 22.03.2012
- * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License
+ * @license see license file in modules root directory
  * @copyright 2012 pixeltricks GmbH
  */
 class SilvercartProductAttributeProductFilterPlugin {
@@ -80,7 +67,7 @@ class SilvercartProductAttributeProductFilterPlugin {
                         SilvercartGroupBehaviorProductGroupPage_Controller::$disable_filter = true;
                     }
                     $filters['SilvercartProductAttributeProductFilterPlugin'] = sprintf(
-                            "AND `SilvercartProduct`.`ID` IN (%s)",
+                            'AND "SilvercartProduct"."ID" IN (%s)',
                             implode(',', $productIDs)
                     );
                 }
@@ -94,20 +81,20 @@ class SilvercartProductAttributeProductFilterPlugin {
             if (!empty($minPrice) &&
                 !empty($maxPrice)) {
                 $filters['SilvercartProductAttributeProductPriceFilterPlugin'] = sprintf(
-                        "AND `SilvercartProduct`.`%s` BETWEEN '%s' AND '%s'",
+                        'AND "SilvercartProduct"."%s" BETWEEN \'%s\' AND \'%s\'',
                         $priceField,
                         $minPrice,
                         $maxPrice
                 );
             } elseif (!empty($minPrice)) {
                 $filters['SilvercartProductAttributeProductPriceFilterPlugin'] = sprintf(
-                        "AND `SilvercartProduct`.`%s` >= '%s'",
+                        'AND "SilvercartProduct"."%s" >= \'%s\'',
                         $priceField,
                         $minPrice
                 );
             } elseif (!empty($maxPrice)) {
                 $filters['SilvercartProductAttributeProductPriceFilterPlugin'] = sprintf(
-                        "AND `SilvercartProduct`.`%s` <= '%s'",
+                        'AND "SilvercartProduct"."%s" <= \'%s\'',
                         $priceField,
                         $maxPrice
                 );
@@ -149,12 +136,12 @@ class SilvercartProductAttributeProductFilterPlugin {
                     empty($filterValues[0]))) {
                     if ($productGroup->getWidget()->FilterBehaviour == 'MultipleChoice') {
                         $query = sprintf(
-                                "SELECT DISTINCT
-                                    SPSPAV.`SilvercartProductID` AS PID
+                                'SELECT DISTINCT
+                                    "SPSPAV"."SilvercartProductID" AS PID
                                 FROM
-                                    `SilvercartProduct_SilvercartProductAttributeValues` AS SPSPAV
+                                    "SilvercartProduct_SilvercartProductAttributeValues" AS SPSPAV
                                 WHERE
-                                    SPSPAV.`SilvercartProductAttributeValueID` IN (%s)",
+                                    "SPSPAV"."SilvercartProductAttributeValueID" IN (%s)',
                                 "'" . implode("','", $filterValues) . "'"
                         );
                         $records = DB::query($query);
@@ -169,19 +156,18 @@ class SilvercartProductAttributeProductFilterPlugin {
                             $additionalWhereClause = "";
                             if (count($productIDs) > 0) {
                                 $additionalWhereClause = sprintf(
-                                    "AND
-                                        SPSPAV.`SilvercartProductID` IN (%s)",
+                                    'AND "SPSPAV"."SilvercartProductID" IN (%s)',
                                     implode(',', $productIDs)
                                 );
                             }
                             $query = sprintf(
-                                    "SELECT DISTINCT
-                                        SPSPAV.`SilvercartProductID` AS PID
+                                    'SELECT DISTINCT
+                                        "SPSPAV"."SilvercartProductID" AS PID
                                     FROM
-                                        `SilvercartProduct_SilvercartProductAttributeValues` AS SPSPAV
+                                        "SilvercartProduct_SilvercartProductAttributeValues" AS SPSPAV
                                     WHERE
-                                        SPSPAV.`SilvercartProductAttributeValueID` = %s
-                                    %s",
+                                        "SPSPAV"."SilvercartProductAttributeValueID" = %s
+                                    %s',
                                     $filterValue,
                                     $additionalWhereClause
                             );

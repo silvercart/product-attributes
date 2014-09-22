@@ -1,21 +1,8 @@
 <?php
 /**
- * Copyright 2011 pixeltricks GmbH
+ * Copyright 2014 pixeltricks GmbH
  *
  * This file is part of SilverCart.
- *
- * SilverCart is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * SilverCart is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with SilverCart.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @package SilvercartProductAttributes
  * @subpackage FormFields
@@ -30,7 +17,7 @@
  * @copyright pixeltricks GmbH
  * @author Sebastian Diel <sdiel@pixeltricks.de>
  * @since 14.03.2012
- * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License
+ * @license see license file in modules root directory
  */
 class SilvercartProductAttributeTableListField extends FormField {
     
@@ -61,12 +48,14 @@ class SilvercartProductAttributeTableListField extends FormField {
     /**
      * Returns the rendered HTML code for this field.
      *
+     * @param array $properties key value pairs of template variables
+     * 
      * @return string
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 14.03.2012
-     */
-    public function FieldHolder() {
+    */
+   public function FieldHolder($properties = array()) {
         Requirements::css(SilvercartTools::getBaseURLSegment() . 'silvercart_product_attributes/css/SilvercartProductAttributeTableListField.css');
         $data       = self::getFieldData($this->controller);
         $pluginData = SilvercartPlugin::call(
@@ -99,8 +88,8 @@ class SilvercartProductAttributeTableListField extends FormField {
     public static function getFieldData($record, $activeAttributeID = null) {
         $assignedAttributes     = array();
         $unAssignedAttributes   = array();
-        $attributes             = DataObject::get('SilvercartProductAttribute');
-        $attributedAttributes   = new DataObjectSet();
+        $attributes             = SilvercartProductAttribute::get();
+        $attributedAttributes   = new ArrayList();
         
         // Get assigned and unassigned attribute sets
         if ($attributes) {
@@ -123,16 +112,16 @@ class SilvercartProductAttributeTableListField extends FormField {
                     $unAssignedValues[] = $value;
                 }
             }
-            $attribute->setAssignedValues(new DataObjectSet($assignedValues));
-            $attribute->setUnAssignedValues(new DataObjectSet($unAssignedValues));
+            $attribute->setAssignedValues(new ArrayList($assignedValues));
+            $attribute->setUnAssignedValues(new ArrayList($unAssignedValues));
             $attributedAttributes->push($attribute);
         }
             
         
         $data = array(
             'AttributedAttributes'      => $attributedAttributes,
-            'assignedAttributes'        => new DataObjectSet($assignedAttributes),
-            'unAssignedAttributes'      => new DataObjectSet($unAssignedAttributes),
+            'assignedAttributes'        => new ArrayList($assignedAttributes),
+            'unAssignedAttributes'      => new ArrayList($unAssignedAttributes),
             'setActiveAttributeID'      => is_null($activeAttributeID) ? false : true,
             'activeAttributeID'         => $activeAttributeID
         );

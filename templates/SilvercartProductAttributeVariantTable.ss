@@ -3,21 +3,21 @@
     <table class="data">
         <thead>
             <tr>
-            <% control Headings %>
+            <% loop Headings %>
                 <th class="{$Name}"><span>{$Title}</span></th>
-            <% end_control %>
+            <% end_loop %>
                 <th>&nbsp;</th>
             </tr>
         </thead>
         <tbody>
-            <% control Items %>
+            <% loop Items %>
             <tr class="{$EvenOdd} {$FirstLast}">
-                <% control Fields %>
+                <% loop Fields %>
                 <td class="{$FirstLast} {$Name}"><a href="{$Link}">{$Value}</a></td>
-                <% end_control %>
+                <% end_loop %>
                 <td><a href="{$Link}"><% _t('SilvercartPage.DETAILS') %></a></td>
             </tr>
-            <% end_control %>
+            <% end_loop %>
         </tbody>
     </table>
 </div>

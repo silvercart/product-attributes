@@ -4,42 +4,29 @@
  *
  * This file is part of SilverCart.
  *
- * SilverCart is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or * (at your option) any later version.
- *
- * SilverCart is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with SilverCart.  If not, see <http://www.gnu.org/licenses/>.
- *
  * @package Silvercart
  * @subpackage Config
  * @ignore 
  */
 
 // Register Extensions
-Object::add_extension('SilvercartOrderPosition',                                'SilvercartProductAttributeOrderPosition');
-Object::add_extension('SilvercartProduct',                                      'SilvercartProductAttributeProduct');
-Object::add_extension('SilvercartProduct_RecordController',                     'SilvercartProductAttributeProduct_RecordController');
-Object::add_extension('SilvercartProductPluginProvider',                        'SilvercartProductAttributeProductPlugin');
-Object::add_extension('SilvercartProductGroupPage_Controller',                  'SilvercartProductAttributeProductGroupPage_Controller');
+SilvercartOrderPosition::add_extension('SilvercartProductAttributeOrderPosition');
+SilvercartProduct::add_extension('SilvercartProductAttributeProduct');
+SilvercartProductPluginProvider::add_extension('SilvercartProductAttributeProductPlugin');
+SilvercartProductGroupPage_Controller::add_extension('SilvercartProductAttributeProductGroupPage_Controller');
 // DataObject Translations
-Object::add_extension('SilvercartProductAttributeLanguage',                     'SilvercartLanguageDecorator');
-Object::add_extension('SilvercartProductAttributeSetLanguage',                  'SilvercartLanguageDecorator');
-Object::add_extension('SilvercartProductAttributeValueLanguage',                'SilvercartLanguageDecorator');
+SilvercartProductAttributeLanguage::add_extension('SilvercartLanguageDecorator');
+SilvercartProductAttributeSetLanguage::add_extension('SilvercartLanguageDecorator');
+SilvercartProductAttributeValueLanguage::add_extension('SilvercartLanguageDecorator');
 // Translatable DataObjects
-Object::add_extension('SilvercartProductAttribute',                             'SilvercartDataObjectMultilingualDecorator');
-Object::add_extension('SilvercartProductAttributeSet',                          'SilvercartDataObjectMultilingualDecorator');
-Object::add_extension('SilvercartProductAttributeValue',                        'SilvercartDataObjectMultilingualDecorator');
+SilvercartProductAttribute::add_extension('SilvercartDataObjectMultilingualDecorator');
+SilvercartProductAttributeSet::add_extension('SilvercartDataObjectMultilingualDecorator');
+SilvercartProductAttributeValue::add_extension('SilvercartDataObjectMultilingualDecorator');
 // Register SilvercartPlugins
-Object::add_extension('SilvercartOrderPluginProvider',                          'SilvercartProductAttributeOrderPlugin');
-Object::add_extension('SilvercartOrderPositionPluginProvider',                  'SilvercartProductAttributeOrderPositionPlugin');
-Object::add_extension('SilvercartProductAddCartFormDetailPluginProvider',       'SilvercartProductAttributeAddCartFormDetailPlugin');
-Object::add_extension('SilvercartShoppingCartPositionPluginProvider',           'SilvercartProductAttributeShoppingCartPositionPlugin');
+SilvercartOrderPluginProvider::add_extension('SilvercartProductAttributeOrderPlugin');
+SilvercartOrderPositionPluginProvider::add_extension('SilvercartProductAttributeOrderPositionPlugin');
+SilvercartProductAddCartFormDetailPluginProvider::add_extension('SilvercartProductAttributeAddCartFormDetailPlugin');
+SilvercartShoppingCartPositionPluginProvider::add_extension('SilvercartProductAttributeShoppingCartPositionPlugin');
 // Register FilterPlugins
 SilvercartProductGroupPage_Controller::registerFilterPlugin('SilvercartProductAttributeProductFilterPlugin');
 SilvercartSearchResultsPage_Controller::registerFilterPlugin('SilvercartProductAttributeProductFilterPlugin');

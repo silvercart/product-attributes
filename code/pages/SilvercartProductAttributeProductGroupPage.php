@@ -1,21 +1,8 @@
 <?php
 /**
- * Copyright 2012 pixeltricks GmbH
+ * Copyright 2014 pixeltricks GmbH
  *
  * This file is part of SilverCart.
- *
- * SilverCart is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * SilverCart is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with SilverCart.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @package Silvercart
  * @subpackage Pages
@@ -29,9 +16,9 @@
  * @author Sebastian Diel <sdiel@pixeltricks.de>
  * @copyright 2012 pixeltricks GmbH
  * @since 13.03.2012
- * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License
+ * @license see license file in modules root directory
  */
-class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDecorator {
+class SilvercartProductAttributeProductGroupPage_Controller extends DataExtension {
     
     protected $filterEnabled                = true;
     
@@ -41,7 +28,7 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
     
     protected $widget                       = null;
 
-    public static $allowed_actions          = array(
+    private static $allowed_actions         = array(
         'ClearSilvercartProductAttributeFilter',
         'SilvercartProductAttributeFilter',
         'ClearSilvercartProductAttributePriceFilter',
@@ -110,11 +97,11 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
      * @return void
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 13.03.2012 
+     * @since 18.09.20124
      */
     public function initSilvercartProductAttributeFilter(SS_HTTPRequest $request) {
         $widgetID               = $request->postVar('silvercart-product-attribute-widget');
-        $widget                 = DataObject::get_by_id('SilvercartProductAttributeFilterWidget', $widgetID);
+        $widget                 = SilvercartProductAttributeFilterWidget::get()->byID($widgetID);
         $selectedValues         = $request->postVar('silvercart-product-attribute-selected-values');
         $selectedValuesArray    = explode(',', $selectedValues);
         $this->setFilterValues($selectedValuesArray);
@@ -208,7 +195,7 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
      * @param string $sort             Sort filter
      * @param bool   $disableLimit     Disable product limitation or not?
      * 
-     * @return DataObjectSet
+     * @return DataList
      */
     public function getUnfilteredProducts($numberOfProducts = false, $sort = false, $disableLimit = false) {
         $this->disableFilter();
@@ -318,15 +305,15 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
     }
     
     /**
-     * Returns the filter values as a DataObjectSet
+     * Returns the filter values as a ArrayList
      *
-     * @return DataObjectSet
+     * @return ArrayList
      */
-    public function getFilterValueDataObjectSet() {
-        $filterValueDataObjectSet = new DataObjectSet();
+    public function getFilterValueArrayList() {
+        $filterValueArrayList = new ArrayList();
         if (is_array($this->getFilterValues())) {
             foreach ($this->getFilterValues() as $filterValue) {
-                $filterValueDataObjectSet->push(
+                $filterValueArrayList->push(
                         new DataObject(
                                 array(
                                     'ID' => $filterValue,
@@ -335,7 +322,7 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
                 );
             }
         }
-        return $filterValueDataObjectSet;
+        return $filterValueArrayList;
     }
     
     /**

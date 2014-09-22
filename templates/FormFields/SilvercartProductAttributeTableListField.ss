@@ -5,9 +5,9 @@
         <div class="unAssignedAttributes">
             <% if unAssignedAttributes %>
                 <select name="action_doSPAPAddUnAssignedAttribute">
-                <% control unAssignedAttributes %>
+                <% loop unAssignedAttributes %>
                     <option value="$ID">$Title</option>
-                <% end_control %>
+                <% end_loop %>
                 </select>
                 <input type="submit" value="<% _t('SilvercartProductAttributeTableListField.ASSIGN_LABEL') %>" />
             <% else %>
@@ -18,7 +18,7 @@
         <h3><% _t('SilvercartProductAttributeTableListField.ASSIGNEDATTRIBUTES') %>:</h3>
 
         <% if AttributedAttributes %>
-            <% control AttributedAttributes %>
+            <% loop AttributedAttributes %>
                 <div class="attributeTableSwitch" id="attributeTableSwitch{$ID}">
                     <% if CanBeUsedForVariants %>
                     <a href="#" rel="$ID" class="closed canbeusedforvariants"><strong>$Title</strong> <i>(<% _t('SilvercartProductAttribute.CAN_BE_USED_FOR_VARIANTS') %>)</i></a>
@@ -48,14 +48,14 @@
 
                         <tbody>
                         <% if assignedValues %>
-                            <% control assignedValues %>
+                            <% loop assignedValues %>
                             <tr class="attributeRow">
                                 <td class="left">$Title</td>
                                 <td class="actionbar">
                                     <input type="submit" value="<% _t('SilvercartProductAttributeTableListField.ACTION_REMOVE_LABEL') %>" name="action_doSPAPRemoveAssignedValue" rel="$ID" />
                                 </td>
                             </tr>
-                            <% end_control %>
+                            <% end_loop %>
                         <% else %>
                             <tr class="attributeRow">
                                 <td colspan="2">
@@ -68,9 +68,9 @@
                             <tr class="attributeRow">
                                 <td colspan="2" class="unAssignedValues">
                                     <select name="action_doSPAPAddUnAssignedValue">
-                                    <% control unAssignedValues %>
+                                    <% loop unAssignedValues %>
                                         <option value="$ID">$Title</option>
-                                    <% end_control %>
+                                    <% end_loop %>
                                     </select>
                                     <input type="submit" value="<% _t('SilvercartProductAttributeTableListField.ASSIGN_LABEL') %>" />
                                 </td>
@@ -85,7 +85,7 @@
                         </tbody>
                     </table>
                 </div>
-            <% end_control %>
+            <% end_loop %>
         <% else %>
             <% _t('SilvercartProductAttributeTableListField.NOATTRIBUTESATTRIBUTED') %>
         <% end_if %>

@@ -1,21 +1,8 @@
 <?php
 /**
- * Copyright 2012 pixeltricks GmbH
+ * Copyright 2014 pixeltricks GmbH
  *
  * This file is part of SilverCart.
- *
- * SilverCart is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * SilverCart is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with SilverCart.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @package Silvercart
  * @subpackage Products
@@ -29,27 +16,27 @@
  * @author Sebastian Diel <sdiel@pixeltricks.de>
  * @copyright 2012 pixeltricks GmbH
  * @since 13.03.2012
- * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License
+ * @license see license file in modules root directory
  */
 class SilvercartProductAttributeValue extends DataObject {
     
-    public static $has_one = array(
+    private static $has_one = array(
         'SilvercartProductAttribute'  => 'SilvercartProductAttribute',
     );
     
-    public static $has_many = array(
+    private static $has_many = array(
         'SilvercartProductAttributeValueLanguages'  => 'SilvercartProductAttributeValueLanguage',
     );
     
-    public static $belongs_many_many = array(
+    private static $belongs_many_many = array(
         'SilvercartProducts'                => 'SilvercartProduct',
     );
 
-    public static $casting = array(
+    private static $casting = array(
         'Title' => 'Text',
     );
     
-    public static $default_sort = "`SilvercartProductAttributeValueLanguage`.`Title`";
+    private static $default_sort = '"SilvercartProductAttributeValueLanguage"."Title"';
     
     /**
      * Returns the translated title
@@ -90,21 +77,14 @@ class SilvercartProductAttributeValue extends DataObject {
     
     /**
      * Customized CMS fields
-     * 
-     * @param array $params Optional params to manuipulate the scaffolding behaviour
      *
-     * @return FieldSet the fields for the backend
+     * @return FieldList the fields for the backend
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 04.05.2012
+     * @since 18.09.2014
      */
-    public function getCMSFields($params = null) {
-        $fields = parent::getCMSFields($params);
-        
-        $languageFields = SilvercartLanguageHelper::prepareCMSFields($this->getLanguage(true));
-        foreach ($languageFields as $languageField) {
-            $fields->insertBefore($languageField, 'SilvercartProductAttributeID');
-        }
+    public function getCMSFields() {
+        $fields = SilvercartDataObject::getCMSFields($this);
         return $fields;
     }
     

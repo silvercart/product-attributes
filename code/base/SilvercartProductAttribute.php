@@ -1,21 +1,8 @@
 <?php
 /**
- * Copyright 2012 pixeltricks GmbH
+ * Copyright 2014 pixeltricks GmbH
  *
  * This file is part of SilverCart.
- *
- * SilverCart is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * SilverCart is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with SilverCart.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @package Silvercart
  * @subpackage Products
@@ -29,7 +16,7 @@
  * @author Sebastian Diel <sdiel@pixeltricks.de>
  * @copyright 2012 pixeltricks GmbH
  * @since 13.03.2012
- * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License
+ * @license see license file in modules root directory
  */
 class SilvercartProductAttribute extends DataObject {
     
@@ -38,7 +25,7 @@ class SilvercartProductAttribute extends DataObject {
      *
      * @var array
      */
-    public static $db = array(
+    private static $db = array(
         'CanBeUsedForFilterWidget'  => 'Boolean(1)',
         'CanBeUsedForDataSheet'     => 'Boolean(1)',
         'CanBeUsedForVariants'      => 'Boolean',
@@ -49,7 +36,7 @@ class SilvercartProductAttribute extends DataObject {
      *
      * @var array
      */
-    public static $has_many = array(
+    private static $has_many = array(
         'SilvercartProductAttributeLanguages'   => 'SilvercartProductAttributeLanguage',
         'SilvercartProductAttributeValues'      => 'SilvercartProductAttributeValue',
     );
@@ -59,7 +46,7 @@ class SilvercartProductAttribute extends DataObject {
      *
      * @var array
      */
-    public static $belongs_many_many = array(
+    private static $belongs_many_many = array(
         'SilvercartProducts'                => 'SilvercartProduct',
         'SilvercartProductAttributeSets'    => 'SilvercartProductAttributeSet',
     );
@@ -69,7 +56,7 @@ class SilvercartProductAttribute extends DataObject {
      *
      * @var array
      */
-    public static $casting = array(
+    private static $casting = array(
         'Title'                                     => 'Text',
         'PluralTitle'                               => 'Text',
         'SilvercartProductAttributeSetsAsString'    => 'Text',
@@ -85,30 +72,30 @@ class SilvercartProductAttribute extends DataObject {
      * 
      * @var array 
      */
-    public static $indexes = array(
-        'CanBeUsedForFilterWidget'  => 'INDEX (CanBeUsedForFilterWidget)',
-        'CanBeUsedForDataSheet'     => 'INDEX (CanBeUsedForDataSheet)',
-        'CanBeUsedForVariants'      => 'INDEX (CanBeUsedForVariants)',
+    private static $indexes = array(
+        'CanBeUsedForFilterWidget'  => '("CanBeUsedForFilterWidget")',
+        'CanBeUsedForDataSheet'     => '("CanBeUsedForDataSheet")',
+        'CanBeUsedForVariants'      => '("CanBeUsedForVariants")',
     );
-    
-    /**
+
+        /**
      * Default sort fields and directions
      *
      * @var string
      */
-    public static $default_sort = "`SilvercartProductAttribute`.`CanBeUsedForVariants` DESC, `SilvercartProductAttributeLanguage`.`Title`";
+    private static $default_sort = '"SilvercartProductAttribute"."CanBeUsedForVariants" DESC, "SilvercartProductAttributeLanguage"."Title"';
     
     /**
      * Assigned values
      *
-     * @var DataObjectSet
+     * @var ArrayList
      */
     protected $assignedValues = null;
     
     /**
      * Unassigned values
      *
-     * @var DataObjectSet
+     * @var ArrayList
      */
     protected $unAssignedValues = null;
     
@@ -158,6 +145,9 @@ class SilvercartProductAttribute extends DataObject {
                 'CanBeUsedForFilterWidget'              => _t('SilvercartProductAttribute.CAN_BE_USED_FOR_FILTERWIDGET'),
                 'CanBeUsedForDataSheet'                 => _t('SilvercartProductAttribute.CAN_BE_USED_FOR_DATASHEET'),
                 'CanBeUsedForVariants'                  => _t('SilvercartProductAttribute.CAN_BE_USED_FOR_VARIANTS'),
+                'CanBeUsedForFilterWidgetShort'         => _t('SilvercartProductAttribute.CanBeUsedForFilterWidgetShort'),
+                'CanBeUsedForDataSheetShort'            => _t('SilvercartProductAttribute.CanBeUsedForDataSheetShort'),
+                'CanBeUsedForVariantsShort'             => _t('SilvercartProductAttribute.CanBeUsedForVariantsShort'),
                 'Title'                                 => _t('SilvercartProductAttribute.TITLE'),
                 'PluralTitle'                           => _t('SilvercartProductAttribute.PLURALTITLE'),
                 'SilvercartProductAttributeLanguages'   => _t('SilvercartProductAttributeLanguage.PLURALNAME'),
@@ -173,21 +163,14 @@ class SilvercartProductAttribute extends DataObject {
     
     /**
      * Customized CMS fields
-     * 
-     * @param array $params Optional params to manuipulate the scaffolding behaviour
      *
-     * @return FieldSet the fields for the backend
+     * @return FieldList the fields for the backend
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 20.06.2012
+     * @since 18.09.2014
      */
-    public function getCMSFields($params = null) {
-        $fields = parent::getCMSFields($params);
-        
-        $languageFields = SilvercartLanguageHelper::prepareCMSFields($this->getLanguage(true));
-        foreach ($languageFields as $languageField) {
-            $fields->addFieldToTab('Root.Main', $languageField);
-        }
+    public function getCMSFields() {
+        $fields = SilvercartDataObject::getCMSFields($this, 'CanBeUsedForFilterWidget', false);
         return $fields;
     }
     
@@ -260,9 +243,9 @@ class SilvercartProductAttribute extends DataObject {
         $summaryFields = array(
             'Title'                                     => $this->fieldLabel('Title'),
             'PluralTitle'                               => $this->fieldLabel('PluralTitle'),
-            'CanBeUsedForFilterWidgetString'            => $this->fieldLabel('CanBeUsedForFilterWidget'),
-            'CanBeUsedForDataSheetString'               => $this->fieldLabel('CanBeUsedForDataSheet'),
-            'CanBeUsedForVariantsString'                => $this->fieldLabel('CanBeUsedForVariants'),
+            'CanBeUsedForFilterWidgetString'            => $this->fieldLabel('CanBeUsedForFilterWidgetShort'),
+            'CanBeUsedForDataSheetString'               => $this->fieldLabel('CanBeUsedForDataSheetShort'),
+            'CanBeUsedForVariantsString'                => $this->fieldLabel('CanBeUsedForVariantsShort'),
             'SilvercartProductAttributeValuesAsString'  => $this->fieldLabel('SilvercartProductAttributeValues'),
         );
         
@@ -292,12 +275,12 @@ class SilvercartProductAttribute extends DataObject {
         $addition                                   = '';
         if ($this->SilvercartProductAttributeValues()->Count() > 0) {
             if ($this->SilvercartProductAttributeValues()->Count() > $limit) {
-                $silvercartProductAttributeValuesArray      = $this->SilvercartProductAttributeValues()->getRange(0, $limit)->map();
+                $silvercartProductAttributeValuesMap = $this->SilvercartProductAttributeValues()->limit($limit)->map();
                 $addition = ' (und ' . ($this->SilvercartProductAttributeValues()->Count() - $limit) . ' weitere)';
             } else {
-                $silvercartProductAttributeValuesArray      = $this->SilvercartProductAttributeValues()->map();
+                $silvercartProductAttributeValuesMap = $this->SilvercartProductAttributeValues()->map();
             }
-            $silvercartProductAttributeValuesAsString   = '"' . implode('", "', $silvercartProductAttributeValuesArray) . '"';
+            $silvercartProductAttributeValuesAsString   = '"' . implode('", "', $silvercartProductAttributeValuesMap->toArray()) . '"';
             $silvercartProductAttributeValuesAsString   = stripslashes($silvercartProductAttributeValuesAsString);
         }
         return $silvercartProductAttributeValuesAsString . $addition;
@@ -310,9 +293,9 @@ class SilvercartProductAttribute extends DataObject {
      * @return string
      */
     public function getCanBeUsedForFilterWidgetString() {
-        $CanBeUsedForFilterWidget = _t('Boolean.NO');
+        $CanBeUsedForFilterWidget = _t('Silvercart.NO');
         if ($this->CanBeUsedForFilterWidget) {
-            $CanBeUsedForFilterWidget = _t('Boolean.YES');
+            $CanBeUsedForFilterWidget = _t('Silvercart.YES');
         }
         return $CanBeUsedForFilterWidget;
     }
@@ -324,9 +307,9 @@ class SilvercartProductAttribute extends DataObject {
      * @return string
      */
     public function getCanBeUsedForDataSheetString() {
-        $CanBeUsedForDataSheet = _t('Boolean.NO');
+        $CanBeUsedForDataSheet = _t('Silvercart.NO');
         if ($this->CanBeUsedForDataSheet) {
-            $CanBeUsedForDataSheet = _t('Boolean.YES');
+            $CanBeUsedForDataSheet = _t('Silvercart.YES');
         }
         return $CanBeUsedForDataSheet;
     }
@@ -338,9 +321,9 @@ class SilvercartProductAttribute extends DataObject {
      * @return string
      */
     public function getCanBeUsedForVariantsString() {
-        $CanBeUsedForVariants = _t('Boolean.NO');
+        $CanBeUsedForVariants = _t('Silvercart.NO');
         if ($this->CanBeUsedForVariants) {
-            $CanBeUsedForVariants = _t('Boolean.YES');
+            $CanBeUsedForVariants = _t('Silvercart.YES');
         }
         return $CanBeUsedForVariants;
     }
@@ -348,16 +331,19 @@ class SilvercartProductAttribute extends DataObject {
     /**
      * Assigns the given values to the assigned values
      *
-     * @param DataObjectSet $valuesToAssign Values to assign
+     * @param ArrayList $valuesToAssign Values to assign
      * 
      * @return void
      *
      * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 13.12.2012
+     * @since 18.09.2014
      */
     public function assignValues($valuesToAssign) {
         if (is_null($this->assignedValues)) {
-            $this->setAssignedValues(new DataObjectSet());
+            $this->setAssignedValues(new ArrayList());
+        }
+        if ($valuesToAssign instanceof DataList) {
+            $valuesToAssign = new ArrayList($valuesToAssign->toArray());
         }
         $this->assignedValues->merge($valuesToAssign);
     }
@@ -383,7 +369,7 @@ class SilvercartProductAttribute extends DataObject {
     /**
      * Returns the assigned values in relation to a context product
      *
-     * @return DataObjectSet
+     * @return ArrayList
      */
     public function getAssignedValues() {
         return $this->assignedValues;
@@ -392,7 +378,7 @@ class SilvercartProductAttribute extends DataObject {
     /**
      * Sets the assigned values in relation to a context product
      *
-     * @param DataObjectSet $assignedValues Assigned values
+     * @param ArrayList $assignedValues Assigned values
      * 
      * @return void
      */
@@ -403,7 +389,7 @@ class SilvercartProductAttribute extends DataObject {
     /**
      * Returns the not assigned values in relation to a context product
      *
-     * @return DataObjectSet
+     * @return ArrayList
      */
     public function getUnAssignedValues() {
         return $this->unAssignedValues;
@@ -412,7 +398,7 @@ class SilvercartProductAttribute extends DataObject {
     /**
      * Sets the not assigned values in relation to a context product
      *
-     * @param DataObjectSet $unAssignedValues Not assigned values
+     * @param ArrayList $unAssignedValues Not assigned values
      * 
      * @return void
      */

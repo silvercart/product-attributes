@@ -1,21 +1,8 @@
 <?php
 /**
- * Copyright 2012 pixeltricks GmbH
+ * Copyright 2014 pixeltricks GmbH
  *
- * This file is part of SilvercartPrepaymentPayment.
- *
- * SilvercartPaypalPayment is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * SilvercartPrepaymentPayment is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with SilvercartPrepaymentPayment.  If not, see <http://www.gnu.org/licenses/>.
+ * This file is part of SilverCart.
  *
  * English (US) language pack
  *
@@ -40,6 +27,9 @@ $lang['en_US']['SilvercartProductAttribute']['SINGULARNAME']                    
 $lang['en_US']['SilvercartProductAttribute']['CAN_BE_USED_FOR_FILTERWIDGET']    = 'Use for product filter';
 $lang['en_US']['SilvercartProductAttribute']['CAN_BE_USED_FOR_DATASHEET']       = 'Use for data sheet';
 $lang['en_US']['SilvercartProductAttribute']['CAN_BE_USED_FOR_VARIANTS']        = 'Can be used for variants';
+$lang['en_US']['SilvercartProductAttribute']['CanBeUsedForFilterWidgetShort']   = 'Product filter';
+$lang['en_US']['SilvercartProductAttribute']['CanBeUsedForDataSheetShort']      = 'Data sheet';
+$lang['en_US']['SilvercartProductAttribute']['CanBeUsedForVariantsShort']       = 'Variants';
 $lang['en_US']['SilvercartProductAttribute']['TABNAME']                         = 'Attributes';
 $lang['en_US']['SilvercartProductAttribute']['TITLE']                           = 'Title';
 $lang['en_US']['SilvercartProductAttribute']['PLURALTITLE']                     = 'Plural title';
@@ -116,3 +106,5 @@ $lang['en_US']['SilvercartProductAttributeValueLanguage']['SINGULARNAME']       
 $lang['en_US']['SilvercartProductAttributeOrderPosition']['VARIANTDEFINITION']  = 'Variant Definition';
 
 $lang['en_US']['SilvercartProductAttributeOrderDetailPage']['VARIANT_HEADLINE'] = 'Variant';
+
+$lang['en_US']['SilvercartProductAttributeAdmin']['MENUTITLE'] = 'Product Attributes';
