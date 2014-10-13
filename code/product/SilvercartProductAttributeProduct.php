@@ -324,11 +324,11 @@ class SilvercartProductAttributeProduct extends DataExtension {
      */
     public function getVariantAttributes() {
         $context            = $this->getVariantAttributeContext();
-        $variantAttributes  = new ArrayList();
         $attributes         = $context->SilvercartProductAttributes();
-        $groupedAttributes  = $attributes->groupBy('CanBeUsedForVariants');
-        if (array_key_exists(1, $groupedAttributes)) {
-            $variantAttributes = $groupedAttributes[1];
+        $variantAttributes  = $attributes->filter('CanBeUsedForVariants', true);
+        if (!$variantAttributes instanceof SS_List ||
+            !$variantAttributes->exists()) {
+            $variantAttributes = new ArrayList();
         }
         return $variantAttributes;
     }
