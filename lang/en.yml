@@ -7,6 +7,8 @@ en:
     CanBeUsedForDataSheetShort: "Data sheet"
     CanBeUsedForFilterWidgetShort: "Product filter"
     CanBeUsedForVariantsShort: "Variants"
+    ImportList: "Import attributes"
+    ImportListDesc: "Add one attribute per line into this field to import many attributes at once."
     PLURALNAME: "Product Attributes"
     PLURALTITLE: "Plural title"
     SINGULARNAME: "Product Attribute"

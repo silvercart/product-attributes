@@ -154,6 +154,8 @@ class SilvercartProductAttribute extends DataObject {
                 'SilvercartProductAttributeValues'      => _t('SilvercartProductAttributeValue.PLURALNAME'),
                 'SilvercartProducts'                    => _t('SilvercartProduct.PLURALNAME'),
                 'SilvercartProductAttributeSets'        => _t('SilvercartProductAttributeSet.PLURALNAME'),
+                'ImportList'                            => _t('SilvercartProductAttribute.ImportList'),
+                'ImportListDesc'                        => _t('SilvercartProductAttribute.ImportListDesc'),
             )
         );
 
@@ -165,12 +167,16 @@ class SilvercartProductAttribute extends DataObject {
      * Customized CMS fields
      *
      * @return FieldList the fields for the backend
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 18.09.2014
      */
     public function getCMSFields() {
         $fields = SilvercartDataObject::getCMSFields($this, 'CanBeUsedForFilterWidget', false);
+        
+        if ($this->exists()) {
+            $importListField = new TextareaField('ImportList', $this->fieldLabel('ImportList'));
+            $importListField->setDescription($this->fieldLabel('ImportListDesc'));
+            $fields->addFieldToTab('Root.SilvercartProductAttributeValues', $importListField);
+        }
+        
         return $fields;
     }
     
@@ -251,6 +257,34 @@ class SilvercartProductAttribute extends DataObject {
         
         $this->extend('updateSummaryFields', $summaryFields);
         return $summaryFields;
+    }
+    
+    /**
+     * Check for import values after writing an attribute in backend.
+     * 
+     * @return void
+     *
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 26.11.2014
+     */
+    protected function onAfterWrite() {
+        parent::onAfterWrite();
+        $request    = Controller::curr()->getRequest();
+        $importList = $request->postVar('ImportList');
+        if (!is_null($importList) &&
+            !empty($importList)) {
+            $attributeValues = explode(PHP_EOL, $importList);
+            foreach ($attributeValues as $attributeValueTitle) {
+                $attributeValueTitle = trim($attributeValueTitle);
+                if ($this->SilvercartProductAttributeValues()->find('Title', $attributeValueTitle)) {
+                    continue;
+                }
+                $attributeValue = new SilvercartProductAttributeValue();
+                $attributeValue->Title = $attributeValueTitle;
+                $attributeValue->write();
+                $this->SilvercartProductAttributeValues()->add($attributeValue);
+            }
+        }
     }
     
     /**
