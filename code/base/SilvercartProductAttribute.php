@@ -156,6 +156,10 @@ class SilvercartProductAttribute extends DataObject {
                 'SilvercartProductAttributeSets'        => _t('SilvercartProductAttributeSet.PLURALNAME'),
                 'ImportList'                            => _t('SilvercartProductAttribute.ImportList'),
                 'ImportListDesc'                        => _t('SilvercartProductAttribute.ImportListDesc'),
+                'ImportPrefix'                          => _t('SilvercartProductAttribute.ImportPrefix'),
+                'ImportPrefixDesc'                      => _t('SilvercartProductAttribute.ImportPrefixDesc'),
+                'ImportSuffix'                          => _t('SilvercartProductAttribute.ImportSuffix'),
+                'ImportSuffixDesc'                      => _t('SilvercartProductAttribute.ImportSuffixDesc'),
             )
         );
 
@@ -174,7 +178,14 @@ class SilvercartProductAttribute extends DataObject {
         if ($this->exists()) {
             $importListField = new TextareaField('ImportList', $this->fieldLabel('ImportList'));
             $importListField->setDescription($this->fieldLabel('ImportListDesc'));
+            $importPrefixField = new TextField('ImportPrefix', $this->fieldLabel('ImportPrefix'));
+            $importPrefixField->setDescription($this->fieldLabel('ImportPrefixDesc'));
+            $importSuffixField = new TextField('ImportSuffix', $this->fieldLabel('ImportSuffix'));
+            $importSuffixField->setDescription($this->fieldLabel('ImportSuffixDesc'));
+            
             $fields->addFieldToTab('Root.SilvercartProductAttributeValues', $importListField);
+            $fields->addFieldToTab('Root.SilvercartProductAttributeValues', $importPrefixField);
+            $fields->addFieldToTab('Root.SilvercartProductAttributeValues', $importSuffixField);
         }
         
         return $fields;
@@ -273,6 +284,14 @@ class SilvercartProductAttribute extends DataObject {
         $importList = $request->postVar('ImportList');
         if (!is_null($importList) &&
             !empty($importList)) {
+            $prefix = $request->postVar('ImportPrefix');
+            $suffix = $request->postVar('ImportSuffix');
+            if (empty($prefix)) {
+                $prefix = '';
+            }
+            if (empty($suffix)) {
+                $suffix = '';
+            }
             $attributeValues = explode(PHP_EOL, $importList);
             foreach ($attributeValues as $attributeValueTitle) {
                 $attributeValueTitle = trim($attributeValueTitle);
@@ -280,7 +299,7 @@ class SilvercartProductAttribute extends DataObject {
                     continue;
                 }
                 $attributeValue = new SilvercartProductAttributeValue();
-                $attributeValue->Title = $attributeValueTitle;
+                $attributeValue->Title = $prefix . $attributeValueTitle . $suffix;
                 $attributeValue->write();
                 $this->SilvercartProductAttributeValues()->add($attributeValue);
             }

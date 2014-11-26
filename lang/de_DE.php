@@ -36,6 +36,10 @@ $lang['de_DE']['SilvercartProductAttribute']['PLURALTITLE']                     
 $lang['de_DE']['SilvercartProductAttribute']['AVAILABLE_VARIANT']               = 'verfügbare %s';
 $lang['de_DE']['SilvercartProductAttribute']['ImportList']                      = 'Merkmale importieren';
 $lang['de_DE']['SilvercartProductAttribute']['ImportListDesc']                  = 'Fügen Sie hier eine Liste von Merkmalen ein, die Sie importieren möchten. Bitte beachten Sie, dass je Zeile ein Merkmal eingefügt wird.';
+$lang['de_DE']['SilvercartProductAttribute']['ImportPrefix']                    = 'Import Präfix';
+$lang['de_DE']['SilvercartProductAttribute']['ImportPrefixDesc']                = 'Text, der jedem zu importierenden Merkmal vorangestellt wird.';
+$lang['de_DE']['SilvercartProductAttribute']['ImportSuffix']                    = 'Import Suffix';
+$lang['de_DE']['SilvercartProductAttribute']['ImportSuffixDesc']                = 'Text, der jedem zu importierenden Merkmal angehängt wird.';
 
 $lang['de_DE']['SilvercartProductAttributeAddCartForm']['HEADLINE']             = 'Auswahlmöglichkeiten';
 

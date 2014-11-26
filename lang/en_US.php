@@ -36,6 +36,10 @@ $lang['en_US']['SilvercartProductAttribute']['PLURALTITLE']                     
 $lang['en_US']['SilvercartProductAttribute']['AVAILABLE_VARIANT']               = 'available %s';
 $lang['en_US']['SilvercartProductAttribute']['ImportList']                      = 'Import attributes';
 $lang['en_US']['SilvercartProductAttribute']['ImportListDesc']                  = 'Add one attribute per line into this field to import many attributes at once.';
+$lang['en_US']['SilvercartProductAttribute']['ImportPrefix']                    = 'Import Prefix';
+$lang['en_US']['SilvercartProductAttribute']['ImportPrefixDesc']                = 'Text will be prefixed to every imported attribute.';
+$lang['en_US']['SilvercartProductAttribute']['ImportSuffix']                    = 'Import Suffix';
+$lang['en_US']['SilvercartProductAttribute']['ImportSuffixDesc']                = 'Text will be suffixed to every imported attribute.';
 
 $lang['en_US']['SilvercartProductAttributeAddCartForm']['HEADLINE']             = 'Variants';
 
