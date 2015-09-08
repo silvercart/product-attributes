@@ -502,7 +502,12 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
         if (is_null($this->minPriceLimit)) {
             SilvercartProductAttributeProductFilterPlugin::$skip_filter_once = true;
             $priceType = SilvercartConfig::PriceType();
-            $prices    = $this->owner->getProducts(false, false, true, true)->map('ID', 'Price' . ucfirst($priceType) . 'Amount');
+            if ($this->owner instanceof SilvercartSearchResultsPage_Controller) {
+                $products = $this->owner->getProducts(true, true);
+            } else {
+                $products = $this->owner->getProducts(false, false, true, true);
+            }
+            $prices = $products->map('ID', 'Price' . ucfirst($priceType) . 'Amount');
             sort($prices);
             $this->minPriceLimit = array_shift($prices);
         }
@@ -518,7 +523,12 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataObjectDe
         if (is_null($this->maxPriceLimit)) {
             SilvercartProductAttributeProductFilterPlugin::$skip_filter_once = true;
             $priceType = SilvercartConfig::PriceType();
-            $prices    = $this->owner->getProducts(false, false, true, true)->map('ID', 'Price' . ucfirst($priceType) . 'Amount');
+            if ($this->owner instanceof SilvercartSearchResultsPage_Controller) {
+                $products = $this->owner->getProducts(true, true);
+            } else {
+                $products = $this->owner->getProducts(false, false, true, true);
+            }
+            $prices = $products->map('ID', 'Price' . ucfirst($priceType) . 'Amount');
             rsort($prices);
             $this->maxPriceLimit = array_shift($prices);
         }
