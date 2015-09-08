@@ -15,7 +15,7 @@ var SilvercartProductAttributeFilterCall                = function() {
         $('.silvercart-product-attribute-filter-loading-bar').remove();
         if ($('.silvercart-product-attribute-filter-mask').length === 0) {
             $('#main').append('<div class="silvercart-product-attribute-filter-mask"></div>');
-            $('#main').append('<img class="silvercart-product-attribute-filter-loading-bar" src="/silvercart_product_attributes/images/loader.gif" title="" />');
+            $('#main').append('<img class="silvercart-product-attribute-filter-loading-bar" src="/silvercart/images/loader.gif" title="" />');
             $('#main').css({
                 position : 'relative'
             });
@@ -88,7 +88,7 @@ $(function() {
     $(document).ready(function() {
         if ($('.silvercart-product-attribute-filter-mask').length === 0) {
             $('#main').append('<div class="silvercart-product-attribute-filter-mask"></div>');
-            $('#main').append('<img class="silvercart-product-attribute-filter-loading-bar" src="/silvercart_product_attributes/images/loader.gif" alt="Loading..." />');
+            $('#main').append('<img class="silvercart-product-attribute-filter-loading-bar" src="/silvercart/images/loader.gif" alt="Loading..." />');
             $('#main').css({
                 position : 'relative'
             });
