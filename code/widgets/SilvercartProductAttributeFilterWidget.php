@@ -72,7 +72,7 @@ class SilvercartProductAttributeFilterWidget extends SilvercartWidget {
      * @since 22.04.2013
      */
     public function ExtraCssClasses() {
-        return 'silvercart-product-attribute-filter-widget';
+        return $this->dbObject('ExtraCssClasses')->getValue() . ' silvercart-product-attribute-filter-widget';
     }
 
     /**
