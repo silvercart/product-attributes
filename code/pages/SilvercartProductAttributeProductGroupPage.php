@@ -73,6 +73,15 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataExtensio
             $this->owner->getRequest()->isPOST()) {
             $this->initSilvercartProductAttributeFilter($request);
         }
+        
+        $minPrice = $request->postVar('MinPrice');
+        $maxPrice = $request->postVar('MaxPrice');
+        if (!is_null($maxPrice) &&
+            !is_null($minPrice)) {
+            
+            $this->setMinPriceForWidget($minPrice);
+            $this->setMaxPriceForWidget($maxPrice);
+        }
     }
     
     /**
@@ -122,7 +131,7 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataExtensio
         if (Director::is_ajax()) {
             return $this->owner->renderWith($this->owner->data()->ClassName);
         } else {
-            Director::redirectBack();
+            Controller::curr()->redirectBack();
         }
     }
     
@@ -153,7 +162,7 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataExtensio
     public function ClearSilvercartProductAttributePriceFilter(SS_HTTPRequest $request) {
         Session::clear('SilvercartProductAttributePriceRangeForm.MinPrice.' . $this->getSessionKey());
         Session::clear('SilvercartProductAttributePriceRangeForm.MaxPrice.' . $this->getSessionKey());
-        Director::redirectBack();
+        Controller::curr()->redirectBack();
     }
     
     /**
@@ -185,7 +194,7 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataExtensio
                 }
             }
         }
-        Director::redirect(Director::absoluteURL($redirectTo));
+        Controller::curr()->redirect(Director::absoluteURL($redirectTo));
     }
     
     /**
@@ -490,6 +499,9 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataExtensio
             SilvercartProductAttributeProductFilterPlugin::$skip_filter_once = true;
             $priceType = SilvercartConfig::PriceType();
             $prices    = $this->owner->getProducts(false, false, true, true)->map('ID', 'Price' . ucfirst($priceType) . 'Amount');
+            if ($prices instanceof SS_Map) {
+                $prices = $prices->toArray();
+            }
             sort($prices);
             $this->minPriceLimit = array_shift($prices);
         }
@@ -506,6 +518,9 @@ class SilvercartProductAttributeProductGroupPage_Controller extends DataExtensio
             SilvercartProductAttributeProductFilterPlugin::$skip_filter_once = true;
             $priceType = SilvercartConfig::PriceType();
             $prices    = $this->owner->getProducts(false, false, true, true)->map('ID', 'Price' . ucfirst($priceType) . 'Amount');
+            if ($prices instanceof SS_Map) {
+                $prices = $prices->toArray();
+            }
             rsort($prices);
             $this->maxPriceLimit = array_shift($prices);
         }

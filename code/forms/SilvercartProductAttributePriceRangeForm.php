@@ -35,13 +35,15 @@ class SilvercartProductAttributePriceRangeForm extends CustomHtmlForm {
     
     /**
      * Returns the form fields for this form
+     * 
+     * @param bool $withUpdate Call the method with decorator updates or not?
      *
      * @return array
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 06.06.2012
      */
-    public function getFormFields() {
+    public function getFormFields($withUpdate = true) {
         $minPrice = '';
         $maxPrice = '';
         if (Controller::curr() instanceof SilvercartProductGroupPage_Controller &&
@@ -72,7 +74,7 @@ class SilvercartProductAttributePriceRangeForm extends CustomHtmlForm {
                 )
             ),
         );
-        return parent::getFormFields();
+        return parent::getFormFields($withUpdate);
     }
     
     /**
@@ -90,7 +92,9 @@ class SilvercartProductAttributePriceRangeForm extends CustomHtmlForm {
     public function submitSuccess($data, $form, $formData) {
         $this->controller->setMinPriceForWidget($formData['MinPrice']);
         $this->controller->setMaxPriceForWidget($formData['MaxPrice']);
-        Director::redirectBack();
+        var_dump($formData['MaxPrice']);
+        exit();
+        $this->controller->redirectBack();
     }
     
     /**
