@@ -1,0 +1,48 @@
+---
+Name: silvercart-product-attributes-extensions
+---
+SilvercartPage_Controller:
+  extensions:
+    ['SilvercartProductAttributePageExtension_Controller']
+SilvercartOrderPosition:
+  extensions:
+    ['SilvercartProductAttributeOrderPosition']
+SilvercartProduct:
+  extensions:
+    ['SilvercartProductAttributeProduct']
+SilvercartProductPluginProvider:
+  extensions:
+    ['SilvercartProductAttributeProductPlugin']
+SilvercartProductGroupPage_Controller:
+  extensions:
+    ['SilvercartProductAttributeProductGroupPage_Controller']
+SilvercartProductAttributeLanguage:
+  extensions:
+    ['SilvercartLanguageDecorator']
+SilvercartProductAttributeSetLanguage:
+  extensions:
+    ['SilvercartLanguageDecorator']
+SilvercartProductAttributeValueLanguage:
+  extensions:
+    ['SilvercartLanguageDecorator']
+SilvercartProductAttribute:
+  extensions:
+    ['SilvercartDataObjectMultilingualDecorator']
+SilvercartProductAttributeSet:
+  extensions:
+    ['SilvercartDataObjectMultilingualDecorator']
+SilvercartProductAttributeValue:
+  extensions:
+    ['SilvercartDataObjectMultilingualDecorator']
+SilvercartOrderPluginProvider:
+  extensions:
+    ['SilvercartProductAttributeOrderPlugin']
+SilvercartOrderPositionPluginProvider:
+  extensions:
+    ['SilvercartProductAttributeOrderPositionPlugin']
+SilvercartProductAddCartFormDetailPluginProvider:
+  extensions:
+    ['SilvercartProductAttributeAddCartFormDetailPlugin']
+SilvercartShoppingCartPositionPluginProvider:
+  extensions:
+    ['SilvercartProductAttributeShoppingCartPositionPlugin']
