@@ -115,7 +115,7 @@ class SilvercartProductAttributeFilterWidget extends SilvercartWidget {
     /**
      * CMS fields for this widget
      *
-     * @return Fieldset
+     * @return FieldList
      */
     public function getCMSFields() {
         $fields                 = parent::getCMSFields();

@@ -15,3 +15,15 @@ SilvercartSearchResultsPage_Controller::registerFilterPlugin('SilvercartProductA
 SilvercartWidget_Controller::registerFilterPlugin('SilvercartProductAttributeProductFilterPlugin');
 // register module to use with CustomHtmlForm
 CustomHtmlForm::registerModule('silvercart_product_attributes');
+
+if (class_exists('RequirementsEngine')) {
+    // ----------------------------------------------------------------------------
+    // Register CSS requirements
+    // ----------------------------------------------------------------------------
+    RequirementsEngine::registerThemedCssFile('SilvercartProductAttribute');
+    RequirementsEngine::registerThemedCssFile('SilvercartProductAttributePriceRangeFormField');
+    // ----------------------------------------------------------------------------
+    // Register JS requirements
+    // ----------------------------------------------------------------------------
+    RequirementsEngine::registerJsFile(SilvercartTools::getBaseURLSegment() . 'silvercart_product_attributes/js/SilvercartProductAttributeFilterWidget.js');
+}
