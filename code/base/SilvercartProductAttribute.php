@@ -26,9 +26,12 @@ class SilvercartProductAttribute extends DataObject {
      * @var array
      */
     private static $db = array(
-        'CanBeUsedForFilterWidget'  => 'Boolean(1)',
-        'CanBeUsedForDataSheet'     => 'Boolean(1)',
-        'CanBeUsedForVariants'      => 'Boolean',
+        'CanBeUsedForFilterWidget'     => 'Boolean(1)',
+        'CanBeUsedForDataSheet'        => 'Boolean(1)',
+        'CanBeUsedForVariants'         => 'Boolean',
+        'CanBeUsedForSingleVariants'   => 'Boolean',
+        'IsUserInputField'             => 'Boolean',
+        'UserInputFieldMustBeFilledIn' => 'Boolean',
     );
 
     /**
@@ -65,6 +68,7 @@ class SilvercartProductAttribute extends DataObject {
         'CanBeUsedForFilterWidgetString'            => 'Text',
         'CanBeUsedForDataSheetString'               => 'Text',
         'CanBeUsedForVariantsString'                => 'Text',
+        'CanBeUsedForSingleVariantsString'          => 'Text',
     );
     
     /**
@@ -73,9 +77,10 @@ class SilvercartProductAttribute extends DataObject {
      * @var array 
      */
     private static $indexes = array(
-        'CanBeUsedForFilterWidget'  => '("CanBeUsedForFilterWidget")',
-        'CanBeUsedForDataSheet'     => '("CanBeUsedForDataSheet")',
-        'CanBeUsedForVariants'      => '("CanBeUsedForVariants")',
+        'CanBeUsedForFilterWidget'   => '("CanBeUsedForFilterWidget")',
+        'CanBeUsedForDataSheet'      => '("CanBeUsedForDataSheet")',
+        'CanBeUsedForVariants'       => '("CanBeUsedForVariants")',
+        'CanBeUsedForSingleVariants' => '("CanBeUsedForSingleVariants")',
     );
 
         /**
@@ -145,9 +150,13 @@ class SilvercartProductAttribute extends DataObject {
                 'CanBeUsedForFilterWidget'              => _t('SilvercartProductAttribute.CAN_BE_USED_FOR_FILTERWIDGET'),
                 'CanBeUsedForDataSheet'                 => _t('SilvercartProductAttribute.CAN_BE_USED_FOR_DATASHEET'),
                 'CanBeUsedForVariants'                  => _t('SilvercartProductAttribute.CAN_BE_USED_FOR_VARIANTS'),
+                'CanBeUsedForVariantsDesc'              => _t('SilvercartProductAttribute.CAN_BE_USED_FOR_VARIANTS_DESC'),
                 'CanBeUsedForFilterWidgetShort'         => _t('SilvercartProductAttribute.CanBeUsedForFilterWidgetShort'),
                 'CanBeUsedForDataSheetShort'            => _t('SilvercartProductAttribute.CanBeUsedForDataSheetShort'),
                 'CanBeUsedForVariantsShort'             => _t('SilvercartProductAttribute.CanBeUsedForVariantsShort'),
+                'CanBeUsedForSingleVariants'            => _t('SilvercartProductAttribute.CanBeUsedForSingleVariants'),
+                'CanBeUsedForSingleVariantsDesc'        => _t('SilvercartProductAttribute.CanBeUsedForSingleVariantsDesc'),
+                'CanBeUsedForSingleVariantsShort'       => _t('SilvercartProductAttribute.CanBeUsedForSingleVariantsShort'),
                 'Title'                                 => _t('SilvercartProductAttribute.TITLE'),
                 'PluralTitle'                           => _t('SilvercartProductAttribute.PLURALTITLE'),
                 'SilvercartProductAttributeLanguages'   => _t('SilvercartProductAttributeLanguage.PLURALNAME'),
@@ -160,6 +169,10 @@ class SilvercartProductAttribute extends DataObject {
                 'ImportPrefixDesc'                      => _t('SilvercartProductAttribute.ImportPrefixDesc'),
                 'ImportSuffix'                          => _t('SilvercartProductAttribute.ImportSuffix'),
                 'ImportSuffixDesc'                      => _t('SilvercartProductAttribute.ImportSuffixDesc'),
+                'IsUserInputField'                      => _t('SilvercartProductAttribute.IsUserInputField'),
+                'IsUserInputFieldDesc'                  => _t('SilvercartProductAttribute.IsUserInputFieldDesc'),
+                'UserInputFieldMustBeFilledIn'          => _t('SilvercartProductAttribute.UserInputFieldMustBeFilledIn'),
+                'UserInputFieldMustBeFilledInDesc'      => _t('SilvercartProductAttribute.UserInputFieldMustBeFilledInDesc'),
             )
         );
 
@@ -174,6 +187,11 @@ class SilvercartProductAttribute extends DataObject {
      */
     public function getCMSFields() {
         $fields = SilvercartDataObject::getCMSFields($this, 'CanBeUsedForFilterWidget', false);
+        
+        $fields->dataFieldByName('CanBeUsedForVariants')->setDescription($this->fieldLabel('CanBeUsedForVariantsDesc'));
+        $fields->dataFieldByName('CanBeUsedForSingleVariants')->setDescription($this->fieldLabel('CanBeUsedForSingleVariantsDesc'));
+        $fields->dataFieldByName('IsUserInputField')->setDescription($this->fieldLabel('IsUserInputFieldDesc'));
+        $fields->dataFieldByName('UserInputFieldMustBeFilledIn')->setDescription($this->fieldLabel('UserInputFieldMustBeFilledInDesc'));
         
         if ($this->exists()) {
             $importListField = new TextareaField('ImportList', $this->fieldLabel('ImportList'));
@@ -230,6 +248,10 @@ class SilvercartProductAttribute extends DataObject {
                 'title'     => $this->fieldLabel('CanBeUsedForVariants'),
                 'filter'    => 'ExactMatchFilter'
             ),
+            'CanBeUsedForSingleVariants' => array(
+                'title'     => $this->fieldLabel('CanBeUsedForSingleVariants'),
+                'filter'    => 'ExactMatchFilter'
+            ),
         );
         $this->extend('updateSearchableFields', $searchableFields);
         return $searchableFields;
@@ -263,6 +285,7 @@ class SilvercartProductAttribute extends DataObject {
             'CanBeUsedForFilterWidgetString'            => $this->fieldLabel('CanBeUsedForFilterWidgetShort'),
             'CanBeUsedForDataSheetString'               => $this->fieldLabel('CanBeUsedForDataSheetShort'),
             'CanBeUsedForVariantsString'                => $this->fieldLabel('CanBeUsedForVariantsShort'),
+            'CanBeUsedForSingleVariantsString'          => $this->fieldLabel('CanBeUsedForSingleVariantsShort'),
             'SilvercartProductAttributeValuesAsString'  => $this->fieldLabel('SilvercartProductAttributeValues'),
         );
         
@@ -304,6 +327,19 @@ class SilvercartProductAttribute extends DataObject {
                 $this->SilvercartProductAttributeValues()->add($attributeValue);
             }
         }
+    }
+    
+    /**
+     * Requires this modules default records.
+     * 
+     * @return void
+     *
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 21.09.2016
+     */
+    public function requireDefaultRecords() {
+        $importer = new SilvercartProductAttribute_VariantImporter();
+        $importer->doImport();
     }
     
     /**
@@ -376,6 +412,20 @@ class SilvercartProductAttribute extends DataObject {
     public function getCanBeUsedForVariantsString() {
         $CanBeUsedForVariants = _t('Silvercart.NO');
         if ($this->CanBeUsedForVariants) {
+            $CanBeUsedForVariants = _t('Silvercart.YES');
+        }
+        return $CanBeUsedForVariants;
+    }
+    
+    /**
+     * Returns a string to determine whether the attribute can be used for 
+     * variants
+     *
+     * @return string
+     */
+    public function getCanBeUsedForSingleVariantsString() {
+        $CanBeUsedForVariants = _t('Silvercart.NO');
+        if ($this->CanBeUsedForSingleVariants) {
             $CanBeUsedForVariants = _t('Silvercart.YES');
         }
         return $CanBeUsedForVariants;
@@ -476,6 +526,261 @@ class SilvercartProductAttribute extends DataObject {
             }
         }
         return $hasSelectedValues;
+    }
+    
+}
+
+/**
+ * Class to import variants out of the obsolete product variant module.
+ *
+ * @package Silvercart
+ * @subpackage Products
+ * @author Sebastian Diel <sdiel@pixeltricks.de>
+ * @copyright 2016 pixeltricks GmbH
+ * @since 21.09.2016
+ * @license see license file in modules root directory
+ */
+class SilvercartProductAttribute_VariantImporter {
+    
+    /**
+     * Maps the ID of an attribute to an obsolete variant attribute set.
+     *
+     * @var array
+     */
+    protected $importAttributeMap = array();
+    
+    /**
+     * Maps the ID of an attribute value to an obsolete variant attribute.
+     *
+     * @var array
+     */
+    protected $importAttributeValueMap = array();
+    
+    /**
+     * Maps the ID of an attribute to an obsolete attributed variant attribute set.
+     *
+     * @var array
+     */
+    protected $importAttributeSetProductMap = array();
+    
+    /**
+     * Optional MySQL table prefix.
+     *
+     * @var string
+     */
+    protected $tablePrefix = '';
+
+    /**
+     * Executes the attribute import from the obsolete variant module.
+     * 
+     * @return void
+     *
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 21.09.2016
+     */
+    public function doImport() {
+        $doImport = false;
+        $results  = DB::query('SHOW TABLES');
+        
+        foreach ($results as $table) {
+            if (in_array('SilvercartProductVariantAttribute', $table)) {
+                $doImport = true;
+                break;
+            }
+            if (in_array('_obsolete_SilvercartProductVariantAttribute', $table)) {
+                $doImport = true;
+                $this->tablePrefix = '_obsolete_';
+                break;
+            }
+        }
+        if ($doImport) {
+            $this->importProductVariantAttributeSets();
+            $this->importProductVariantAttributeSets(true, true);
+            $this->importProductVariantAttributes();
+            $this->importProductVariantAttributes(true, true);
+            $this->importProductVariantAttributeRelations(true);
+            $this->importProductVariantProductRelations(true);
+        }
+    }
+
+    /**
+     * Imports the product variant modules (obsolete) variants.
+     * 
+     * @param bool $forTranslations Execute import for translations
+     * @param bool $renameTable     Rename obsolete database tables after import
+     * 
+     * @return array
+     *
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 21.09.2016
+     */
+    protected function importProductVariantAttributeSets($forTranslations = false, $renameTable = false) {
+        $whereClause = '"VASL"."Locale" = \'' . i18n::get_locale() . '\'';
+        if ($forTranslations) {
+            $whereClause = '"VASL"."Locale" != \'' . i18n::get_locale() . '\'';
+        }
+        $attributeSets = DB::query('SELECT * FROM "' . $this->tablePrefix . 'SilvercartProductVariantAttributeSet" AS "VAS" LEFT JOIN "' . $this->tablePrefix . 'SilvercartProductVariantAttributeSetLanguage" AS "VASL" ON ("VAS"."ID" = "VASL"."SilvercartProductVariantAttributeSetID") WHERE ' . $whereClause);
+        if ($attributeSets->numRecords() > 0) {
+            foreach ($attributeSets as $attributeSet) {
+                if (array_key_exists($attributeSet['SilvercartProductVariantAttributeSetID'], $this->importAttributeMap)) {
+                    $existingAttribute = SilvercartProductAttribute::get()->byID($this->importAttributeMap[$attributeSet['SilvercartProductVariantAttributeSetID']]);
+                } else {
+                    $existingAttribute = SilvercartProductAttribute::get()->filter('Title', $attributeSet['name'])->first();
+                }
+                if (is_null($existingAttribute)) {
+                    $existingAttribute = new SilvercartProductAttribute();
+                    $existingAttribute->Title                        = $attributeSet['name'];
+                    $existingAttribute->IsUserInputField             = $attributeSet['type'] == 'userInput';
+                    $existingAttribute->UserInputFieldMustBeFilledIn = $attributeSet['mustBeFilledIn'] == '1';
+                    $existingAttribute->write();
+                }
+                if ($forTranslations &&
+                    !$existingAttribute->hasLanguage($attributeSet['Locale'])) {
+                    $translation = new SilvercartProductAttributeLanguage();
+                    $translation->Locale                       = $attributeSet['Locale'];
+                    $translation->Title                        = $attributeSet['name'];
+                    $translation->SilvercartProductAttributeID = $existingAttribute->ID;
+                    $translation->write();
+                }
+                $this->importAttributeMap[$attributeSet['SilvercartProductVariantAttributeSetID']] = $existingAttribute->ID;
+            }
+        }
+        if ($renameTable) {
+            DB::query('RENAME TABLE "' . $this->tablePrefix . 'SilvercartProductVariantAttributeSet" TO "_obsolete_imported_SilvercartProductVariantAttributeSet"');
+            DB::query('RENAME TABLE "' . $this->tablePrefix . 'SilvercartProductVariantAttributeSetLanguage" TO "_obsolete_imported_SilvercartProductVariantAttributeSetLanguage"');
+        }
+    }
+    
+    /**
+     * Imports the product variant modules (obsolete) variants.
+     * 
+     * @param bool $forTranslations Execute import for translations
+     * @param bool $renameTable     Rename obsolete database tables after import
+     * 
+     * @return array
+     *
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 21.09.2016
+     */
+    protected function importProductVariantAttributes($forTranslations = false, $renameTable = false) {
+        $whereClause = '"VAL"."Locale" = \'' . i18n::get_locale() . '\'';
+        if ($forTranslations) {
+            $whereClause = '"VAL"."Locale" != \'' . i18n::get_locale() . '\'';
+        }
+        $attributes = DB::query('SELECT * FROM "' . $this->tablePrefix . 'SilvercartProductVariantAttributeLanguage" AS "VAL" WHERE ' . $whereClause);
+        if ($attributes->numRecords() > 0) {
+            foreach ($attributes as $attribute) {
+                if (array_key_exists($attribute['SilvercartProductVariantAttributeID'], $this->importAttributeValueMap)) {
+                    $existingAttributeValue = SilvercartProductAttributeValue::get()->byID($this->importAttributeValueMap[$attribute['SilvercartProductVariantAttributeID']]);
+                } else {
+                    $existingAttributeValue = SilvercartProductAttributeValue::get()->filter('Title', $attribute['name'])->first();
+                }
+                if (is_null($existingAttributeValue)) {
+                    $existingAttributeValue = new SilvercartProductAttributeValue();
+                    $existingAttributeValue->Title                        = $attribute['name'];
+                    $existingAttributeValue->write();
+                }
+                if ($forTranslations &&
+                    !$existingAttributeValue->hasLanguage($attribute['Locale'])) {
+                    $translation = new SilvercartProductAttributeLanguage();
+                    $translation->Locale                       = $attribute['Locale'];
+                    $translation->Title                        = $attribute['name'];
+                    $translation->SilvercartProductAttributeID = $existingAttributeValue->ID;
+                    $translation->write();
+                }
+                $this->importAttributeValueMap[$attribute['SilvercartProductVariantAttributeID']] = $existingAttributeValue->ID;
+            }
+        }
+        if ($renameTable) {
+            DB::query('RENAME TABLE "' . $this->tablePrefix . 'SilvercartProductVariantAttribute" TO "_obsolete_imported_SilvercartProductVariantAttribute"');
+            DB::query('RENAME TABLE "' . $this->tablePrefix . 'SilvercartProductVariantAttributeLanguage" TO "_obsolete_imported_SilvercartProductVariantAttributeLanguage"');
+        }
+    }
+    
+    /**
+     * Imports the product variant modules (obsolete) variant relations.
+     * 
+     * @param bool $renameTable Rename obsolete database tables after import
+     * 
+     * @return array
+     *
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 21.09.2016
+     */
+    protected function importProductVariantAttributeRelations($renameTable = false) {
+        $attributeRelations = DB::query('SELECT * FROM "' . $this->tablePrefix . 'SilvercartProductVariantAttributeSet_Attributes" AS "VASA"');
+        if ($attributeRelations->numRecords() > 0) {
+            foreach ($attributeRelations as $attributeRelation) {
+                if (array_key_exists($attributeRelation['SilvercartProductVariantAttributeSetID'], $this->importAttributeMap) &&
+                    array_key_exists($attributeRelation['SilvercartProductVariantAttributeID'], $this->importAttributeValueMap)) {
+                    $attributeValue = SilvercartProductAttributeValue::get()->byID($this->importAttributeValueMap[$attributeRelation['SilvercartProductVariantAttributeID']]);
+                    if ($attributeValue->SilvercartProductAttributeID == 0) {
+                        $attributeValue->SilvercartProductAttributeID = $this->importAttributeMap[$attributeRelation['SilvercartProductVariantAttributeSetID']];
+                        $attributeValue->write();
+                    } elseif ($attributeValue->SilvercartProductAttributeID != $this->importAttributeMap[$attributeRelation['SilvercartProductVariantAttributeSetID']]) {
+                        $newAttributeValue = $attributeValue->duplicate();
+                        $newAttributeValue->SilvercartProductAttributeID = $this->importAttributeMap[$attributeRelation['SilvercartProductVariantAttributeSetID']];
+                        $newAttributeValue->write();
+                    }
+                }
+            }
+        }
+        if ($renameTable) {
+            DB::query('RENAME TABLE "' . $this->tablePrefix . 'SilvercartProductVariantAttributeSet_Attributes" TO "_obsolete_imported_SilvercartProductVariantAttributeSet_Attributes"');
+        }
+    }
+    
+    /**
+     * Imports the product variant modules (obsolete) variant relations.
+     * 
+     * @param bool $renameTable Rename obsolete database tables after import
+     * 
+     * @return array
+     *
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 21.09.2016
+     */
+    protected function importProductVariantProductRelations($renameTable = false) {
+        $attributeSetProductRelations = DB::query('SELECT * FROM "' . $this->tablePrefix . 'SilvercartAttributedVariantAttributeSet" AS "AVAS"');
+        $products = array();
+        if ($attributeSetProductRelations->numRecords() > 0) {
+            foreach ($attributeSetProductRelations as $attributeSetProductRelation) {
+                $attributeSetProductRelation['SilvercartProductVariantAttributeSetID'];
+                $productID  = $attributeSetProductRelation['SilvercartProductID'];
+                $attributeD = $this->importAttributeMap[$attributeSetProductRelation['SilvercartProductVariantAttributeSetID']];
+                $product    = SilvercartProduct::get()->byID($productID);
+                $attribute  = SilvercartProductAttribute::get()->byID($attributeD);
+                $this->importAttributeSetProductMap[$attributeSetProductRelation['ID']] = $productID;
+                $products[$productID] = $product;
+                $product->SilvercartProductAttributes()->add($attribute);
+            }
+        }
+        
+        $attributeProductRelations = DB::query('SELECT * FROM "' . $this->tablePrefix . 'SilvercartAttributedVariantAttributeSet_Attributes" AS "AVASA"');
+        if ($attributeProductRelations->numRecords() > 0) {
+            foreach ($attributeProductRelations as $attributeProductRelation) {
+                if (array_key_exists($attributeProductRelation['SilvercartAttributedVariantAttributeSetID'], $this->importAttributeSetProductMap) &&
+                    array_key_exists($attributeProductRelation['SilvercartProductVariantAttributeID'], $this->importAttributeValueMap)) {
+                    $productID        = $this->importAttributeSetProductMap[$attributeProductRelation['SilvercartAttributedVariantAttributeSetID']];
+                    $attributeValueID = $this->importAttributeValueMap[$attributeProductRelation['SilvercartProductVariantAttributeID']];
+                    
+                    if (array_key_exists($productID, $products)) {
+                        $product = $products[$productID];
+                    } else {
+                        $product = SilvercartProduct::get()->byID($productID);
+                    }
+                    $attributeValue = SilvercartProductAttributeValue::get()->byID($attributeValueID);
+                    $product->SilvercartProductAttributeValues()->add($attributeValue, array(
+                        'IsActive'  => $attributeProductRelation['isActive'],
+                        'IsDefault' => $attributeProductRelation['isDefault'],
+                    ));
+                }
+            }
+        }
+        if ($renameTable) {
+            DB::query('RENAME TABLE "' . $this->tablePrefix . 'SilvercartAttributedVariantAttributeSet" TO "_obsolete_imported_SilvercartAttributedVariantAttributeSet"');
+            DB::query('RENAME TABLE "' . $this->tablePrefix . 'SilvercartAttributedVariantAttributeSet_Attributes" TO "_obsolete_imported_SilvercartAttributedVariantAttributeSet_Attributes"');
+        }
     }
     
 }

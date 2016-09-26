@@ -26,12 +26,14 @@ class SilvercartProductAttributeDropdownField extends DropdownField {
      * Makes use of {@link FormField->createTag()} to generate the <select>
      * tag and option elements inside is as the content of the <select>.
      * 
+     * @param array $properties Properties
+     * 
      * @return string HTML tag for this dropdown field
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 12.09.2012
      */
-    public function Field() {
+    public function Field($properties = array()) {
         $options    = '';
         $source     = $this->getSource();
         if ($source) {
@@ -70,7 +72,6 @@ class SilvercartProductAttributeDropdownField extends DropdownField {
             'class'     => ($this->extraClass() ? $this->extraClass() : ''),
             'id'        => $this->id(),
             'name'      => $this->name,
-            'tabindex'  => $this->getTabIndex(),
             'rel'       => Controller::curr()->Link() . '/LoadVariant/',
         );
 

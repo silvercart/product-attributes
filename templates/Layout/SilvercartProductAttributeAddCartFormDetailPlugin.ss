@@ -51,4 +51,14 @@
     
 </script>
 
+<% else_if $hasSingleProductVariants %>
+    <div class="clearfix silvercart-product-page-productvariant-box">
+        <h3><% _t('SilvercartProductAttributeAddCartForm.HEADLINE') %>:</h3>
+
+        <% with Form %>
+            <% loop CustomHtmlFormFieldsByGroup(SilvercartProductAttributesSingle,CustomHtmlFormFieldSelect) %>
+                $CustomHtmlFormField
+            <% end_loop %>
+        <% end_with %>
+    </div>
 <% end_if %>

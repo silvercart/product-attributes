@@ -92,8 +92,6 @@ class SilvercartProductAttributePriceRangeForm extends CustomHtmlForm {
     public function submitSuccess($data, $form, $formData) {
         $this->controller->setMinPriceForWidget($formData['MinPrice']);
         $this->controller->setMaxPriceForWidget($formData['MaxPrice']);
-        var_dump($formData['MaxPrice']);
-        exit();
         $this->controller->redirectBack();
     }
     

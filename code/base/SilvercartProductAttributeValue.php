@@ -171,4 +171,30 @@ class SilvercartProductAttributeValue extends DataObject {
         return $isFilterValue;
     }
     
+    /**
+     * Returns true to use buttons to toggle IsActive state of a product related
+     * attribute value used as variant.
+     * 
+     * @return boolean
+     *
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 21.09.2016
+     */
+    public function SubObjectHasIsActive() {
+        return true;
+    }
+    
+    /**
+     * Returns true to use buttons to toggle IsDefault state of a product related
+     * attribute value used as variant.
+     * 
+     * @return boolean
+     *
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 21.09.2016
+     */
+    public function SubObjectHasIsDefault() {
+        return true;
+    }
+    
 }

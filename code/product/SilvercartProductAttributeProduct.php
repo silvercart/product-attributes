@@ -29,6 +29,24 @@ class SilvercartProductAttributeProduct extends DataExtension {
         'SilvercartProductAttributes'       => 'SilvercartProductAttribute',
         'SilvercartProductAttributeValues'  => 'SilvercartProductAttributeValue',
     );
+    
+    /**
+     * Extra fields for many to many relations.
+     *
+     * @var array
+     */
+    private static $many_many_extraFields = array(
+        'SilvercartProductAttributeValues' => array(
+            'IsActive'  => 'Boolean',
+            'IsDefault' => 'Boolean',
+            'ModifyTitleAction'         => "enum(',add,setTo','')",
+            'ModifyTitleValue'          => "Varchar(256)",
+            'ModifyPriceAction'         => "enum(',add,subtract,setTo','')",
+            'ModifyPriceValue'          => "Varchar(10)",
+            'ModifyProductNumberAction' => "enum(',add,setTo','')",
+            'ModifyProductNumberValue'  => "Varchar(50)",
+        ),
+    );
 
     /**
      * Set of variants related with this product
@@ -76,7 +94,7 @@ class SilvercartProductAttributeProduct extends DataExtension {
             if ($this->owner->exists()) {
                 $attributeField = $fields->dataFieldByName('SilvercartProductAttributes');
                 /* @var $attributeField GridField */
-                $subObjectComponent = new SilvercartGridFieldSubObjectHandler($this->owner, 'SilvercartProductAttributeValue', $this->owner->SilvercartProductAttributeValues());
+                $subObjectComponent = new SilvercartProductAttributeGridFieldSubObjectHandler($this->owner, 'SilvercartProductAttributeValue', $this->owner->SilvercartProductAttributeValues());
                 $attributeField->getConfig()->addComponent($subObjectComponent);
             }
         }
@@ -170,6 +188,57 @@ class SilvercartProductAttributeProduct extends DataExtension {
             $longDescription = $this->owner->SilvercartMasterProduct()->LongDescription;
         }
     }
+    
+    /**
+     * On after write.
+     * Adds variant modifications to related attribute values.
+     * 
+     * @return void
+     *
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 22.09.2016
+     */
+    public function onAfterWrite() {
+        if (array_key_exists('subItem', $_POST) &&
+            is_array($_POST['subItem']) &&
+            array_key_exists('variantModification', $_POST['subItem'])) {
+            
+            $modifications = $_POST['subItem']['variantModification'];
+            foreach ($modifications as $attributeValueID => $modification) {
+                $attributeValue = $this->owner->SilvercartProductAttributeValues()->byID($attributeValueID);
+                $extraFields    = array(
+                    'ModifyTitleAction'         => '',
+                    'ModifyTitleValue'          => '',
+                    'ModifyPriceAction'         => '',
+                    'ModifyPriceValue'          => '',
+                    'ModifyProductNumberAction' => '',
+                    'ModifyProductNumberValue'  => '',
+                );
+                if (array_key_exists('Title', $modification) &&
+                    is_array($modification['Title']) &&
+                    array_key_exists('action', $modification['Title']) &&
+                    array_key_exists('value', $modification['Title'])) {
+                    $extraFields['ModifyTitleAction'] = $modification['Title']['action'];
+                    $extraFields['ModifyTitleValue'] = $modification['Title']['value'];
+                }
+                if (array_key_exists('Price', $modification) &&
+                    is_array($modification['Price']) &&
+                    array_key_exists('action', $modification['Price']) &&
+                    array_key_exists('value', $modification['Price'])) {
+                    $extraFields['ModifyPriceAction'] = $modification['Price']['action'];
+                    $extraFields['ModifyPriceValue'] = $modification['Price']['value'];
+                }
+                if (array_key_exists('ProductNumber', $modification) &&
+                    is_array($modification['ProductNumber']) &&
+                    array_key_exists('action', $modification['ProductNumber']) &&
+                    array_key_exists('value', $modification['ProductNumber'])) {
+                    $extraFields['ModifyProductNumberAction'] = $modification['ProductNumber']['action'];
+                    $extraFields['ModifyProductNumberValue'] = $modification['ProductNumber']['value'];
+                }
+                $this->owner->SilvercartProductAttributeValues()->add($attributeValue, $extraFields);
+            }
+        }
+    }
 
     /**
      * Returns the products attributes with related values
@@ -245,6 +314,32 @@ class SilvercartProductAttributeProduct extends DataExtension {
             $hasVariants = true;
         }
         return $hasVariants;
+    }
+
+    /**
+     * Returns whether this product has single product variants or not
+     * 
+     * @return boolean
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 12.09.2012
+     */
+    public function hasSingleProductVariants() {
+        $hasVariants       = false;
+        $variantAttributes = $this->getSingleProductVariantAttributes();
+        if ($variantAttributes->exists()) {
+            $hasVariants = true;
+        }
+        return $hasVariants;
+    }
+    
+    /**
+     * Returns the single product variant attributes.
+     * 
+     * @return DataList
+     */
+    public function getSingleProductVariantAttributes() {
+        return $this->owner->SilvercartProductAttributes()->filter('CanBeUsedForSingleVariants', true);
     }
     
     /**
@@ -604,6 +699,83 @@ class SilvercartProductAttributeProduct extends DataExtension {
                         'value'             => $values,
                         'selectedValue'     => $selectedValue,
                         'silvercartProduct' => $contextProduct,
+                        'checkRequirements' => $checkRequirements
+                    );
+                }
+            }
+        }
+        return $fieldGroup;
+    }
+    
+    /**
+     * Returns the form fields for the choice of a products single variant to 
+     * use with CustomHtmlForm
+     * 
+     * @return array
+     */
+    public function getSingleProductVariantFormFields() {
+        $product    = $this->owner;
+        $fieldGroup = array();
+        if ($product->hasSingleProductVariants()) {
+            $attributes         = $product->getSingleProductVariantAttributes();
+            $fieldModifierNotes = array();
+
+            foreach ($attributes as $attribute) {
+                $values         = array();
+                $selectedValue  = 0;
+
+                $attributedValues = $product->SilvercartProductAttributeValues();
+                if ($attributedValues->exists()) {
+                    $selectedValue    = $attributedValues->filter('IsDefault', true);
+                    if (!($selectedValue instanceof SilvercartProductAttributeValue)) {
+                        $selectedValue = $attributedValues->first();
+                    }
+                    $selectedValue = $selectedValue->ID;
+                }
+                $attributedValues->sort('Title');
+
+                foreach ($attributedValues as $attributedValue) {
+                    if (!$attributedValue->IsActive) {
+                        continue;
+                    }
+                    $attributeName = $attributedValue->Title;
+                    $addition      = '';
+                    if ($attributedValue->ModifyPriceValue > 0) {
+                        if ($attributedValue->ModifyPriceAction == 'add') {
+                            $additionMoney = new SilvercartMoney();
+                            $additionMoney->setAmount($attributedValue->ModifyPriceValue);
+                            $additionMoney->setCurrency($product->getPrice()->getCurrency());
+                            $addition = '+' . $additionMoney->Nice();
+                        } elseif ($attributedValue->ModifyPriceAction == 'subtract') {
+                            $additionMoney = new SilvercartMoney();
+                            $additionMoney->setAmount($attributedValue->ModifyPriceValue);
+                            $additionMoney->setCurrency($product->getPrice()->getCurrency());
+                            $addition = '-' . $additionMoney->Nice();
+                        }
+                    }
+
+                    if (!empty($addition)) {
+                        $attributeName .= ' (' . $addition . ')';
+                    }
+
+                    $values[$attributedValue->ID] = $attributeName;
+                }
+
+                if (count($values) > 0) {
+                    $fieldType = 'SilvercartProductAttributeDropdownField';
+
+                    if (!empty($attribute->useCustomFormField)) {
+                        $fieldType = $attribute->useCustomFormField;
+                    }
+
+                    $checkRequirements = array();
+                    
+                    $fieldGroup['SilvercartProductAttribute' . $attribute->ID] = array(
+                        'type'              => $fieldType,
+                        'title'             => $attribute->Title,
+                        'value'             => $values,
+                        'selectedValue'     => $selectedValue,
+                        'silvercartProduct' => $product,
                         'checkRequirements' => $checkRequirements
                     );
                 }

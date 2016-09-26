@@ -37,6 +37,9 @@ class SilvercartProductAttributeAddCartFormDetailPlugin extends DataExtension {
         if ($product->hasVariants()) {
             $callingObject->fieldGroups['SilvercartProductAttributes'] = $product->getVariantFormFields();
         }
+        if ($product->hasSingleProductVariants()) {
+            $callingObject->fieldGroups['SilvercartProductAttributesSingle'] = $product->getSingleProductVariantFormFields();
+        }
     }
     
     /**
@@ -53,12 +56,14 @@ class SilvercartProductAttributeAddCartFormDetailPlugin extends DataExtension {
     public function pluginAddCartFormDetailAdditionalFields(&$arguments, &$callingObject) {
         $product    = Controller::curr()->detailViewProduct;
         $output     = '';
-        if ($product->hasVariants()) {
+        if ($product->hasVariants() ||
+            $product->hasSingleProductVariants()) {
             $renderer           = new ViewableData();
             $templateData       = array(
                 'Form'              => $callingObject,
                 'Controller'        => Controller::curr(),
                 'hasVariants'       => $product->hasVariants(),
+                'hasSingleProductVariants' => $product->hasSingleProductVariants(),
                 'SilvercartProduct' => $product
             );
 
