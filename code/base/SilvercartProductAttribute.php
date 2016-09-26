@@ -646,8 +646,8 @@ class SilvercartProductAttribute_VariantImporter {
             }
         }
         if ($renameTable) {
-            DB::query('RENAME TABLE "' . $this->tablePrefix . 'SilvercartProductVariantAttributeSet" TO "_obsolete_imported_SilvercartProductVariantAttributeSet"');
-            DB::query('RENAME TABLE "' . $this->tablePrefix . 'SilvercartProductVariantAttributeSetLanguage" TO "_obsolete_imported_SilvercartProductVariantAttributeSetLanguage"');
+            DB::query('RENAME TABLE "' . $this->tablePrefix . 'SilvercartProductVariantAttributeSet" TO "_imported_SilvercartProductVariantAttributeSet"');
+            DB::query('RENAME TABLE "' . $this->tablePrefix . 'SilvercartProductVariantAttributeSetLanguage" TO "_imported_SilvercartProductVariantAttributeSetLanguage"');
         }
     }
     
@@ -692,8 +692,8 @@ class SilvercartProductAttribute_VariantImporter {
             }
         }
         if ($renameTable) {
-            DB::query('RENAME TABLE "' . $this->tablePrefix . 'SilvercartProductVariantAttribute" TO "_obsolete_imported_SilvercartProductVariantAttribute"');
-            DB::query('RENAME TABLE "' . $this->tablePrefix . 'SilvercartProductVariantAttributeLanguage" TO "_obsolete_imported_SilvercartProductVariantAttributeLanguage"');
+            DB::query('RENAME TABLE "' . $this->tablePrefix . 'SilvercartProductVariantAttribute" TO "_imported_SilvercartProductVariantAttribute"');
+            DB::query('RENAME TABLE "' . $this->tablePrefix . 'SilvercartProductVariantAttributeLanguage" TO "_imported_SilvercartProductVariantAttributeLanguage"');
         }
     }
     
@@ -726,7 +726,7 @@ class SilvercartProductAttribute_VariantImporter {
             }
         }
         if ($renameTable) {
-            DB::query('RENAME TABLE "' . $this->tablePrefix . 'SilvercartProductVariantAttributeSet_Attributes" TO "_obsolete_imported_SilvercartProductVariantAttributeSet_Attributes"');
+            DB::query('RENAME TABLE "' . $this->tablePrefix . 'SilvercartProductVariantAttributeSet_Attributes" TO "_imported_SilvercartProductVariantAttributeSet_Attributes"');
         }
     }
     
@@ -778,8 +778,8 @@ class SilvercartProductAttribute_VariantImporter {
             }
         }
         if ($renameTable) {
-            DB::query('RENAME TABLE "' . $this->tablePrefix . 'SilvercartAttributedVariantAttributeSet" TO "_obsolete_imported_SilvercartAttributedVariantAttributeSet"');
-            DB::query('RENAME TABLE "' . $this->tablePrefix . 'SilvercartAttributedVariantAttributeSet_Attributes" TO "_obsolete_imported_SilvercartAttributedVariantAttributeSet_Attributes"');
+            DB::query('RENAME TABLE "' . $this->tablePrefix . 'SilvercartAttributedVariantAttributeSet" TO "_imported_SilvercartAttributedVariantAttributeSet"');
+            DB::query('RENAME TABLE "' . $this->tablePrefix . 'SilvercartAttributedVariantAttributeSet_Attributes" TO "_imported_SilvercartAttributedVariantAttributeSet_Attributes"');
         }
     }
     
