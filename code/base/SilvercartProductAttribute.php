@@ -579,15 +579,20 @@ class SilvercartProductAttribute_VariantImporter {
      * @since 21.09.2016
      */
     public function doImport() {
-        $doImport = false;
-        $results  = DB::query('SHOW TABLES');
+        $doImport  = false;
+        $results   = DB::query('SHOW TABLES');
+        $tableName = 'SilvercartProductVariantAttribute';
         
         foreach ($results as $table) {
-            if (in_array('SilvercartProductVariantAttribute', $table)) {
+            if (in_array($tableName, $table) ||
+                in_array(strtolower($tableName), $table) ||
+                in_array(strtoupper($tableName), $table)) {
                 $doImport = true;
                 break;
             }
-            if (in_array('_obsolete_SilvercartProductVariantAttribute', $table)) {
+            if (in_array('_obsolete_' . $tableName, $table) ||
+                in_array(strtolower('_obsolete_' . $tableName), $table) ||
+                in_array(strtoupper('_obsolete_' . $tableName), $table)) {
                 $doImport = true;
                 $this->tablePrefix = '_obsolete_';
                 break;
