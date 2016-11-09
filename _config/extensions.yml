@@ -52,3 +52,9 @@ SilvercartShoppingCartPositionPluginProvider:
 SilvercartShoppingCartPosition:
   extensions:
     ['SilvercartProductAttributeShoppingCartPosition']
+SilvercartProductAddCartFormListPluginProvider:
+  extensions:
+    ['SilvercartProductAttributeAddCartFormListPlugin']
+SilvercartProductAddCartFormTilePluginProvider:
+  extensions:
+    ['SilvercartProductAttributeAddCartFormTilePlugin']
