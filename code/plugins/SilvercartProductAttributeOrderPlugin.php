@@ -35,7 +35,7 @@ class SilvercartProductAttributeOrderPlugin extends DataExtension {
      */
     public function pluginConvertShoppingCartPositionToOrderPosition(&$shoppingCartPosition, &$orderPosition, &$callingObject) {
         $productAttributeVariantDefinition  = '';
-        $variantAttributeValues             = $shoppingCartPosition->SilvercartProduct()->getVariantAttributeValues();
+        $variantAttributeValues             = $shoppingCartPosition->getVariantAttributes();
         foreach ($variantAttributeValues as $variantAttributeValue) {
             if (!empty($productAttributeVariantDefinition)) {
                 $productAttributeVariantDefinition .= ', ';

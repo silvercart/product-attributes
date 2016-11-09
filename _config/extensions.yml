@@ -43,6 +43,12 @@ SilvercartOrderPositionPluginProvider:
 SilvercartProductAddCartFormDetailPluginProvider:
   extensions:
     ['SilvercartProductAttributeAddCartFormDetailPlugin']
+SilvercartShoppingCartPluginProvider:
+  extensions:
+    ['SilvercartProductAttributeShoppingCartPlugin']
 SilvercartShoppingCartPositionPluginProvider:
   extensions:
     ['SilvercartProductAttributeShoppingCartPositionPlugin']
+SilvercartShoppingCartPosition:
+  extensions:
+    ['SilvercartProductAttributeShoppingCartPosition']

@@ -784,4 +784,63 @@ class SilvercartProductAttributeProduct extends DataExtension {
         return $fieldGroup;
     }
     
+    /**
+     * Adds a product to the SilvercartShoppingCart and attaches the given attributes to the 
+     * position.
+     *
+     * @param int   $cartID              ID of the users shopping cart
+     * @param int   $quantity            Amount of products to be added
+     * @param array $attributes          The attributes that shall be attached to the created position
+     * @param array $userInputAttributes Optional: the user generated attributes that shall be attached to the created position
+     *
+     * @return SilvercartShoppingCartPosition
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 07.11.2016
+     */
+    public function SPAPaddToCartWithAttributes($cartID, $quantity = 1, $attributes = array(), $userInputAttributes =  false) {
+        if ($userInputAttributes === false) {
+            $userInputAttributes = array();
+        }
+        
+        if (empty($userInputAttributes) &&
+            (!is_array($attributes) ||
+              count($attributes) == 0)) {
+
+            return $this->owner->addToCart($cartID, $quantity, true);
+        }
+        $serializedAttributes = serialize($attributes);
+        $shoppingCartPosition = SilvercartShoppingCartPosition::get()
+                ->filter(array(
+                    'SilvercartShoppingCartID'    => $cartID,
+                    'SilvercartProductID'         => $this->owner->ID,
+                    'SilvercartProductAttributes' => $serializedAttributes,
+                ))
+                ->first();
+        if (!($shoppingCartPosition instanceof SilvercartShoppingCartPosition) ||
+            !$shoppingCartPosition->exists()) {
+            
+            $shoppingCartPosition = new SilvercartShoppingCartPosition();
+            $shoppingCartPosition->SilvercartShoppingCartID    = $cartID;
+            $shoppingCartPosition->SilvercartProductID         = $this->owner->ID;
+            $shoppingCartPosition->SilvercartProductAttributes = $serializedAttributes;
+            $shoppingCartPosition->write();
+        }
+        
+        if ($shoppingCartPosition->isQuantityIncrementableBy($quantity)) {
+            $shoppingCartPosition->Quantity += $quantity;
+        } else {
+            if ($this->owner->StockQuantity > 0) {
+                $shoppingCartPosition->Quantity += $this->owner->StockQuantity - $shoppingCartPosition->Quantity;
+                $shoppingCartPosition->write(); //we have to write because we need the ID
+                SilvercartShoppingCartPositionNotice::setNotice($shoppingCartPosition->ID, "remaining");  
+            } else {
+                return false;
+            }
+        }
+        $shoppingCartPosition->write();
+        
+        return $shoppingCartPosition;
+    }
+    
 }
