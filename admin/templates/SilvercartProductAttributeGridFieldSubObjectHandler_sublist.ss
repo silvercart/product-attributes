@@ -14,7 +14,7 @@
         <tbody>
         <% loop $Items %>
             <tr class="sub-list-record active{$IsActive} default{$IsDefault}">
-                <td>{$Title}</td>
+                <td class="title">{$Title}</td>
                 <td>
                     <select name="subItem[variantModification][{$ID}][Title][action]">
                         <option value="">- ohne -</option>
@@ -30,7 +30,7 @@
                         <option value="add" <% if $ModifyPriceAction == 'add' %>selected<% end_if %> >Aufschlag</option>
                         <option value="subtract" <% if $ModifyPriceAction == 'subtract' %>selected<% end_if %> >Abschlag</option>
                     </select>
-                    <input type="text" value="{$ModifyPriceValue}" name="subItem[variantModification][{$ID}][Price][value]" />
+                    <input type="text" value="{$ModifyPriceValue}" name="subItem[variantModification][{$ID}][Price][value]" style="width: 50px;" />
                 </td>
                 <td>
                     <select name="subItem[variantModification][{$ID}][ProductNumber][action]">
@@ -50,9 +50,9 @@
                 <% end_if %>
                 <% if $SubObjectHasIsDefault %>
                     <% if $IsDefault %>
-                    <span class="sub-list-record-action btn-icon-accept" data-action-id="{$Up.UndefaultActionID}" data-action-name="undefault" data-record-id="{$ID}" data-icon="accept" data-alter-icon="accept_disabled" data-alter-action-id="{$Up.DefaultActionID}" data-alter-action-name="default" data-alter-title="Nicht mehr als Standard festlegen" title="Als Standard festlegen"></span>
+                    <span class="sub-list-record-action btn-icon-accept" data-action-id="{$Up.UndefaultActionID}" data-action-name="undefault" data-record-id="{$ID}" data-icon="accept" data-alter-icon="accept_disabled" data-alter-action-id="{$Up.DefaultActionID}" data-alter-action-name="default" data-alter-title="Als Standard festlegen" title="Nicht mehr als Standard festlegen"></span>
                     <% else %>
-                    <span class="sub-list-record-action btn-icon-accept_disabled" data-action-id="{$Up.DefaultActionID}" data-action-name="default" data-record-id="{$ID}" data-icon="accept_disabled" data-alter-icon="accept" data-alter-action-id="{$Up.UndefaultActionID}" data-alter-action-name="undefault" data-alter-title="Als Standard festlegen" title="Nicht mehr als Standard festlegen"></span>
+                    <span class="sub-list-record-action btn-icon-accept_disabled" data-action-id="{$Up.DefaultActionID}" data-action-name="default" data-record-id="{$ID}" data-icon="accept_disabled" data-alter-icon="accept" data-alter-action-id="{$Up.UndefaultActionID}" data-alter-action-name="undefault" data-alter-title="Nicht mehr als Standard festlegen" title="Als Standard festlegen"></span>
                     <% end_if %>
                 <% end_if %>
                     <span class="sub-list-record-action btn-icon-chain--minus" data-action-id="{$Up.ActionID}" data-action-name="remove" data-record-id="{$ID}" title="Merkmal von diesem Artikel entfernen"></span>
@@ -74,9 +74,9 @@
     <% end_if %>
     <% if $SubObjectHasIsDefault %>
         <% if $IsDefault %>
-        <span class="sub-list-record-action btn-icon-accept" data-action-id="{$Up.UndefaultActionID}" data-action-name="undefault" data-record-id="{$ID}" data-icon="accept" data-alter-icon="accept_disabled" data-alter-action-id="{$Up.DefaultActionID}" data-alter-action-name="default" data-alter-title="Nicht mehr als Standard festlegen" title="Als Standard festlegen"></span>
+        <span class="sub-list-record-action btn-icon-accept" data-action-id="{$Up.UndefaultActionID}" data-action-name="undefault" data-record-id="{$ID}" data-icon="accept" data-alter-icon="accept_disabled" data-alter-action-id="{$Up.DefaultActionID}" data-alter-action-name="default" title="Nicht mehr als Standard festlegen" data-alter-title="Als Standard festlegen"></span>
         <% else %>
-        <span class="sub-list-record-action btn-icon-accept_disabled" data-action-id="{$Up.DefaultActionID}" data-action-name="default" data-record-id="{$ID}" data-icon="accept_disabled" data-alter-icon="accept" data-alter-action-id="{$Up.UndefaultActionID}" data-alter-action-name="undefault" data-alter-title="Als Standard festlegen" title="Nicht mehr als Standard festlegen"></span>
+        <span class="sub-list-record-action btn-icon-accept_disabled" data-action-id="{$Up.DefaultActionID}" data-action-name="default" data-record-id="{$ID}" data-icon="accept_disabled" data-alter-icon="accept" data-alter-action-id="{$Up.UndefaultActionID}" data-alter-action-name="undefault" title="Als Standard festlegen" data-alter-title="Nicht mehr als Standard festlegen"></span>
         <% end_if %>
     <% end_if %>
         <span class="sub-list-record-action btn-icon-chain--minus" data-action-id="{$Up.ActionID}" data-action-name="remove" data-record-id="{$ID}" title="Merkmal von diesem Artikel entfernen"></span>
