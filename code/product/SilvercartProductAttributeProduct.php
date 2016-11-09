@@ -724,7 +724,7 @@ class SilvercartProductAttributeProduct extends DataExtension {
                 $values         = array();
                 $selectedValue  = 0;
 
-                $attributedValues = $product->SilvercartProductAttributeValues();
+                $attributedValues = $product->SilvercartProductAttributeValues()->filter('SilvercartProductAttributeID', $attribute->ID);
                 if ($attributedValues->exists()) {
                     $selectedValue    = $attributedValues->filter('IsDefault', true);
                     if (!($selectedValue instanceof SilvercartProductAttributeValue)) {
