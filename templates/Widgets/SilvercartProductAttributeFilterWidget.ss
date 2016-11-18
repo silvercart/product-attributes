@@ -12,14 +12,13 @@
             <div class="silvercart-widget">
                 <div class="silvercart-widget_content">
             <% end_if %>
-                    <strong class="h2 <% if HasSelectedValues %>has-selected-values<% else %>has-no-selected-values<% end_if %>">{$Title}</strong>
                     <div class="silvercart-widget-content_frame silvercart-product-attribute-filter-widget">
+                        <strong class="h2 <% if HasSelectedValues %>has-selected-values<% else %>has-no-selected-values<% end_if %>">{$Title}</strong>
                         <ul class="vlist silvercart-product-attribute">
             <% if AssignedValues %>
                 <% loop AssignedValues %>
                             <li>
-                                <input type="checkbox" name="silvercart-product-attribute-value-{$ID}" id="silvercart-product-attribute-value-{$ID}" class="silvercart-product-attribute-value silvercart-product-attribute-{$SilvercartProductAttribute.ID}" value="$ID" <% if IsFilterValue %>checked="checked"<% end_if %> />
-                                <label for="silvercart-product-attribute-value-{$ID}">$Title</label>
+                                <label for="silvercart-product-attribute-value-{$ID}"><input type="checkbox" name="silvercart-product-attribute-value-{$ID}" id="silvercart-product-attribute-value-{$ID}" class="silvercart-product-attribute-value silvercart-product-attribute-{$SilvercartProductAttribute.ID}" value="$ID" <% if IsFilterValue %>checked="checked"<% end_if %> /> {$Title}</label>
                             </li>
                 <% end_loop %>
             <% end_if %>
@@ -35,15 +34,16 @@
     </form>
 
 <script type="text/javascript">
+    setSilvercartProductAttributeMainSelector('{$getJsMainSelector}');
+<% if CurrentPage.FilterValueArrayList %>
+    <% loop CurrentPage.FilterValueArrayList %>
+    SilvercartProductAttributeFilterPush($ID);
+    <% end_loop %>
+<% end_if %>
     $(document).ready(function() {
         if (jQuery(".silvercart-product-group-page-selectors")) {
             jQuery(".silvercart-product-group-page-selectors input[type=submit]").hide();
         }
-<% if CurrentPage.FilterValueArrayList %>
-    <% loop CurrentPage.FilterValueArrayList %>
-            SilvercartProductAttributeFilterPush($ID);
-    <% end_loop %>
-<% end_if %>
     });
 </script>
     <% end_if %>

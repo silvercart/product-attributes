@@ -1,4 +1,5 @@
 
+var SilvercartProductAttributeFilterMainSelector        = '#main';
 var SilvercartProductAttributeFilter                    = [];
 var SilvercartProductAttributeFilterCallInProgress      = false;
 var SilvercartProductAttributeFilterCallback            = false;
@@ -13,16 +14,18 @@ var SilvercartProductAttributeFilterCall                = function() {
         SilvercartProductAttributeFilterCallback = false;
         $('.silvercart-product-attribute-filter-mask').remove();
         $('.silvercart-product-attribute-filter-loading-bar').remove();
+        var mainContainer = $(SilvercartProductAttributeFilterMainSelector);
         if ($('.silvercart-product-attribute-filter-mask').length === 0) {
-            $('#main').append('<div class="silvercart-product-attribute-filter-mask"></div>');
-            $('#main').append('<img class="silvercart-product-attribute-filter-loading-bar" src="/silvercart_product_attributes/images/loader.gif" title="" />');
-            $('#main').css({
+            mainContainer.append('<div class="silvercart-product-attribute-filter-mask"></div>');
+            mainContainer.append('<img class="silvercart-product-attribute-filter-loading-bar" src="/silvercart_product_attributes/images/loader.gif" title="" />');
+            mainContainer.css({
                 position : 'relative'
             });
         }
+        
         $('.silvercart-product-attribute-filter-mask').css({
-            width : $('#main').css('width'),
-            height : $('#main').css('height'),
+            width : mainContainer.css('width'),
+            height : mainContainer.css('height'),
             position : 'absolute',
             display : 'none',
             top : '0px',
@@ -48,7 +51,7 @@ var SilvercartProductAttributeFilterCall                = function() {
                     'ajax'                                          : 1
                 },
                 'success':    function(html) {
-                    $('#main').html(html);
+                    mainContainer.html(html);
                     SilvercartProductAttributeFilterCallInProgress = false;
                     if (SilvercartProductAttributeFilterCallback) {
                         SilvercartProductAttributeFilterCall();
@@ -84,18 +87,21 @@ var SilvercartProductAttributeFilterRefreshSelectedFilters  = function(checkbox)
 var SilvercartProductAttributeFilterPush                = function(id) {
     SilvercartProductAttributeFilter.push(id);
 };
+var setSilvercartProductAttributeMainSelector           = function(selector) {
+    SilvercartProductAttributeFilterMainSelector = selector;
+};
 $(function() {
     $(document).ready(function() {
         if ($('.silvercart-product-attribute-filter-mask').length === 0) {
-            $('#main').append('<div class="silvercart-product-attribute-filter-mask"></div>');
-            $('#main').append('<img class="silvercart-product-attribute-filter-loading-bar" src="/silvercart_product_attributes/images/loader.gif" alt="Loading..." />');
-            $('#main').css({
+            $(SilvercartProductAttributeFilterMainSelector).append('<div class="silvercart-product-attribute-filter-mask"></div>');
+            $(SilvercartProductAttributeFilterMainSelector).append('<img class="silvercart-product-attribute-filter-loading-bar" src="/silvercart_product_attributes/images/loader.gif" alt="Loading..." />');
+            $(SilvercartProductAttributeFilterMainSelector).css({
                 position : 'relative'
             });
             $('.silvercart-product-attribute-filter-mask').css({
                 position : 'absolute',
-                width : $('#main').css('width'),
-                height : $('#main').css('height'),
+                width : $(SilvercartProductAttributeFilterMainSelector).css('width'),
+                height : $(SilvercartProductAttributeFilterMainSelector).css('height'),
                 display : 'none',
                 top : '0px',
                 background : '#fff'
@@ -132,7 +138,7 @@ $(function() {
         $('.silvercart-product-attribute-value').live('change', triggerFilter);
         $('.remove-filter').live('click', removeFilter);
     } else if (typeof $('.silvercart-product-attribute-value').on === 'function') {
-        $('.silvercart-product-attribute-value').on('change', triggerFilter);
-        $('.remove-filter').on('click', removeFilter);
+        $('body').on('change', '.silvercart-product-attribute-value', triggerFilter);
+        $('body').on('click', '.remove-filter', removeFilter);
     }
 });

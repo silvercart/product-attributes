@@ -24,7 +24,31 @@ class SilvercartProductAttributeFilterWidget extends SilvercartWidget {
         'FilterBehaviour'   => 'Enum("MultipleChoice,SingleChoice","MultipleChoice")',
         'RememberFilter'    => 'Boolean(0)',
     );
+    
+    /**
+     * Javascript selector to load content into.
+     *
+     * @var string
+     */
+    private static $js_main_selector = '#main';
 
+    /**
+     * Returns the JS selector.
+     * 
+     * @return string
+     */
+    public static function get_js_main_selector() {
+        return self::$js_main_selector;
+    }
+
+    /**
+     * Sets the JS selector.
+     * 
+     * @param string $js_main_selector JS main selector
+     */
+    public static function set_js_main_selector($js_main_selector) {
+        self::$js_main_selector = $js_main_selector;
+    }
 
     /**
      * Returns the title of this widget.
@@ -252,6 +276,15 @@ class SilvercartProductAttributeFilterWidget_Controller extends SilvercartWidget
             }
             $this->setAttributes($attributes);
         }
+    }
+
+    /**
+     * Returns the JS main selector.
+     * 
+     * @return void
+     */
+    public function getJsMainSelector() {
+        return SilvercartProductAttributeFilterWidget::get_js_main_selector();
     }
 
     /**
