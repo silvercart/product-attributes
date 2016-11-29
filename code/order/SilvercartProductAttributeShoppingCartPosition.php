@@ -49,7 +49,7 @@ class SilvercartProductAttributeShoppingCartPosition extends DataExtension {
      * @return DataList
      */
     public function getVariantAttributes() {
-        $attributeValues      = null;
+        $attributeValues      = new ArrayList();
         $serializedAttributes = $this->owner->SilvercartProductAttributes;
         $attributesArray      = unserialize($serializedAttributes);
         if (is_array($attributesArray) &&
