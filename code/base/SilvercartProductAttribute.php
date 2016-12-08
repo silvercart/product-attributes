@@ -637,6 +637,7 @@ class SilvercartProductAttribute_VariantImporter {
                     $existingAttribute->Title                        = $attributeSet['name'];
                     $existingAttribute->IsUserInputField             = $attributeSet['type'] == 'userInput';
                     $existingAttribute->UserInputFieldMustBeFilledIn = $attributeSet['mustBeFilledIn'] == '1';
+                    $existingAttribute->CanBeUsedForSingleVariants   = true;
                     $existingAttribute->write();
                 }
                 if ($forTranslations &&
@@ -750,7 +751,6 @@ class SilvercartProductAttribute_VariantImporter {
         $products = array();
         if ($attributeSetProductRelations->numRecords() > 0) {
             foreach ($attributeSetProductRelations as $attributeSetProductRelation) {
-                $attributeSetProductRelation['SilvercartProductVariantAttributeSetID'];
                 $productID  = $attributeSetProductRelation['SilvercartProductID'];
                 $attributeD = $this->importAttributeMap[$attributeSetProductRelation['SilvercartProductVariantAttributeSetID']];
                 $product    = SilvercartProduct::get()->byID($productID);
@@ -774,11 +774,12 @@ class SilvercartProductAttribute_VariantImporter {
                     } else {
                         $product = SilvercartProduct::get()->byID($productID);
                     }
+                    $fieldModifiers = $this->getProductVariantAttributeFieldModifiers($attributeProductRelation['SilvercartProductVariantAttributeID'], $attributeProductRelation['SilvercartAttributedVariantAttributeSetID']);
                     $attributeValue = SilvercartProductAttributeValue::get()->byID($attributeValueID);
-                    $product->SilvercartProductAttributeValues()->add($attributeValue, array(
+                    $product->SilvercartProductAttributeValues()->add($attributeValue, array_merge(array(
                         'IsActive'  => $attributeProductRelation['isActive'],
                         'IsDefault' => $attributeProductRelation['isDefault'],
-                    ));
+                    ), $fieldModifiers));
                 }
             }
         }
@@ -786,6 +787,37 @@ class SilvercartProductAttribute_VariantImporter {
             DB::query('RENAME TABLE "' . $this->tablePrefix . 'SilvercartAttributedVariantAttributeSet" TO "_imported_SilvercartAttributedVariantAttributeSet"');
             DB::query('RENAME TABLE "' . $this->tablePrefix . 'SilvercartAttributedVariantAttributeSet_Attributes" TO "_imported_SilvercartAttributedVariantAttributeSet_Attributes"');
         }
+    }
+    
+    /**
+     * Imports the product variant modules (obsolete) variant field modifiers.
+     * 
+     * @param int   $attributeID                     Attribute ID
+     * @param array $attributedVariantAttributeSetID Set ID
+     * 
+     * @return array
+     *
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 21.09.2016
+     */
+    protected function getProductVariantAttributeFieldModifiers($attributeID, $attributedVariantAttributeSetID) {
+        $fieldModifiers = array();
+        $attributeFieldModifiers = DB::query('SELECT * FROM "' . $this->tablePrefix . 'SilvercartProductVariantFieldModifier" AS "PVFM" WHERE "PVFM"."SilvercartProductVariantAttributeID" = ' . $attributeID . ' AND "PVFM"."SilvercartAttributedVariantAttributeSetID" = ' . $attributedVariantAttributeSetID);
+        if ($attributeFieldModifiers->numRecords() > 0) {
+            foreach ($attributeFieldModifiers as $attributeFieldModifier) {
+                if ($attributeFieldModifier['silvercartProductFieldName'] == 'Title') {
+                    $fieldModifiers['ModifyTitleAction'] = $attributeFieldModifier['modifierAction'];
+                    $fieldModifiers['ModifyTitleValue']  = $attributeFieldModifier['modifierValue'];
+                } elseif ($attributeFieldModifier['silvercartProductFieldName'] == 'PriceGrossAmount') {
+                    $fieldModifiers['ModifyPriceAction'] = $attributeFieldModifier['modifierAction'];
+                    $fieldModifiers['ModifyPriceValue']  = $attributeFieldModifier['modifierValue'];
+                } elseif ($attributeFieldModifier['silvercartProductFieldName'] == 'ProductNumberShop') {
+                    $fieldModifiers['ModifyProductNumberAction'] = $attributeFieldModifier['modifierAction'];
+                    $fieldModifiers['ModifyProductNumberValue']  = $attributeFieldModifier['modifierValue'];
+                }
+            }
+        }
+        return $fieldModifiers;
     }
     
 }
