@@ -68,6 +68,7 @@ class SilvercartProductAttributeShoppingCartPositionPlugin extends DataExtension
                 
                 foreach ($variantAttributes as $variantAttributeValue) {
                     $productAttribute = $product->SilvercartProductAttributeValues()->byID($variantAttributeValue->ID);
+                    $priceAmount      = 0;
                     if (!empty($productAttribute->ModifyPriceValue)) {
                         $priceAmount = $this->prepareAmount($productAttribute->ModifyPriceValue);
                     }
