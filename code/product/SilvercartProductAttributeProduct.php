@@ -751,6 +751,11 @@ class SilvercartProductAttributeProduct extends DataExtension {
                             $additionMoney->setAmount($attributedValue->ModifyPriceValue);
                             $additionMoney->setCurrency($product->getPrice()->getCurrency());
                             $addition = '-' . $additionMoney->Nice();
+                        } elseif ($attributedValue->ModifyPriceAction == 'setTo') {
+                            $additionMoney = new SilvercartMoney();
+                            $additionMoney->setAmount($attributedValue->ModifyPriceValue);
+                            $additionMoney->setCurrency($product->getPrice()->getCurrency());
+                            $addition = $additionMoney->Nice();
                         }
                     }
 
