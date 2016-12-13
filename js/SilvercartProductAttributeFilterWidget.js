@@ -4,6 +4,7 @@ var SilvercartProductAttributeFilter                    = [];
 var SilvercartProductAttributeFilterCallInProgress      = false;
 var SilvercartProductAttributeFilterCallback            = false;
 var SilvercartProductAttributeFilterCallbackTimeout     = false;
+var SilvercartProductAttributeFilterCallbackFunction    = false;
 
 var SilvercartProductAttributeFilterCall                = function() {
     var filterForm      = $('form[name="silvercart-product-attribute-filter-form"]');
@@ -55,6 +56,9 @@ var SilvercartProductAttributeFilterCall                = function() {
                     SilvercartProductAttributeFilterCallInProgress = false;
                     if (SilvercartProductAttributeFilterCallback) {
                         SilvercartProductAttributeFilterCall();
+                    }
+                    if (typeof SilvercartProductAttributeFilterCallbackFunction === 'function') {
+                        SilvercartProductAttributeFilterCallbackFunction();
                     }
                 },
                 'error':    function() {
