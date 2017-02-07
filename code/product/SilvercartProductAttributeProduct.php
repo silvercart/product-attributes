@@ -722,6 +722,7 @@ class SilvercartProductAttributeProduct extends DataExtension {
 
             foreach ($attributes as $attribute) {
                 $values         = array();
+                $priceAmounts   = array();
                 $selectedValue  = 0;
 
                 $attributedValues = $product->SilvercartProductAttributeValues()->filter('SilvercartProductAttributeID', $attribute->ID);
@@ -740,22 +741,27 @@ class SilvercartProductAttributeProduct extends DataExtension {
                     }
                     $attributeName = $attributedValue->Title;
                     $addition      = '';
+                    $priceAmount   = new Money();
+                    $priceAmount->setAmount($product->getPrice()->getAmount());
                     if ($attributedValue->ModifyPriceValue > 0) {
                         if ($attributedValue->ModifyPriceAction == 'add') {
                             $additionMoney = new SilvercartMoney();
                             $additionMoney->setAmount($attributedValue->ModifyPriceValue);
                             $additionMoney->setCurrency($product->getPrice()->getCurrency());
                             $addition = '+' . $additionMoney->Nice();
+                            $priceAmount->setAmount($priceAmount->getAmount() + $additionMoney->getAmount());
                         } elseif ($attributedValue->ModifyPriceAction == 'subtract') {
                             $additionMoney = new SilvercartMoney();
                             $additionMoney->setAmount($attributedValue->ModifyPriceValue);
                             $additionMoney->setCurrency($product->getPrice()->getCurrency());
                             $addition = '-' . $additionMoney->Nice();
+                            $priceAmount->setAmount($priceAmount->getAmount() - $additionMoney->getAmount());
                         } elseif ($attributedValue->ModifyPriceAction == 'setTo') {
                             $additionMoney = new SilvercartMoney();
                             $additionMoney->setAmount($attributedValue->ModifyPriceValue);
                             $additionMoney->setCurrency($product->getPrice()->getCurrency());
                             $addition = $additionMoney->Nice();
+                            $priceAmount->setAmount($additionMoney->getAmount());
                         }
                     }
 
@@ -764,6 +770,7 @@ class SilvercartProductAttributeProduct extends DataExtension {
                     }
 
                     $values[$attributedValue->ID] = $attributeName;
+                    $priceAmounts[$attributedValue->ID] = $priceAmount->Nice();
                 }
 
                 if (count($values) > 0) {
@@ -781,7 +788,12 @@ class SilvercartProductAttributeProduct extends DataExtension {
                         'value'             => $values,
                         'selectedValue'     => $selectedValue,
                         'silvercartProduct' => $product,
-                        'checkRequirements' => $checkRequirements
+                        'checkRequirements' => $checkRequirements,
+                        'data'              => array(
+                            'prices'     => json_encode($priceAmounts),
+                            'type'       => 'single-variant',
+                            'product-id' => $product->ID,
+                        ),
                     );
                 }
             }
