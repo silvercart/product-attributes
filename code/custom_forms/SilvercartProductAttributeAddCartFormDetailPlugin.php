@@ -49,13 +49,18 @@ class SilvercartProductAttributeAddCartFormDetailPlugin extends DataExtension {
      *
      * @param array &$arguments     The arguments to pass
      * @param mixed &$callingObject The calling object
+     * @param bool  $force          Set to true to force the call
      * 
      * @return string
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 12.09.2012
      */
-    public function pluginAddCartFormDetailAdditionalFields(&$arguments, &$callingObject) {
+    public function pluginAddCartFormDetailAdditionalFields(&$arguments, &$callingObject, $force = false) {
+        if (!$force &&
+            get_class($this) != 'SilvercartProductAttributeAddCartFormDetailPlugin') {
+            return;
+        }
         $productID  = $callingObject->getFormFieldDefinition('productID');
         $product    = SilvercartProduct::get()->byID($productID);
         $output     = '';
@@ -103,7 +108,7 @@ class SilvercartProductAttributeAddCartFormListPlugin extends SilvercartProductA
      * @since 07.11.2016
      */
     public function pluginAddCartFormListAdditionalFields(&$arguments, &$callingObject) {
-        return $this->pluginAddCartFormDetailAdditionalFields($arguments, $callingObject);
+        return $this->pluginAddCartFormDetailAdditionalFields($arguments, $callingObject, true);
     }
     
 }
@@ -133,7 +138,7 @@ class SilvercartProductAttributeAddCartFormTilePlugin extends SilvercartProductA
      * @since 07.11.2016
      */
     public function pluginAddCartFormTileAdditionalFields(&$arguments, &$callingObject) {
-        return $this->pluginAddCartFormDetailAdditionalFields($arguments, $callingObject);
+        return $this->pluginAddCartFormDetailAdditionalFields($arguments, $callingObject, true);
     }
     
 }
@@ -163,7 +168,7 @@ class SilvercartProductAttributeAddCartFormPlugin extends SilvercartProductAttri
      * @since 21.02.2017
      */
     public function pluginAddCartFormAdditionalFields(&$arguments, &$callingObject) {
-        return $this->pluginAddCartFormDetailAdditionalFields($arguments, $callingObject);
+        return $this->pluginAddCartFormDetailAdditionalFields($arguments, $callingObject, true);
     }
     
 }
