@@ -137,3 +137,33 @@ class SilvercartProductAttributeAddCartFormTilePlugin extends SilvercartProductA
     }
     
 }
+
+/**
+ * Delivers additional information for the addCartForm CustomHtmlForm object of
+ * the SilvercartProductGroupPage list view.
+ *
+ * @package SilvercartProductAttributes
+ * @subpackage Plugins
+ * @author Sebastian Diel <sdiel@pixeltricks.de>
+ * @since 21.02.2017
+ * @license see license file in modules root directory
+ * @copyright 2017 pixeltricks GmbH
+ */
+class SilvercartProductAttributeAddCartFormPlugin extends SilvercartProductAttributeAddCartFormDetailPlugin {
+    
+    /**
+     * Returns a string of HTML code containing fields to choose a variant.
+     *
+     * @param array &$arguments     The arguments to pass
+     * @param mixed &$callingObject The calling object
+     * 
+     * @return string
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 21.02.2017
+     */
+    public function pluginAddCartFormAdditionalFields(&$arguments, &$callingObject) {
+        return $this->pluginAddCartFormDetailAdditionalFields($arguments, $callingObject);
+    }
+    
+}
