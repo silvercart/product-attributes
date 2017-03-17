@@ -710,6 +710,7 @@ class SilvercartProductAttributeProduct extends DataExtension {
 
             foreach ($attributes as $attribute) {
                 $values         = array();
+                $plainValues    = array();
                 $priceAmounts   = array();
                 $selectedValue  = 0;
 
