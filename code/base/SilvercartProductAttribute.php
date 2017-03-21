@@ -688,10 +688,10 @@ class SilvercartProductAttribute_VariantImporter {
                 }
                 if ($forTranslations &&
                     !$existingAttributeValue->hasLanguage($attribute['Locale'])) {
-                    $translation = new SilvercartProductAttributeLanguage();
-                    $translation->Locale                       = $attribute['Locale'];
-                    $translation->Title                        = $attribute['name'];
-                    $translation->SilvercartProductAttributeID = $existingAttributeValue->ID;
+                    $translation = new SilvercartProductAttributeValueLanguage();
+                    $translation->Locale                            = $attribute['Locale'];
+                    $translation->Title                             = $attribute['name'];
+                    $translation->SilvercartProductAttributeValueID = $existingAttributeValue->ID;
                     $translation->write();
                 }
                 $this->importAttributeValueMap[$attribute['SilvercartProductVariantAttributeID']] = $existingAttributeValue->ID;
@@ -757,7 +757,10 @@ class SilvercartProductAttribute_VariantImporter {
                 $attribute  = SilvercartProductAttribute::get()->byID($attributeD);
                 $this->importAttributeSetProductMap[$attributeSetProductRelation['ID']] = $productID;
                 $products[$productID] = $product;
-                $product->SilvercartProductAttributes()->add($attribute);
+                if ($product instanceof SilvercartProduct &&
+                    $product->exists()) {
+                    $product->SilvercartProductAttributes()->add($attribute);
+                }
             }
         }
         
@@ -774,12 +777,15 @@ class SilvercartProductAttribute_VariantImporter {
                     } else {
                         $product = SilvercartProduct::get()->byID($productID);
                     }
-                    $fieldModifiers = $this->getProductVariantAttributeFieldModifiers($attributeProductRelation['SilvercartProductVariantAttributeID'], $attributeProductRelation['SilvercartAttributedVariantAttributeSetID']);
-                    $attributeValue = SilvercartProductAttributeValue::get()->byID($attributeValueID);
-                    $product->SilvercartProductAttributeValues()->add($attributeValue, array_merge(array(
-                        'IsActive'  => $attributeProductRelation['isActive'],
-                        'IsDefault' => $attributeProductRelation['isDefault'],
-                    ), $fieldModifiers));
+                    if ($product instanceof SilvercartProduct &&
+                        $product->exists()) {
+                        $fieldModifiers = $this->getProductVariantAttributeFieldModifiers($attributeProductRelation['SilvercartProductVariantAttributeID'], $attributeProductRelation['SilvercartAttributedVariantAttributeSetID']);
+                        $attributeValue = SilvercartProductAttributeValue::get()->byID($attributeValueID);
+                        $product->SilvercartProductAttributeValues()->add($attributeValue, array_merge(array(
+                            'IsActive'  => $attributeProductRelation['isActive'],
+                            'IsDefault' => $attributeProductRelation['isDefault'],
+                        ), $fieldModifiers));
+                    }
                 }
             }
         }
