@@ -30,17 +30,21 @@ class SilvercartProductAttributeAddCartFormDetailPlugin extends DataExtension {
      * @return bool
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 12.09.2012
+     * @since 06.04.2017
      */
     public function pluginUpdateFormFields(&$formFields, &$callingObject) {
         $productID = $callingObject->getFormFieldDefinition('productID');
         $product   = SilvercartProduct::get()->byID($productID);
-        
-        if ($product->hasVariants()) {
-            $callingObject->fieldGroups['SilvercartProductAttributes'] = $product->getVariantFormFields();
-        }
-        if ($product->hasSingleProductVariants()) {
-            $callingObject->fieldGroups['SilvercartProductAttributesSingle'] = $product->getSingleProductVariantFormFields();
+
+        if ($product instanceof SilvercartProduct &&
+            $product->exists()) {
+
+            if ($product->hasVariants()) {
+                $callingObject->fieldGroups['SilvercartProductAttributes'] = $product->getVariantFormFields();
+            }
+            if ($product->hasSingleProductVariants()) {
+                $callingObject->fieldGroups['SilvercartProductAttributesSingle'] = $product->getSingleProductVariantFormFields();
+            }
         }
     }
     
