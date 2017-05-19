@@ -68,8 +68,10 @@ class SilvercartProductAttributeAddCartFormDetailPlugin extends DataExtension {
         $productID  = $callingObject->getFormFieldDefinition('productID');
         $product    = SilvercartProduct::get()->byID($productID);
         $output     = '';
-        if ($product->hasVariants() ||
-            $product->hasSingleProductVariants()) {
+        if (($product instanceof SilvercartProduct &&
+             $product->exists()) &&
+            ($product->hasVariants() ||
+             $product->hasSingleProductVariants())) {
             $renderer           = new ViewableData();
             $templateData       = array(
                 'Form'              => $callingObject,
