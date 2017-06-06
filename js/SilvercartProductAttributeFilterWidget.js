@@ -129,7 +129,7 @@ $(function() {
 
     var removeFilter = function(event) {
         event.preventDefault();
-        var id = $(this).attr('rel');
+        var id = $(this).data('id');
         $('.silvercart-product-attribute-' + id).each(function() {
             $(this).removeAttr('checked');
             SilvercartProductAttributeFilterRefreshSelectedFilters($(this));

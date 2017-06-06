@@ -41,10 +41,10 @@ class SilvercartProductAttributeDropdownField extends DropdownField {
         $attributes = array_merge(
                 $this->getAttributes(),
                 array(
-                    'class'     => ($this->extraClass() ? $this->extraClass() : ''),
-                    'id'        => $this->id(),
-                    'name'      => $this->name,
-                    'rel'       => Controller::curr()->Link() . '/LoadVariant/',
+                    'class'       => ($this->extraClass() ? $this->extraClass() : ''),
+                    'id'          => $this->id(),
+                    'name'        => $this->name,
+                    'data-action' => Controller::curr()->Link() . '/LoadVariant/',
         ));
         
         if ($source) {

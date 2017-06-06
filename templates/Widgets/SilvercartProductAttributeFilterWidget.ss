@@ -23,7 +23,7 @@
                 <% end_loop %>
             <% end_if %>
                         </ul>
-                        <a href="#" rel="$ID" class="remove-filter"><% sprintf(_t('SilvercartProductAttributeFilterWidget.DISABLE_FILTER_FOR'),$Title) %></a>
+                        <a href="#" data-id="{$ID}" class="remove-filter"><% sprintf(_t('SilvercartProductAttributeFilterWidget.DISABLE_FILTER_FOR'),$Title) %></a>
                     </div>
         <% end_loop %>
 
