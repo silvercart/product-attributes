@@ -153,6 +153,9 @@ class SilvercartProductAttributeSet extends DataObject {
      */
     public function getSilvercartProductAttributesAsString() {
         $silvercartProductAttributesArray       = $this->SilvercartProductAttributes()->map();
+        if ($silvercartProductAttributesArray instanceof SS_Map) {
+            $silvercartProductAttributesArray = $silvercartProductAttributesArray->toArray();
+        }
         $silvercartProductAttributesAsString    = implode(', ', $silvercartProductAttributesArray);
         return $silvercartProductAttributesAsString;
     }
@@ -164,6 +167,9 @@ class SilvercartProductAttributeSet extends DataObject {
      */
     public function getSilvercartProductAttributesForSummaryFields() {
         $silvercartProductAttributesArray       = $this->SilvercartProductAttributes()->map();
+        if ($silvercartProductAttributesArray instanceof SS_Map) {
+            $silvercartProductAttributesArray = $silvercartProductAttributesArray->toArray();
+        }
         $silvercartProductAttributesAsString    = implode('<br/>' . PHP_EOL, $silvercartProductAttributesArray);
         return $silvercartProductAttributesAsString;
     }

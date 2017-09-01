@@ -26,7 +26,7 @@ class SilvercartProductAttributeValueLanguage extends DataObject {
      * @var array
      */
     private static $db = array(
-        'Title' => 'VarChar(64)'
+        'Title' => 'VarChar(512)'
     );
     
     /**
