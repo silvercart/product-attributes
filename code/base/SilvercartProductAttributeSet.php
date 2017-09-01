@@ -102,11 +102,11 @@ class SilvercartProductAttributeSet extends DataObject {
      * @return array
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 14.03.2012
+     * @since 01.09.2017
      */
     public function searchableFields() {
         $searchableFields = array(
-            'Title' => array(
+            'SilvercartProductAttributeSetLanguages.Title' => array(
                 'title'     => $this->fieldLabel('Title'),
                 'filter'    => 'PartialMatchFilter'
             ),

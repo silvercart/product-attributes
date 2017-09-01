@@ -69,42 +69,6 @@ class SilvercartProductAttributeAdmin extends SilvercartModelAdmin {
         'SilvercartProductAttribute'        => 'CsvBulkLoader',
         'SilvercartProductAttributeValue'   => 'CsvBulkLoader',
     );
-
-    /**
-     * Constructor
-     *
-     * @return void
-     *
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 14.03.2012
-     */
-    public function __constructttt() {
-        self::$menu_title = _t('SilvercartProductAttribute.PLURALNAME');
-        foreach (self::$managed_models as $class => $options) {
-            if (is_numeric($class)) {
-                unset(self::$managed_models[$class]);
-                $class      = $options;
-                $options    = array();
-            }
-            $options['title']               = _t($class . '.TABNAME', singleton($class)->i18n_singular_name());
-            self::$managed_models[$class]   = $options;
-        }
-        parent::__construct();
-    }
-    
-    /**
-     * Provides hook for decorators, so that they can overwrite css
-     * and other definitions.
-     * 
-     * @return void
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 14.03.2012
-     */
-    public function initttt() {
-        parent::init();
-        $this->extend('updateInit');
-    }
 }
 
 
