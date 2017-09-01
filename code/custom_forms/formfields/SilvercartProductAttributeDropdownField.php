@@ -34,9 +34,21 @@ class SilvercartProductAttributeDropdownField extends DropdownField {
      * @since 12.09.2012
      */
     public function Field($properties = array()) {
+        Requirements::javascript('silvercart_product_attributes/js/SilvercartProductAttributeDropdownField.js');
         $options    = '';
         $source     = $this->getSource();
+
+        $attributes = array_merge(
+                $this->getAttributes(),
+                array(
+                    'class'       => ($this->extraClass() ? $this->extraClass() : ''),
+                    'id'          => $this->id(),
+                    'name'        => $this->name,
+                    'data-action' => Controller::curr()->Link() . '/LoadVariant/',
+        ));
+        
         if ($source) {
+            $priceAmounts = json_decode($attributes['data-prices'], true);
             // For SQLMap sources, the empty string needs to be added specially
             if (is_object($source) && $this->emptyString) {
                 $options .= $this->createTag('option', array('value' => ''), $this->emptyString);
@@ -59,27 +71,25 @@ class SilvercartProductAttributeDropdownField extends DropdownField {
                     $this->isSelected = ($selected) ? true : false;
                 }
 
-                $options .= $this->createTag(
+                $price = 0;
+                if (array_key_exists($value, $priceAmounts)) {
+                    $price = $priceAmounts[$value];
+                }
+                $options .= self::create_tag(
                         'option', array(
                             'selected'  => $selected,
                             'value'     => $value,
+                            'data-price' => (string) $price,
                         ), Convert::raw2xml($title)
                 );
             }
         }
 
-        $attributes = array(
-            'class'     => ($this->extraClass() ? $this->extraClass() : ''),
-            'id'        => $this->id(),
-            'name'      => $this->name,
-            'rel'       => Controller::curr()->Link() . '/LoadVariant/',
-        );
-
         if ($this->disabled) {
             $attributes['disabled'] = 'disabled';
         }
 
-        return $this->createTag('select', $attributes, $options);
+        return self::create_tag('select', $attributes, $options);
     }
 
 }

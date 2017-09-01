@@ -20,7 +20,7 @@
         <div class="silvercart-product-list-productvariant-row">
             <div class="silvercart-button right silvercart-product-list-productvariant-popup-button">
                 <div class="silvercart-button_content">
-                    <a href="#" rel="$Form.FormName"><% _t('SilvercartProductVariantAddCartForm.HEADLINE') %></a>
+                    <a href="#" data-formname="{$Form.FormName}"><% _t('SilvercartProductVariantAddCartForm.HEADLINE') %></a>
                 </div>
             </div>
         </div>

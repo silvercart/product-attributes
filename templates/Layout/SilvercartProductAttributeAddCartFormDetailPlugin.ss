@@ -16,7 +16,7 @@
         $('.silvercart-product-page-productvariant-box select').live('change', function() {
             var parent  = $(this).closest('.silvercart-product-page-productvariant-box');
             var form    = $('<form/>', {
-                action: $(this).attr('rel'),
+                action: $(this).data('action'),
                 method: 'POST'
             });
             var originalForm = $(this).closest('form'),

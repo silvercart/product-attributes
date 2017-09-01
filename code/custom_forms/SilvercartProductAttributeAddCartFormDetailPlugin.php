@@ -30,17 +30,21 @@ class SilvercartProductAttributeAddCartFormDetailPlugin extends DataExtension {
      * @return bool
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 12.09.2012
+     * @since 06.04.2017
      */
     public function pluginUpdateFormFields(&$formFields, &$callingObject) {
         $productID = $callingObject->getFormFieldDefinition('productID');
         $product   = SilvercartProduct::get()->byID($productID);
-        
-        if ($product->hasVariants()) {
-            $callingObject->fieldGroups['SilvercartProductAttributes'] = $product->getVariantFormFields();
-        }
-        if ($product->hasSingleProductVariants()) {
-            $callingObject->fieldGroups['SilvercartProductAttributesSingle'] = $product->getSingleProductVariantFormFields();
+
+        if ($product instanceof SilvercartProduct &&
+            $product->exists()) {
+
+            if ($product->hasVariants()) {
+                $callingObject->fieldGroups['SilvercartProductAttributes'] = $product->getVariantFormFields();
+            }
+            if ($product->hasSingleProductVariants()) {
+                $callingObject->fieldGroups['SilvercartProductAttributesSingle'] = $product->getSingleProductVariantFormFields();
+            }
         }
     }
     
@@ -49,18 +53,25 @@ class SilvercartProductAttributeAddCartFormDetailPlugin extends DataExtension {
      *
      * @param array &$arguments     The arguments to pass
      * @param mixed &$callingObject The calling object
+     * @param bool  $force          Set to true to force the call
      * 
      * @return string
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 12.09.2012
      */
-    public function pluginAddCartFormDetailAdditionalFields(&$arguments, &$callingObject) {
+    public function pluginAddCartFormDetailAdditionalFields(&$arguments, &$callingObject, $force = false) {
+        if (!$force &&
+            get_class($this) != 'SilvercartProductAttributeAddCartFormDetailPlugin') {
+            return;
+        }
         $productID  = $callingObject->getFormFieldDefinition('productID');
         $product    = SilvercartProduct::get()->byID($productID);
         $output     = '';
-        if ($product->hasVariants() ||
-            $product->hasSingleProductVariants()) {
+        if (($product instanceof SilvercartProduct &&
+             $product->exists()) &&
+            ($product->hasVariants() ||
+             $product->hasSingleProductVariants())) {
             $renderer           = new ViewableData();
             $templateData       = array(
                 'Form'              => $callingObject,
@@ -103,7 +114,7 @@ class SilvercartProductAttributeAddCartFormListPlugin extends SilvercartProductA
      * @since 07.11.2016
      */
     public function pluginAddCartFormListAdditionalFields(&$arguments, &$callingObject) {
-        return $this->pluginAddCartFormDetailAdditionalFields($arguments, $callingObject);
+        return $this->pluginAddCartFormDetailAdditionalFields($arguments, $callingObject, true);
     }
     
 }
@@ -133,7 +144,37 @@ class SilvercartProductAttributeAddCartFormTilePlugin extends SilvercartProductA
      * @since 07.11.2016
      */
     public function pluginAddCartFormTileAdditionalFields(&$arguments, &$callingObject) {
-        return $this->pluginAddCartFormDetailAdditionalFields($arguments, $callingObject);
+        return $this->pluginAddCartFormDetailAdditionalFields($arguments, $callingObject, true);
+    }
+    
+}
+
+/**
+ * Delivers additional information for the addCartForm CustomHtmlForm object of
+ * the SilvercartProductGroupPage list view.
+ *
+ * @package SilvercartProductAttributes
+ * @subpackage Plugins
+ * @author Sebastian Diel <sdiel@pixeltricks.de>
+ * @since 21.02.2017
+ * @license see license file in modules root directory
+ * @copyright 2017 pixeltricks GmbH
+ */
+class SilvercartProductAttributeAddCartFormPlugin extends SilvercartProductAttributeAddCartFormDetailPlugin {
+    
+    /**
+     * Returns a string of HTML code containing fields to choose a variant.
+     *
+     * @param array &$arguments     The arguments to pass
+     * @param mixed &$callingObject The calling object
+     * 
+     * @return string
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 21.02.2017
+     */
+    public function pluginAddCartFormAdditionalFields(&$arguments, &$callingObject) {
+        return $this->pluginAddCartFormDetailAdditionalFields($arguments, $callingObject, true);
     }
     
 }

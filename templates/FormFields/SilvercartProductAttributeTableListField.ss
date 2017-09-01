@@ -21,12 +21,12 @@
             <% loop AttributedAttributes %>
                 <div class="attributeTableSwitch" id="attributeTableSwitch{$ID}">
                     <% if CanBeUsedForVariants %>
-                    <a href="#" rel="$ID" class="closed canbeusedforvariants"><strong>$Title</strong> <i>(<% _t('SilvercartProductAttribute.CAN_BE_USED_FOR_VARIANTS') %>)</i></a>
+                    <a href="#" data-id="{$ID}" class="closed canbeusedforvariants"><strong>$Title</strong> <i>(<% _t('SilvercartProductAttribute.CAN_BE_USED_FOR_VARIANTS') %>)</i></a>
                     <% else %>
-                    <a href="#" rel="$ID" class="closed"><strong>$Title</strong></a>
+                    <a href="#" data-id="{$ID}" class="closed"><strong>$Title</strong></a>
                     <% end_if %>
                     <div class="attributeTableSwitchActions">
-                        <input type="submit" name="action_doSPAPRemoveAssignedAttribute" rel="$ID" value="<% _t('SilvercartProductAttributeTableListField.REMOVE_LABEL') %>" />
+                        <input type="submit" name="action_doSPAPRemoveAssignedAttribute" data-id="{$ID}" value="<% _t('SilvercartProductAttributeTableListField.REMOVE_LABEL') %>" />
                     </div>
                 </div>
                 <div class="attributeTableContainer" id="attributeTableContainer{$ID}">
@@ -52,7 +52,7 @@
                             <tr class="attributeRow">
                                 <td class="left">$Title</td>
                                 <td class="actionbar">
-                                    <input type="submit" value="<% _t('SilvercartProductAttributeTableListField.ACTION_REMOVE_LABEL') %>" name="action_doSPAPRemoveAssignedValue" rel="$ID" />
+                                    <input type="submit" value="<% _t('SilvercartProductAttributeTableListField.ACTION_REMOVE_LABEL') %>" name="action_doSPAPRemoveAssignedValue" data-id="{$ID}" />
                                 </td>
                             </tr>
                             <% end_loop %>
@@ -133,7 +133,7 @@
             // ----------------------------------------------------------------
             $('.attributeTableSwitchActions input').live('click', function() {
                 var form       = $('#right form');
-                var formAction = form.attr('action') + '/' + $(this).attr('name') + '/' + $(this).attr('rel');
+                var formAction = form.attr('action') + '/' + $(this).attr('name') + '/' + $(this).data('id');
 
                 // Post the data to save
                 $.post(formAction, form.formToArray(), function(result){
@@ -147,7 +147,7 @@
             // Attribute table containers: toggle function
             // ----------------------------------------------------------------
             $('.attributeTableSwitch a').live('click', function() {
-                var containerId = 'attributeTableContainer' + $(this).attr('rel');
+                var containerId = 'attributeTableContainer' + $(this).data('id');
 
                 $('.attributeTableContainer').each(
                     function(index) {
@@ -162,7 +162,7 @@
                 );
 
                 var attributeTable    = $('#' + containerId);
-                var attributeTableSwitch = $('#attributeTableSwitch' + $(this).attr('rel') + ' a');
+                var attributeTableSwitch = $('#attributeTableSwitch' + $(this).data('id') + ' a');
 
                 if (attributeTable.css('display') == 'none') {
                     attributeTableSwitch.removeClass('closed');
@@ -182,7 +182,7 @@
             // ------------------------------------------------------------
             $('.attributeTable tbody .actionbar input[type="submit"]').live('click', function() {
                 var form       = $('#right form');
-                var formAction = form.attr('action') + '/' + $(this).attr('name') + '/' + $(this).attr('rel');
+                var formAction = form.attr('action') + '/' + $(this).attr('name') + '/' + $(this).data('id');
 
                 // Post the data to save
                 $.post(formAction, form.formToArray(), function(result){
