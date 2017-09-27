@@ -246,6 +246,7 @@ class SilvercartProductAttributeProduct extends DataExtension {
      * @return ArrayList
      */
     public function getAttributesWithValues() {
+        $this->owner->extend('overwriteAttributesWithValues', $this->attributesWithValues);
         if (is_null($this->attributesWithValues)) {
             $this->attributesWithValues = new ArrayList();
             foreach ($this->owner->SilvercartProductAttributes() as $attribute) {
@@ -261,6 +262,7 @@ class SilvercartProductAttributeProduct extends DataExtension {
                     );
                 }
             }
+            $this->owner->extend('updateAttributesWithValues', $this->attributesWithValues);
         }
         return $this->attributesWithValues;
     }
