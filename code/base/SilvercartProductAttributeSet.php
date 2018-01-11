@@ -102,11 +102,11 @@ class SilvercartProductAttributeSet extends DataObject {
      * @return array
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 14.03.2012
+     * @since 01.09.2017
      */
     public function searchableFields() {
         $searchableFields = array(
-            'Title' => array(
+            'SilvercartProductAttributeSetLanguages.Title' => array(
                 'title'     => $this->fieldLabel('Title'),
                 'filter'    => 'PartialMatchFilter'
             ),
@@ -153,6 +153,9 @@ class SilvercartProductAttributeSet extends DataObject {
      */
     public function getSilvercartProductAttributesAsString() {
         $silvercartProductAttributesArray       = $this->SilvercartProductAttributes()->map();
+        if ($silvercartProductAttributesArray instanceof SS_Map) {
+            $silvercartProductAttributesArray = $silvercartProductAttributesArray->toArray();
+        }
         $silvercartProductAttributesAsString    = implode(', ', $silvercartProductAttributesArray);
         return $silvercartProductAttributesAsString;
     }
@@ -164,6 +167,9 @@ class SilvercartProductAttributeSet extends DataObject {
      */
     public function getSilvercartProductAttributesForSummaryFields() {
         $silvercartProductAttributesArray       = $this->SilvercartProductAttributes()->map();
+        if ($silvercartProductAttributesArray instanceof SS_Map) {
+            $silvercartProductAttributesArray = $silvercartProductAttributesArray->toArray();
+        }
         $silvercartProductAttributesAsString    = implode('<br/>' . PHP_EOL, $silvercartProductAttributesArray);
         return $silvercartProductAttributesAsString;
     }
