@@ -180,7 +180,7 @@ class SilvercartProductAttributeShoppingCartPositionPlugin extends DataExtension
             }
         }
 
-        return $title;
+        return $title == $product->Title ? '' : $title;
     }
     
     /**
