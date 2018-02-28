@@ -98,37 +98,45 @@ class SilvercartProductAttributeProduct extends DataExtension {
                 $attributeField->getConfig()->addComponent($subObjectComponent);
             }
         }
-        return;
-        $owner  = $this->owner;
-        if ($owner->ID > 0) {
-            $fields->removeByName('SilvercartProductAttributes');
-            $fields->removeByName('SilvercartProductAttributeValues');
-            $fields->findOrMakeTab('Root.SilvercartProductAttributes', _t('SilvercartProductAttribute.TABNAME'));
-            $attributeField = new SilvercartProductAttributeTableListField($owner, 'SilvercartProductAttributes');
-            $fields->addFieldToTab('Root.SilvercartProductAttributes', $attributeField);
+        
+        if ($this->owner->exists() &&
+            $this->CanBeUsedAsVariant()) {
             
-            if ($this->CanBeUsedAsVariant()) {
-                if ($this->hasVariants()) {
-                    $slaveProductsLabel = new HeaderField('SilvercartSlaveProductsLabel', $owner->fieldLabel('SilvercartSlaveProducts'));
-                    $slaveProductsField = new SilvercartProductAttributeVariantTableListField(
-                            $this->owner,
-                            'SilvercartSlaveProducts'
-                    );
-                    $slaveProductsField->setPermissions(array());
-                    $fields->addFieldToTab('Root.SilvercartProductAttributes', $slaveProductsLabel);
-                    $fields->addFieldToTab('Root.SilvercartProductAttributes', $slaveProductsField);
-                }
-                if (!$this->isMasterProduct()) {
-                    $masterProductField = new SilvercartTextAutoCompleteField(
-                            $owner,
-                            'SilvercartMasterProductID',
-                            $owner->fieldLabel('SilvercartMasterProduct'),
-                            'SilvercartProduct.ProductNumberShop'
-                    );
-                    $fields->addFieldToTab('Root.SilvercartProductAttributes', $masterProductField);
-                }
+            if ($this->hasVariants()) {
+                $this->addSlaveProductsField($fields);
+            }
+            if (!$this->isMasterProduct()) {
+                $masterProductField = new TextField('SilvercartMasterProductNumber', $this->owner->fieldLabel('SilvercartMasterProduct'), $this->owner->SilvercartMasterProduct()->ProductNumberShop);
+                $fields->addFieldToTab('Root.SilvercartProductAttributes', $masterProductField);
+                
             }
         }
+    }
+    
+    /**
+     * Adds the slave product fields.
+     * 
+     * @param FieldList $fields Fields
+     * 
+     * @return void
+     *
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 18.12.2017
+     */
+    public function addSlaveProductsField($fields) {
+        if ($this->owner->isMasterProduct()) {
+            $master = $this->owner;
+        } else {
+            $master = $this->owner->SilvercartMasterProduct();
+        }
+        $filter = sprintf(
+                '"SilvercartMasterProductID" = \'%s\' OR "SilvercartProduct"."ID" = \'%s\'',
+                $master->ID,
+                $master->ID
+        );
+        $slaveProducts      = SilvercartProduct::get()->where($filter);
+        $slaveProductsField = new GridField('SilvercartSlaveProducts', $this->owner->fieldLabel('SilvercartSlaveProducts'), $slaveProducts);
+        $fields->addFieldToTab('Root.SilvercartProductAttributes', $slaveProductsField);
     }
     
     /**
@@ -190,6 +198,28 @@ class SilvercartProductAttributeProduct extends DataExtension {
     }
     
     /**
+     * On before write.
+     * Adds variant modifications to related attribute values.
+     * 
+     * @return void
+     *
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 22.09.2016
+     */
+    public function onBeforeWrite() {
+        if (array_key_exists('SilvercartMasterProductNumber', $_POST) &&
+            $this->owner->canEdit()) {
+            
+            $masterProductNumber = $_POST['SilvercartMasterProductNumber'];
+            $masterProduct       = SilvercartProduct::get()->filter('ProductNumberShop', $masterProductNumber)->first();
+            if ($masterProduct instanceof SilvercartProduct &&
+                $masterProduct->exists()) {
+                $this->owner->SilvercartMasterProductID = $masterProduct->ID;
+            }
+        }
+    }
+    
+    /**
      * On after write.
      * Adds variant modifications to related attribute values.
      * 
@@ -246,6 +276,7 @@ class SilvercartProductAttributeProduct extends DataExtension {
      * @return ArrayList
      */
     public function getAttributesWithValues() {
+        $this->owner->extend('overwriteAttributesWithValues', $this->attributesWithValues);
         if (is_null($this->attributesWithValues)) {
             $this->attributesWithValues = new ArrayList();
             foreach ($this->owner->SilvercartProductAttributes() as $attribute) {
@@ -261,6 +292,7 @@ class SilvercartProductAttributeProduct extends DataExtension {
                     );
                 }
             }
+            $this->owner->extend('updateAttributesWithValues', $this->attributesWithValues);
         }
         return $this->attributesWithValues;
     }
@@ -310,7 +342,7 @@ class SilvercartProductAttributeProduct extends DataExtension {
         $hasVariants    = false;
         $variants       = $this->getVariants();
         if (!is_null($variants) &&
-            $variants->Count() > 0) {
+            $variants->count() > 0) {
             $hasVariants = true;
         }
         return $hasVariants;
@@ -461,11 +493,12 @@ class SilvercartProductAttributeProduct extends DataExtension {
             }
             $variants = $master->getSlaveProducts();
             if ($this->isSlaveProduct()) {
-                $variants->remove($variants->find('ID', $this->owner->ID));
-                $variants->push($master);
-                $variants->removeDuplicates();
+                $arrayList = new ArrayList($variants->toArray());
+                $arrayList->push($master);
+            } else {
+                $arrayList = new ArrayList($variants->toArray());
             }
-            $activeVariants = $variants->filter('isActive',1);
+            $activeVariants = $arrayList->filter('isActive',1);
             if (!is_null($activeVariants) &&
                 $activeVariants->exists()) {
                 $this->variants = $activeVariants;
@@ -607,7 +640,7 @@ class SilvercartProductAttributeProduct extends DataExtension {
     public function isSlaveProduct() {
         $isSlaveProduct = false;
         $owner          = $this->owner;
-        if ($owner->SilvercartMasterProductID > 0) {
+        if ($owner->SilvercartMasterProduct()->exists()) {
             $isSlaveProduct = true;
         }
         return $isSlaveProduct;
