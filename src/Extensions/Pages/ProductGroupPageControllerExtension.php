@@ -1,0 +1,564 @@
+<?php
+
+namespace SilverCart\ProductAttributes\Extensions\Pages;
+
+use SilverCart\Admin\Model\Config;
+use SilverCart\Dev\Tools;
+use SilverCart\Model\Pages\SearchResultsPageController;
+use SilverCart\ProductAttributes\Model\Widgets\ProductAttributeFilterWidget;
+use SilverCart\ProductAttributes\Plugins\ProductFilterPlugin;
+use SilverStripe\Control\Director;
+use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Core\Convert;
+use SilverStripe\Core\Extension;
+use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\Map;
+use SilverStripe\View\ArrayData;
+
+/**
+ * Extension for SilverCart ProductGroupPageController.
+ *
+ * @package SilverCart
+ * @subpackage ProductAttributes_Extensions_Pages
+ * @author Sebastian Diel <sdiel@pixeltricks.de>
+ * @since 30.05.2018
+ * @license see license file in modules root directory
+ * @copyright 2018 pixeltricks GmbH
+ */
+class ProductGroupPageControllerExtension extends Extension {
+    
+    const SESSION_KEY_FILTER_PLUGIN = 'SilverCart.ProductAttributeFilterPlugin';
+    const SESSION_KEY_FILTER_WIDGET = 'SilverCart.ProductAttributeFilterWidget';
+    const SESSION_KEY_PRICE_RANGE_FORM = 'SilverCart.PriceRangeForm';
+    
+    /**
+     * Is filter enabled?
+     *
+     * @var bool
+     */
+    protected $filterEnabled = true;
+    
+    /**
+     * Is filter disabled permanently?
+     *
+     * @var bool
+     */
+    protected $filterDisabledPermanently = false;
+
+    /**
+     * Filter values.
+     *
+     * @var array 
+     */
+    protected $filterValues = null;
+    
+    /**
+     * Context widget
+     *
+     * @var ProductAttributeFilterWidget
+     */
+    protected $widget                       = null;
+
+    /**
+     * List of allowed actions.
+     *
+     * @var array
+     */
+    private static $allowed_actions = [
+        'ClearProductAttributeFilter',
+        'ProductAttributeFilter',
+        'ClearPriceFilter',
+        'LoadVariant',
+    ];
+    
+    /**
+     * Min price limit.
+     *
+     * @var float
+     */
+    protected $minPriceLimit = null;
+    
+    /**
+     * Max price limit.
+     *
+     * @var float
+     */
+    protected $maxPriceLimit = null;
+    
+    /**
+     * Initializes the attribute filter before the real controller is initialized
+     * 
+     * @return void
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 30.05.2018
+     */
+    public function onBeforeInit() {
+        $request    = $this->owner->getRequest();
+        $allParams  = $request->allParams();
+        $action     = $allParams['Action'];
+        $widget     = $this->getWidget($this->getPreviousSessionKey());
+        if ($widget instanceof ProductAttributeFilterWidget &&
+            !$widget->RememberFilter &&
+            $this->getSessionKey() != $this->getPreviousSessionKey()) {
+            $this->clearFilter($this->getPreviousSessionKey());
+            $this->clearFilter($this->getSessionKey());
+        }
+        $this->setPreviousSessionKey($this->getSessionKey());
+        if ($action == 'ProductAttributeFilter' &&
+            $this->owner->getRequest()->isPOST()) {
+            $this->initProductAttributeFilter($request);
+        }
+        
+        $minPrice = $request->postVar('MinPrice');
+        $maxPrice = $request->postVar('MaxPrice');
+        if (!is_null($maxPrice) &&
+            !is_null($minPrice)) {
+            
+            $this->setMinPriceForWidget($minPrice);
+            $this->setMaxPriceForWidget($maxPrice);
+        }
+    }
+    
+    /**
+     * Adds a hash of the filter values to the product group cache key
+     * 
+     * @param array &$cacheKeyParts Cache key parts to update
+     * 
+     * @return void
+     *
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 23.11.2012
+     */
+    public function updateCacheKeyParts(&$cacheKeyParts) {
+        $cacheKeyParts[] = sha1(implode('-', $this->getFilterValues()));;
+    }
+
+    /**
+     * Initializes the attribute filter
+     *
+     * @param HTTPRequest $request Request
+     * 
+     * @return void
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 30.05.2018
+     */
+    public function initProductAttributeFilter(HTTPRequest $request) {
+        $widgetID            = $request->postVar('silvercart-product-attribute-widget');
+        $widget              = ProductAttributeFilterWidget::get()->byID($widgetID);
+        $selectedValues      = $request->postVar('silvercart-product-attribute-selected-values');
+        $selectedValuesArray = explode(',', $selectedValues);
+        $this->setFilterValues($selectedValuesArray);
+        $this->setWidget($widget);
+    }
+
+    /**
+     * Action to set the attribute filter
+     *
+     * @param HTTPRequest $request Request
+     * 
+     * @return string 
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 30.05.2018
+     */
+    public function ProductAttributeFilter(HTTPRequest $request) {
+        if (Director::is_ajax()) {
+            return $this->owner->renderWith($this->owner->data()->ClassName);
+        } else {
+            $this->owner->redirectBack();
+        }
+    }
+    
+    /**
+     * Action to clear the attribute filter
+     *
+     * @param HTTPRequest $request Request
+     * 
+     * @return void
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 30.05.2018
+     */
+    public function ClearProductAttributeFilter(HTTPRequest $request) {
+        $this->clearFilter($this->getSessionKey());
+    }
+    
+    /**
+     * Action to clear the attribute filter
+     *
+     * @param HTTPRequest $request Request
+     * 
+     * @return void
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 30.05.2018
+     */
+    public function ClearProductAttributePriceFilter(HTTPRequest $request) {
+        Tools::Session()->clear(static::SESSION_KEY_PRICE_RANGE_FORM . '.MinPrice.' . $this->getSessionKey());
+        Tools::Session()->clear(static::SESSION_KEY_PRICE_RANGE_FORM . '.MaxPrice.' . $this->getSessionKey());
+        $this->owner->redirectBack();
+    }
+    
+    /**
+     * Action to load the variant with the given parameters
+     *
+     * @param HTTPRequest $request Request
+     * 
+     * @return void
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 30.05.2018
+     */
+    public function LoadVariant(HTTPRequest $request) {
+        $owner      = $this->owner;
+        $redirectTo = $owner->Link();
+        if ($owner->isProductDetailView()) {
+            $product           = $owner->getDetailViewProduct();
+            $variantAttributes = $request->postVar('ProductAttributeValue');
+            if (is_array($variantAttributes)) {
+                foreach ($variantAttributes as $key => $value) {
+                    if (empty($value) ||
+                        !is_numeric($value)) {
+                        unset($variantAttributes[$key]);
+                    }
+                }
+                $variant = $product->getVariantBy($variantAttributes);
+                if ($variant) {
+                    $redirectTo = $variant->Link();
+                }
+            }
+        }
+        $this->owner->redirect(Director::absoluteURL($redirectTo));
+    }
+    
+    /**
+     * Returns the unfiltered products of the group
+     *
+     * @param int    $numberOfProducts Number of products to get
+     * @param string $sort             Sort filter
+     * @param bool   $disableLimit     Disable product limitation or not?
+     * 
+     * @return DataList
+     */
+    public function getUnfilteredProducts($numberOfProducts = false, $sort = false, $disableLimit = false) {
+        $this->disableFilter();
+        $products = $this->owner->getProducts($numberOfProducts, $sort, $disableLimit);
+        $this->enableFilter();
+        return $products;
+    }
+
+    /**
+     * Returns the filter values. If not set they will be set out of session
+     * 
+     * @return array
+     */
+    public function getFilterValues() {
+        if (is_null($this->filterValues)) {
+            $filterValues = Tools::Session()->get(static::SESSION_KEY_FILTER_PLUGIN . '.' . $this->getSessionKey());
+            $this->setFilterValues($filterValues);
+        }
+        return $this->filterValues;
+    }
+    
+    /**
+     * Sets the filter values
+     *
+     * @param array $filterValues Filter values to set
+     * 
+     * @return void
+     */
+    public function setFilterValues($filterValues) {
+        $uniqueFilterValues = array_unique((array) $filterValues);
+        if (count($uniqueFilterValues) == 1 &&
+            array_key_exists(0, $uniqueFilterValues) &&
+            empty($uniqueFilterValues[0])) {
+            $uniqueFilterValues = [];
+        }
+        Tools::Session()->set(static::SESSION_KEY_FILTER_PLUGIN . '.' . $this->getSessionKey(), $uniqueFilterValues);
+        Tools::saveSession();
+        if (empty($uniqueFilterValues)) {
+            $this->clearFilter($this->getSessionKey());
+        }
+        $this->filterValues = $uniqueFilterValues;
+    }
+    
+    /**
+     * Returns the filter widget. If not set it will be set out of session
+     * 
+     * @param string $sessionKey Optional session key to get widget for
+     *
+     * @return ProductAttributeFilterWidget 
+     */
+    public function getWidget($sessionKey = null) {
+        if (is_null($sessionKey)) {
+            $sessionKey = $this->getSessionKey();
+            if (is_null($this->widget)) {
+                $this->setWidget(Tools::Session()->get(static::SESSION_KEY_FILTER_WIDGET . '.' . $sessionKey));
+            }
+            $widget = $this->widget;
+        } else {
+            $widget = Tools::Session()->get(static::SESSION_KEY_FILTER_WIDGET . '.' . $sessionKey);
+        }
+        return $widget;
+    }
+    
+    /**
+     * Sets the filter widget
+     *
+     * @param ProductAttributeFilterWidget $widget Widget
+     * 
+     * @return void
+     */
+    public function setWidget($widget) {
+        Tools::Session()->set(static::SESSION_KEY_FILTER_WIDGET . '.' . $this->getSessionKey(), $widget);
+        Tools::saveSession();
+        $this->widget = $widget;
+    }
+    
+    /**
+     * Returns whether the given value is part of the current user filter
+     *
+     * @param ProductAttributeValue $value Value to check
+     * 
+     * @return boolean 
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 13.03.2012 
+     */
+    public function isFilterValue($value) {
+        $isFilterValue  = false;
+        $filterValues   = $this->getFilterValues();
+        if (is_array($filterValues) &&
+            in_array($value->ID, $filterValues)) {
+            $isFilterValue = true;
+        }
+        return $isFilterValue;
+    }
+    
+    /**
+     * Returns the filter values as a comma separated list
+     *
+     * @return string
+     */
+    public function getFilterValueList() {
+        $FilterValueList = '';
+        if (is_array($this->getFilterValues())) {
+            $FilterValueList = implode(',', $this->getFilterValues());
+        }
+        return $FilterValueList;
+    }
+    
+    /**
+     * Returns the filter values as a ArrayList
+     *
+     * @return ArrayList
+     */
+    public function getFilterValueArrayList() {
+        $filterValueArrayList = new ArrayList();
+        if (is_array($this->getFilterValues())) {
+            foreach ($this->getFilterValues() as $filterValue) {
+                $filterValueArrayList->push(
+                        new ArrayData(['ID' => $filterValue])
+                );
+            }
+        }
+        return $filterValueArrayList;
+    }
+    
+    /**
+     * Enables the filter 
+     * 
+     * @return void
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 13.03.2012 
+     */
+    public function enableFilter() {
+        if (!$this->permanentlyDisableFilter()) {
+            $this->filterEnabled = true;
+        }
+    }
+    
+    /**
+     * Disables the filter 
+     * 
+     * @return void
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 13.03.2012 
+     */
+    public function disableFilter() {
+        $this->filterEnabled = false;
+    }
+    
+    /**
+     * Returns whether the filter is enabled
+     * 
+     * @return void
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 13.03.2012 
+     */
+    public function filterEnabled() {
+        return $this->filterEnabled;
+    }
+    
+    /**
+     * Returns whether the filter is permanently disabled
+     * 
+     * @return void
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 28.03.2012 
+     */
+    public function filterPermanentlyDisabled() {
+        return $this->filterDisabledPermanently;
+    }
+    
+    /**
+     * Disables the filter permanently
+     * 
+     * @return void
+     *
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 28.03.2012 
+     */
+    public function permanentlyDisableFilter() {
+        $this->filterDisabledPermanently = true;
+        $this->disableFilter();
+    }
+    
+    /**
+     * Clears the attribute filter with the given session key
+     *
+     * @param string $sessionKey Session key
+     * 
+     * @return void
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 30.05.2018
+     */
+    public function clearFilter($sessionKey) {
+        Tools::Session()->clear(static::SESSION_KEY_FILTER_PLUGIN . '.' . $sessionKey);
+        Tools::saveSession();
+    }
+    
+    /**
+     * Builds and returns the session key dependant on the controller type
+     *
+     * @return string 
+     */
+    public function getSessionKey() {
+        $sessionKey = $this->owner->ID;
+        if ($this->owner instanceof SearchResultsPageController) {
+            $searchQuery = Convert::raw2sql(Tools::Session()->get(SearchResultsPageController::SESSION_KEY_SEARCH_QUERY));
+            $sessionKey .= md5($searchQuery) . sha1($searchQuery);
+        }
+        return $sessionKey;
+    }
+    
+    /**
+     * Returns the previous session key
+     *
+     * @return string
+     */
+    public function getPreviousSessionKey() {
+        $previousSessionKey = Tools::Session()->get(static::SESSION_KEY_FILTER_WIDGET . '.PreviousSessionKey');
+        return $previousSessionKey;
+    }
+    
+    /**
+     * Sets the previous session key
+     *
+     * @param string $previousSessionKey Previous session key
+     * 
+     * @return void
+     */
+    public function setPreviousSessionKey($previousSessionKey) {
+        Tools::Session()->set(static::SESSION_KEY_FILTER_WIDGET . '.PreviousSessionKey', $previousSessionKey);
+        Tools::saveSession();
+    }
+    
+    /**
+     * Returns the min price
+     *
+     * @return string
+     */
+    public function getMinPriceForWidget() {
+        return Tools::Session()->get(static::SESSION_KEY_PRICE_RANGE_FORM . '.MinPrice.' . $this->getSessionKey());
+    }
+    
+    /**
+     * Sets the min price
+     *
+     * @param string $minPrice Min price
+     * 
+     * @return void
+     */
+    public function setMinPriceForWidget($minPrice) {
+        Tools::Session()->set(static::SESSION_KEY_PRICE_RANGE_FORM . '.MinPrice.' . $this->getSessionKey(), $minPrice);
+        Tools::saveSession();
+    }
+    
+    /**
+     * Returns the max price
+     *
+     * @return string
+     */
+    public function getMaxPriceForWidget() {
+        return Tools::Session()->get(static::SESSION_KEY_PRICE_RANGE_FORM . '.MaxPrice.' . $this->getSessionKey());
+    }
+    
+    /**
+     * Sets the max price
+     *
+     * @param string $maxPrice Max price
+     * 
+     * @return void
+     */
+    public function setMaxPriceForWidget($maxPrice) {
+        Tools::Session()->set(static::SESSION_KEY_PRICE_RANGE_FORM . '.MaxPrice.' . $this->getSessionKey(), $maxPrice);
+        Tools::saveSession();
+    }
+
+    /**
+     * Returns the min price limit
+     *
+     * @return string
+     */
+    public function getMinPriceLimit() {
+        if (is_null($this->minPriceLimit)) {
+            ProductFilterPlugin::$skip_filter_once = true;
+            $priceType = Config::PriceType();
+            $prices    = $this->owner->getProducts(false, false, true, true)->map('ID', 'Price' . ucfirst($priceType) . 'Amount');
+            if ($prices instanceof Map) {
+                $prices = $prices->toArray();
+            }
+            sort($prices);
+            $this->minPriceLimit = array_shift($prices);
+        }
+        return $this->minPriceLimit;
+    }
+    
+    /**
+     * Returns the max price limit
+     *
+     * @return string
+     */
+    public function getMaxPriceLimit() {
+        if (is_null($this->maxPriceLimit)) {
+            ProductFilterPlugin::$skip_filter_once = true;
+            $priceType = Config::PriceType();
+            $prices    = $this->owner->getProducts(false, false, true, true)->map('ID', 'Price' . ucfirst($priceType) . 'Amount');
+            if ($prices instanceof Map) {
+                $prices = $prices->toArray();
+            }
+            rsort($prices);
+            $this->maxPriceLimit = array_shift($prices);
+        }
+        return $this->maxPriceLimit;
+    }
+    
+}

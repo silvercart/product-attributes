@@ -1,63 +1,45 @@
 ---
 Name: silvercart-product-attributes-extensions
 ---
-SilvercartPage_Controller:
+SilverCart\Model\Order\Order:
   extensions:
-    ['SilvercartProductAttributePageExtension_Controller']
-SilvercartOrderPosition:
+    - SilverCart\ProductAttributes\Extensions\Order\OrderExtension
+SilverCart\Model\Order\OrderPosition:
   extensions:
-    ['SilvercartProductAttributeOrderPosition']
-SilvercartProduct:
+    - SilverCart\ProductAttributes\Extensions\Order\OrderPositionExtension
+SilverCart\Model\Order\ShoppingCart:
   extensions:
-    ['SilvercartProductAttributeProduct']
-SilvercartProductPluginProvider:
+      - SilverCart\ProductAttributes\Extensions\Order\ShoppingCartExtension
+SilverCart\Model\Order\ShoppingCartPosition:
   extensions:
-    ['SilvercartProductAttributeProductPlugin']
-SilvercartProductGroupPage_Controller:
+    - SilverCart\ProductAttributes\Extensions\Order\ShoppingCartPositionExtension
+SilverCart\Model\Pages\PageController:
   extensions:
-    ['SilvercartProductAttributeProductGroupPage_Controller']
-SilvercartProductAttributeLanguage:
+    - SilverCart\ProductAttributes\Extensions\Pages\PageControllerExtension
+SilverCart\Model\Pages\ProductGroupPageController:
   extensions:
-    ['SilvercartLanguageDecorator']
-SilvercartProductAttributeSetLanguage:
+    - SilverCart\ProductAttributes\Extensions\Pages\ProductGroupPageControllerExtension
+SilverCart\Model\Product\Product:
   extensions:
-    ['SilvercartLanguageDecorator']
-SilvercartProductAttributeValueLanguage:
+    - SilverCart\ProductAttributes\Extensions\Product\ProductExtension
+SilverCart\ProductAttributes\Model\Product\ProductAttributeTranslation:
   extensions:
-    ['SilvercartLanguageDecorator']
-SilvercartProductAttribute:
+    - SilverCart\Model\Translation\TranslationExtension
+SilverCart\ProductAttributes\Model\Product\ProductAttributeSetTranslation:
   extensions:
-    ['SilvercartDataObjectMultilingualDecorator']
-SilvercartProductAttributeSet:
+    - SilverCart\Model\Translation\TranslationExtension
+SilverCart\ProductAttributes\Model\Product\ProductAttributeValueTranslation:
   extensions:
-    ['SilvercartDataObjectMultilingualDecorator']
-SilvercartProductAttributeValue:
+    - SilverCart\Model\Translation\TranslationExtension
+SilverCart\ProductAttributes\Model\Product\ProductAttribute:
   extensions:
-    ['SilvercartDataObjectMultilingualDecorator']
-SilvercartOrderPluginProvider:
+    - SilverCart\Model\Translation\TranslatableDataObjectExtension
+SilverCart\ProductAttributes\Model\Product\ProductAttributeSet:
   extensions:
-    ['SilvercartProductAttributeOrderPlugin']
-SilvercartOrderPositionPluginProvider:
+    - SilverCart\Model\Translation\TranslatableDataObjectExtension
+SilverCart\ProductAttributes\Model\Product\ProductAttributeValue:
   extensions:
-    ['SilvercartProductAttributeOrderPositionPlugin']
-SilvercartProductAddCartFormDetailPluginProvider:
+    - SilverCart\Model\Translation\TranslatableDataObjectExtension
+SilverCart\Forms\AddToCartForm:
   extensions:
-    ['SilvercartProductAttributeAddCartFormDetailPlugin']
-SilvercartShoppingCartPluginProvider:
-  extensions:
-    ['SilvercartProductAttributeShoppingCartPlugin']
-SilvercartShoppingCartPositionPluginProvider:
-  extensions:
-    ['SilvercartProductAttributeShoppingCartPositionPlugin']
-SilvercartShoppingCartPosition:
-  extensions:
-    ['SilvercartProductAttributeShoppingCartPosition']
-SilvercartProductAddCartFormPluginProvider:
-  extensions:
-    ['SilvercartProductAttributeAddCartFormPlugin']
-SilvercartProductAddCartFormListPluginProvider:
-  extensions:
-    ['SilvercartProductAttributeAddCartFormListPlugin']
-SilvercartProductAddCartFormTilePluginProvider:
-  extensions:
-    ['SilvercartProductAttributeAddCartFormTilePlugin']
+    - SilverCart\ProductAttributes\Extensions\Forms\AddToCartFormExtension

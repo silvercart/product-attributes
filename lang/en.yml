@@ -1,6 +1,5 @@
 en:
-  SilvercartProductAttribute:
-    AVAILABLE_VARIANT: "available %s"
+  SilverCart\ProductAttributes\Model\Product\ProductAttribute:
     CAN_BE_USED_FOR_DATASHEET: "Use for data sheet"
     CAN_BE_USED_FOR_FILTERWIDGET: "Use for product filter"
     CAN_BE_USED_FOR_VARIANTS: "Can be used for multi-product-variants"
@@ -25,29 +24,27 @@ en:
     TABNAME: "Attributes"
     TITLE: "Title"
     UserInputFieldMustBeFilledIn: "User input is obligatory"
-    UserInputFieldMustBeFilledInDesc: "If this is active, the customer has to enter a custom text before he is able to add the related ptoduct to cart.."
-  SilvercartProductAttributeAddCartForm:
+    UserInputFieldMustBeFilledInDesc: "If this is active, the customer has to enter a custom text before he is able to add the related product to cart."
+  SilverCart\ProductAttributes\Extensions\Forms\AddToCartFormExtension:
     HEADLINE: "Variants"
-  SilvercartProductAttributeAdmin:
+  SilverCart\ProductAttributes\Admin\Controllers\ProductAttributeAdmin:
     MENUTITLE: "Product Attributes"
-  SilvercartProductAttributeFilterWidget:
+  SilverCart\ProductAttributes\Model\Widgets\ProductAttributeFilterWidget:
     CMSTITLE: "Product Attribute Filter"
     DESCRIPTION: "Provides a grouped selection of filters, created by the product attributes assigned onto the products of the current product group."
-    DISABLE_FILTER_FOR: "Reset all filters for &quot;%s&quot;"
+    DISABLE_FILTER_FOR: "Reset all filters for &quot;{title}&quot;"
     FB_HINT: "The field &quot;Filter-Behaviour&quot; determines how the filter reacts on user input.<br/><b>Multiple Choice:</b> The customer can choose multiple values of one attribute at the same time. For example, the customer can display all products with the colors red OR black. All filter attribute values are selectable, independent of the currently set filter.<br/><b>Single Choice:</b> The customer can only choose ONE value of an attribute. The available filter attribute values will be constrained by the currently set filters."
     FB_MULTIPLECHOICE: "Multiple Choice"
     FB_SINGLECHOICE: "Single Choice"
-    FILTERBEHAVIOUR: "Filter-Behaviour"
+    FILTERBEHAVIOUR: "Filter-Behavior"
     REMEMBERFILTER: "Remember filter by product group"
     TITLE: "Product Attribute Filter"
-  SilvercartProductAttributeLanguage:
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeTranslation:
     PLURALNAME: "Übersetzungen"
     SINGULARNAME: "Übersetzung"
-  SilvercartProductAttributeOrderDetailPage:
-    VARIANT_HEADLINE: "Variant"
-  SilvercartProductAttributeOrderPosition:
+  SilverCart\ProductAttributes\Extensions\Order\OrderPositionExtension:
     VARIANTDEFINITION: "Variant Definition"
-  SilvercartProductAttributePriceFilterWidget:
+  SilverCart\ProductAttributes\Model\Widgets\PriceFilterWidget:
     CMSTITLE: "Price-Filter"
     DESCRIPTION: "Provides a widget which allows to enter a price range to filter a product list."
     DISABLE_FILTER: "Reset price filter"
@@ -56,45 +53,26 @@ en:
     MAX_PRICE: "to"
     MIN_PRICE: "From"
     TITLE: "Price-Filter"
-  SilvercartProductAttributeProduct:
+  SilverCart\ProductAttributes\Extensions\Product\ProductExtension:
     MASTER_PRODUCT: "This product is a variant of the product with the following product number"
     PRODUCT_ATTRIBUTE: "Attribute"
     PRODUCT_ATTRIBUTES: "Attribute"
     PRODUCT_ATTRIBUTE_VALUE: "Value"
     PRODUCT_ATTRIBUTE_VALUES: "Value"
     SLAVE_PRODUCTS: "This product has the following variants:"
-  SilvercartProductAttributeSet:
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeSet:
     PLURALNAME: "Product Attribute Sets"
     SINGULARNAME: "Product Attribute Set"
     TABNAME: "Attribute Sets"
     TITLE: "Title"
-  SilvercartProductAttributeSetLanguage:
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeSetTranslation:
     PLURALNAME: "Übersetzungen"
     SINGULARNAME: "Übersetzung"
-  SilvercartProductAttributeTableListField:
-    ACTIONBAR_LABEL: "Actions"
-    ACTION_ACTIVATEMATRIX_LABEL: "Activate"
-    ACTION_DEACTIVATEMATRIX_LABEL: "Deactivate"
-    ACTION_REMOVE_LABEL: "Remove"
-    ACTIVATE_ALL_LABEL: "Activate all"
-    ASSIGNEDATTRIBUTES: "Assigned attributes"
-    ASSIGN_LABEL: "Assign"
-    DEACTIVATE_ALL_LABEL: "Deactivate all"
-    ISACTIVE_LABEL: "Is active"
-    NOATTRIBUTESATTRIBUTED: "There are no assigned attributes."
-    NOATTRIBUTESUNATTRIBUTED: "There are no non-assigned attributes."
-    NOVALUESATTRIBUTED: "There are no assigned values."
-    NOVALUESUNATTRIBUTED: "There are no non-assigned values."
-    NO_LABEL: "no"
-    REMOVE_LABEL: "Remove"
-    UNASSIGNEDATTRIBUTES: "Not assigned attributes"
-    VALUE_LABEL: "Value"
-    YES_LABEL: "yes"
-  SilvercartProductAttributeValue:
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeValue:
     PLURALNAME: "Product Attribute Values"
     SINGULARNAME: "Product Attribute Value"
     TABNAME: "Values"
     TITLE: "Title"
-  SilvercartProductAttributeValueLanguage:
-    PLURALNAME: "Übersetzungen"
-    SINGULARNAME: "Übersetzung"
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeValueTranslation:
+    PLURALNAME: "Translations"
+    SINGULARNAME: "Translation"

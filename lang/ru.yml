@@ -1,56 +1,17 @@
 ru:
-  SilvercartProductAttribute:
+  SilverCart\ProductAttributes\Model\Product\ProductAttribute:
     PLURALNAME: "Описания товара"
     SINGULARNAME: "Описание товара"
     TABNAME: "Детали"
     TITLE: "Имя"
-  SilvercartProductAttributeFilterWidget:
-    CMSTITLE: ""
-    DESCRIPTION: ""
-    DISABLE_FILTER_FOR: ""
-    FB_HINT: ""
+  SilverCart\ProductAttributes\Model\Widgets\ProductAttributeFilterWidget:
     FB_MULTIPLECHOICE: "многократный выбор"
     FB_SINGLECHOICE: "простой выбор"
-    FILTERBEHAVIOUR: ""
-    TITLE: ""
-  SilvercartProductAttributeLanguage:
-    PLURALNAME: ""
-    SINGULARNAME: ""
-  SilvercartProductAttributeProduct:
+  SilverCart\ProductAttributes\Extensions\Product\ProductExtension:
     PRODUCT_ATTRIBUTES: "Детали"
     PRODUCT_ATTRIBUTE_VALUES: "Стоимость"
-  SilvercartProductAttributeSet:
-    PLURALNAME: ""
-    SINGULARNAME: ""
-    TABNAME: ""
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeSet:
     TITLE: "Имя"
-  SilvercartProductAttributeSetLanguage:
-    PLURALNAME: ""
-    SINGULARNAME: ""
-  SilvercartProductAttributeTableListField:
-    ACTIONBAR_LABEL: ""
-    ACTION_ACTIVATEMATRIX_LABEL: ""
-    ACTION_DEACTIVATEMATRIX_LABEL: ""
-    ACTION_REMOVE_LABEL: ""
-    ACTIVATE_ALL_LABEL: "все активировать"
-    ASSIGNEDATTRIBUTES: "выделенные детали"
-    ASSIGN_LABEL: "Выделить"
-    DEACTIVATE_ALL_LABEL: "все деактивировать"
-    ISACTIVE_LABEL: ""
-    NOATTRIBUTESATTRIBUTED: ""
-    NOATTRIBUTESUNATTRIBUTED: ""
-    NOVALUESATTRIBUTED: ""
-    NOVALUESUNATTRIBUTED: ""
-    NO_LABEL: "нет"
-    REMOVE_LABEL: ""
-    UNASSIGNEDATTRIBUTES: ""
-    VALUE_LABEL: ""
-    YES_LABEL: ""
-  SilvercartProductAttributeValue:
-    PLURALNAME: ""
-    SINGULARNAME: ""
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeValue:
     TABNAME: "Стоимости"
     TITLE: "Имя"
-  SilvercartProductAttributeValueLanguage:
-    PLURALNAME: ""
-    SINGULARNAME: ""

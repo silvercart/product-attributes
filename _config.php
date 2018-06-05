@@ -1,29 +1,10 @@
 <?php
-/**
- * Copyright 2012 pixeltricks GmbH
- *
- * This file is part of SilverCart.
- *
- * @package Silvercart
- * @subpackage Config
- * @ignore 
- */
 
-// Register FilterPlugins
-SilvercartProductGroupPage_Controller::registerFilterPlugin('SilvercartProductAttributeProductFilterPlugin');
-SilvercartSearchResultsPage_Controller::registerFilterPlugin('SilvercartProductAttributeProductFilterPlugin');
-SilvercartWidget_Controller::registerFilterPlugin('SilvercartProductAttributeProductFilterPlugin');
-// register module to use with CustomHtmlForm
-CustomHtmlForm::registerModule('silvercart_product_attributes');
+use SilverCart\Model\Pages\ProductGroupPageController;
+use SilverCart\Model\Pages\SearchResultsPageController;
+use SilverCart\Model\Widgets\WidgetController;
+use SilverCart\ProductAttributes\Plugins\ProductFilterPlugin;
 
-if (class_exists('RequirementsEngine')) {
-    // ----------------------------------------------------------------------------
-    // Register CSS requirements
-    // ----------------------------------------------------------------------------
-    RequirementsEngine::registerThemedCssFile('SilvercartProductAttribute');
-    RequirementsEngine::registerThemedCssFile('SilvercartProductAttributePriceRangeFormField');
-    // ----------------------------------------------------------------------------
-    // Register JS requirements
-    // ----------------------------------------------------------------------------
-    RequirementsEngine::registerJsFile(SilvercartTools::getBaseURLSegment() . 'silvercart_product_attributes/js/SilvercartProductAttributeFilterWidget.js');
-}
+ProductGroupPageController::registerFilterPlugin(ProductFilterPlugin::class);
+SearchResultsPageController::registerFilterPlugin(ProductFilterPlugin::class);
+WidgetController::registerFilterPlugin(ProductFilterPlugin::class);
