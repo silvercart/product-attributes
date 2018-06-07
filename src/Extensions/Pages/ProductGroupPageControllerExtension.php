@@ -64,6 +64,7 @@ class ProductGroupPageControllerExtension extends Extension {
      */
     private static $allowed_actions = [
         'ClearProductAttributeFilter',
+        'ClearProductAttributePriceFilter',
         'ProductAttributeFilter',
         'ClearPriceFilter',
         'LoadVariant',
