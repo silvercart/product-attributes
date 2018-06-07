@@ -115,7 +115,7 @@ class ProductAttributeFilterWidget extends Widget {
     /**
      * Returns the widgets content
      *
-     * @return string
+     * @return \SilverStripe\ORM\FieldType\DBHTMLText
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
@@ -126,7 +126,7 @@ class ProductAttributeFilterWidget extends Widget {
             !Controller::curr()->isProductDetailView()) {
             $content = parent::Content();
         }
-        return $content;
+        return Tools::string2html($content);
     }
 
     /**
@@ -144,11 +144,12 @@ class ProductAttributeFilterWidget extends Widget {
                 parent::fieldLabels($includerelations),
                 Tools::field_labels_for(static::class),
                 [
-                    'FilterBehaviour'   => _t(static::class . '.FILTERBEHAVIOUR', 'Filter-Behavior'),
-                    'RememberFilter'    => _t(static::class . '.REMEMBERFILTER', 'Remember filter by product group'),
-                    'WidgetTitle'       => _t(static::class . '.TITLE', 'Product Attribute Filter'),
-                    'WidgetCMSTitle'    => _t(static::class . '.CMSTITLE', 'Product Attribute Filter'),
-                    'WidgetDescription' => _t(static::class . '.DESCRIPTION', 'Provides a grouped selection of filters, created by the product attributes assigned onto the products of the current product group.'),
+                    'FilterBehaviour'     => _t(static::class . '.FILTERBEHAVIOUR', 'Filter-Behavior'),
+                    'FilterBehaviourDesc' => _t(static::class . '.FB_HINT', 'Filter-Behavior.'),
+                    'RememberFilter'      => _t(static::class . '.REMEMBERFILTER', 'Remember filter by product group'),
+                    'WidgetTitle'         => _t(static::class . '.TITLE', 'Product Attribute Filter'),
+                    'WidgetCMSTitle'      => _t(static::class . '.CMSTITLE', 'Product Attribute Filter'),
+                    'WidgetDescription'   => _t(static::class . '.DESCRIPTION', 'Provides a grouped selection of filters, created by the product attributes assigned onto the products of the current product group.'),
                 ]
         );
     }
@@ -167,11 +168,11 @@ class ProductAttributeFilterWidget extends Widget {
             $items[$key] = _t(static::class . '.FB_' . strtoupper($value), $value);
         }
         $filterBehaviourField = new OptionsetField('FilterBehaviour', $this->fieldLabel('FilterBehaviour'), $items, $this->FilterBehaviour);
-        $filterBehaviourField->setRightTitle(_t($this->ClassName() . '.FB_HINT'));
-        $fields->push($filterBehaviourField);
+        $filterBehaviourField->setRightTitle(Tools::string2html($this->fieldLabel('FilterBehaviourDesc')));
+        $fields->addFieldToTab('Root.Main', $filterBehaviourField);
         
         $rememberFilterField = new CheckboxField('RememberFilter', $this->fieldLabel('RememberFilter'));
-        $fields->push($rememberFilterField);
+        $fields->addFieldToTab('Root.Main', $rememberFilterField);
         return $fields;
     }
 }

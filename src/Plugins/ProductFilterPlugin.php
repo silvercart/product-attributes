@@ -7,6 +7,7 @@ use SilverCart\Dev\Tools;
 use SilverCart\Model\Pages\ProductGroupPageController;
 use SilverCart\Model\Product\Product;
 use SilverCart\ProductAttributes\Model\Product\ProductAttributeValue;
+use SilverCart\ProductAttributes\Model\Widgets\ProductAttributeFilterWidget;
 use SilverStripe\Control\Controller;
 use SilverStripe\Core\Convert;
 use SilverStripe\ORM\DB;
@@ -22,6 +23,8 @@ use SilverStripe\ORM\DB;
  * @copyright 2018 pixeltricks GmbH
  */
 class ProductFilterPlugin {
+    
+    use \SilverStripe\Core\Extensible;
     
     /**
      * Set this to true to skip filter
@@ -137,69 +140,123 @@ class ProductFilterPlugin {
     public function getProductIDs() {
         $productIDs   = [];
         $productGroup = $this->getProductGroup();
-        if ($productGroup->filterEnabled()) {
-            $filterValues = $productGroup->getFilterValues();
-            if (is_array($filterValues) &&
-                count($filterValues) > 0) {
-                if (!(count($filterValues) == 1 &&
-                    empty($filterValues[0]))) {
-                    $productTableName               = Tools::get_table_name(Product::class);
-                    $productAttributeValueTableName = Tools::get_table_name(ProductAttributeValue::class);
-                    if ($productGroup->getWidget()->FilterBehaviour == 'MultipleChoice') {
-                        $query = sprintf(
-                                'SELECT DISTINCT
-                                    "SPSPAV"."%sID" AS PID
-                                FROM
-                                    "%s_ProductAttributeValues" AS SPSPAV
-                                WHERE
-                                    "SPSPAV".%sID" IN (%s)',
-                                $productTableName,
-                                $productTableName,
-                                $productAttributeValueTableName,
-                                "'" . implode("','", $filterValues) . "'"
-                        );
-                        $records = DB::query($query);
-                        foreach ($records as $record) {
-                            $productIDs[] = $record['PID'];
-                        }
-                    } elseif ($productGroup->getWidget()->FilterBehaviour == 'SingleChoice') {
-                        foreach ($filterValues as $filterValue) {
-                            if (empty($filterValue)) {
-                                continue;
-                            }
-                            $additionalWhereClause = "";
-                            if (count($productIDs) > 0) {
-                                $additionalWhereClause = sprintf(
-                                    'AND "SPSPAV"."%sID" IN (%s)',
-                                    $productTableName,
-                                    implode(',', $productIDs)
-                                );
-                            }
-                            $query = sprintf(
-                                    'SELECT DISTINCT
-                                        "SPSPAV"."%sID" AS PID
-                                    FROM
-                                        "%s_ProductAttributeValues" AS SPSPAV
-                                    WHERE
-                                        "SPSPAV"."%sID" = %s
-                                    %s',
-                                    $productTableName,
-                                    $productTableName,
-                                    $productAttributeValueTableName,
-                                    $filterValue,
-                                    $additionalWhereClause
-                            );
-                            $records = DB::query($query);
-                            $productIDs = [];
-                            foreach ($records as $record) {
-                                $productIDs[] = $record['PID'];
-                            }
-                        }
-                    }
+        $filterValues = $productGroup->getFilterValues();
+        if ($productGroup->filterEnabled() &&
+            is_array($filterValues) &&
+            count($filterValues) > 0 &&
+            !(count($filterValues) == 1 &&
+            empty($filterValues[0]))) {
+                
+            $productAttributeFilterWidget   = $productGroup->getProductAttributeFilterWidget();
+            if ($productAttributeFilterWidget instanceof ProductAttributeFilterWidget) {
+                if ($productAttributeFilterWidget->FilterBehaviour == 'MultipleChoice') {
+                    $productIDs = $this->getMultipleChoiceProductIDs();
+                } elseif ($productAttributeFilterWidget->FilterBehaviour == 'SingleChoice') {
+                    $productIDs = $this->getSingleChoiceProductIDs();
                 }
             }
         }
+        $this->extend('updateProductIDs', $productIDs);
         return $productIDs;
+    }
+    
+    /**
+     * Returns the product ID list for multiple choice filter widgets.
+     * 
+     * @return array
+     */
+    protected function getMultipleChoiceProductIDs() {
+        $productIDs = [];
+        $query      = $this->getMultipleChoiceQuery();
+        $records    = DB::query($query);
+        foreach ($records as $record) {
+            $productIDs[] = $record['PID'];
+        }
+        $this->extend('updateMultipleChoiceProductIDs', $productIDs);
+        return $productIDs;
+    }
+    
+    /**
+     * Returns the MySQL query to get the product IDs for multiple choice filter 
+     * widgets.
+     * 
+     * @return string
+     */
+    protected function getMultipleChoiceQuery() {
+        $filterValues                   = $this->getProductGroup()->getFilterValues();
+        $productTableName               = Tools::get_table_name(Product::class);
+        $productAttributeValueTableName = Tools::get_table_name(ProductAttributeValue::class);
+        $query = sprintf(
+                'SELECT DISTINCT "SPSPAV"."%sID" AS PID
+                FROM "%s_ProductAttributeValues" AS SPSPAV
+                WHERE "SPSPAV"."%sID" IN (%s)',
+                $productTableName,
+                $productTableName,
+                $productAttributeValueTableName,
+                "'" . implode("','", $filterValues) . "'"
+        );
+        $this->extend('updateMultipleChoiceQuery', $query, $filterValues);
+        return $query;
+    }
+    
+    /**
+     * Returns the product ID list for single choice filter widgets.
+     * 
+     * @return array
+     */
+    protected function getSingleChoiceProductIDs() {
+        $productIDs   = [];
+        $filterValues = $this->getProductGroup()->getFilterValues();
+        foreach ($filterValues as $filterValue) {
+            if (empty($filterValue)) {
+                continue;
+            }
+            $query      = $this->getSingleChoiceQuery($productIDs, $filterValue);
+            $records    = DB::query($query);
+            $productIDs = [];
+            foreach ($records as $record) {
+                $productIDs[] = $record['PID'];
+            }
+        }
+        $this->extend('updateSingleChoiceProductIDs', $productIDs);
+        return $productIDs;
+    }
+    
+    /**
+     * Returns the MySQL query to get the product IDs for single choice filter 
+     * widgets.
+     * 
+     * @return string
+     */
+    protected function getSingleChoiceQuery($productIDs, $filterValue) {
+        $productTableName               = Tools::get_table_name(Product::class);
+        $productAttributeValueTableName = Tools::get_table_name(ProductAttributeValue::class);
+        
+        $additionalWhereClause = "";
+        if (count($productIDs) > 0) {
+            $additionalWhereClause = sprintf(
+                'AND "SPSPAV"."%sID" IN (%s)',
+                $productTableName,
+                implode(',', $productIDs)
+            );
+        }
+        
+        $query = sprintf(
+                'SELECT DISTINCT
+                    "SPSPAV"."%sID" AS PID
+                FROM
+                    "%s_ProductAttributeValues" AS SPSPAV
+                WHERE
+                    "SPSPAV"."%sID" = %s
+                %s',
+                $productTableName,
+                $productTableName,
+                $productAttributeValueTableName,
+                $filterValue,
+                $additionalWhereClause
+        );
+        $this->extend('updateSingleChoiceQuery', $query, $productIDs, $filterValue);
+        return $query;
     }
     
 }

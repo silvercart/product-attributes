@@ -66,6 +66,9 @@
     min-width:                      200px;
     overflow:                       auto;
 }
+.widget ul.silvercart-product-attribute input[type="checkbox"] {
+    margin: 0;
+}
 
 #col1 .widget.silvercart-product-attribute-filter-widget .silvercart-widget_content strong.h2.has-selected-values {
     background:                     #adadad;

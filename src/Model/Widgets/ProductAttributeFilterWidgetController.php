@@ -2,6 +2,7 @@
 
 namespace SilverCart\ProductAttributes\Model\Widgets;
 
+use SilverCart\Dev\Tools;
 use SilverCart\Model\Pages\ProductGroupPageController;
 use SilverCart\Model\Product\Product;
 use SilverCart\Model\Widgets\WidgetController;
@@ -97,7 +98,7 @@ class ProductAttributeFilterWidgetController extends WidgetController {
                                 )
                         )->sort('"' . $productAttributeTranslationTableName . '"."Title" ASC');
                 if ($attributeList->count() > 0) {
-                    $attributeValues    = ProductAttributeValue::get()
+                    $attributeValues = ProductAttributeValue::get()
                             ->where(
                                     sprintf(
                                             '"%s"."ID" IN (%s)',
@@ -115,7 +116,7 @@ class ProductAttributeFilterWidgetController extends WidgetController {
                                                     $productIDs
                                             )
                                     )
-                            )->sort('"' . $productAttributeTableName . 'ID","' . $productAttributeValueTranslationTableName . '"."Title"');
+                            )->sort('"' . $productAttributeValueTableName . '"."ProductAttributeID","' . $productAttributeValueTranslationTableName . '"."Title"');
                     if ($attributeValues) {
                         foreach ($attributeList as $attribute) {
                             $values = $attributeValues->filter('ProductAttributeID', $attribute->ID);
@@ -158,7 +159,7 @@ class ProductAttributeFilterWidgetController extends WidgetController {
     /**
      * Returns the widgets content
      *
-     * @return string
+     * @return \SilverStripe\ORM\FieldType\DBHTMLText
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 21.03.2012
@@ -170,7 +171,7 @@ class ProductAttributeFilterWidgetController extends WidgetController {
             $this->getAttributes()->Count() > 0) {
             $content = trim(parent::Content());
         }
-        return $content;
+        return Tools::string2html($content);
     }
     
     /**
@@ -278,7 +279,7 @@ class ProductAttributeFilterWidgetController extends WidgetController {
             $filterValueMapIDs    = $this->getProductGroup()->getFilterValueList();
 
             if ($attributes->Count() > 0) {
-                $attributesMap    = $attributes->map('ID', 'ID');
+                $attributesMap    = $attributes->map('ID', 'ID')->toArray();
                 $attributesMapIDs = implode('-', $attributesMap);
             }
             

@@ -121,6 +121,9 @@ $(function() {
                 height : 15
             });
         }
+        if ($(".silvercart-product-group-page-selectors")) {
+            $(".silvercart-product-group-page-selectors input[type=submit]").hide();
+        }
     });
 
     var triggerFilter = function() {

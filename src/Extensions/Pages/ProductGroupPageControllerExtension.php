@@ -97,7 +97,7 @@ class ProductGroupPageControllerExtension extends Extension {
         $request    = $this->owner->getRequest();
         $allParams  = $request->allParams();
         $action     = $allParams['Action'];
-        $widget     = $this->getWidget($this->getPreviousSessionKey());
+        $widget     = $this->getProductAttributeFilterWidget($this->getPreviousSessionKey());
         if ($widget instanceof ProductAttributeFilterWidget &&
             !$widget->RememberFilter &&
             $this->getSessionKey() != $this->getPreviousSessionKey()) {
@@ -150,7 +150,7 @@ class ProductGroupPageControllerExtension extends Extension {
         $selectedValues      = $request->postVar('silvercart-product-attribute-selected-values');
         $selectedValuesArray = explode(',', $selectedValues);
         $this->setFilterValues($selectedValuesArray);
-        $this->setWidget($widget);
+        $this->setProductAttributeFilterWidget($widget);
     }
 
     /**
@@ -165,7 +165,7 @@ class ProductGroupPageControllerExtension extends Extension {
      */
     public function ProductAttributeFilter(HTTPRequest $request) {
         if (Director::is_ajax()) {
-            return $this->owner->renderWith($this->owner->data()->ClassName);
+            return $this->owner->renderWith(str_replace('Pages', 'Pages\Layout', $this->owner->data()->ClassName));
         } else {
             $this->owner->redirectBack();
         }
@@ -291,15 +291,14 @@ class ProductGroupPageControllerExtension extends Extension {
      *
      * @return ProductAttributeFilterWidget 
      */
-    public function getWidget($sessionKey = null) {
+    public function getProductAttributeFilterWidget($sessionKey = null) {
         if (is_null($sessionKey)) {
             $sessionKey = $this->getSessionKey();
-            if (is_null($this->widget)) {
-                $this->setWidget(Tools::Session()->get(static::SESSION_KEY_FILTER_WIDGET . '.' . $sessionKey));
-            }
-            $widget = $this->widget;
-        } else {
-            $widget = Tools::Session()->get(static::SESSION_KEY_FILTER_WIDGET . '.' . $sessionKey);
+        }
+        $widgetID = Tools::Session()->get(static::SESSION_KEY_FILTER_WIDGET . '.' . $sessionKey);
+        $widget   = ProductAttributeFilterWidget::get()->byID($widgetID);
+        if (is_null($this->widget)) {
+            $this->setProductAttributeFilterWidget($widget);
         }
         return $widget;
     }
@@ -311,8 +310,12 @@ class ProductGroupPageControllerExtension extends Extension {
      * 
      * @return void
      */
-    public function setWidget($widget) {
-        Tools::Session()->set(static::SESSION_KEY_FILTER_WIDGET . '.' . $this->getSessionKey(), $widget);
+    public function setProductAttributeFilterWidget($widget) {
+        $widgetID = 0;
+        if ($widget instanceof ProductAttributeFilterWidget) {
+            $widgetID = $widget->ID;
+        }
+        Tools::Session()->set(static::SESSION_KEY_FILTER_WIDGET . '.' . $this->getSessionKey(), $widgetID);
         Tools::saveSession();
         $this->widget = $widget;
     }
