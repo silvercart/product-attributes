@@ -2,17 +2,14 @@
 
 namespace SilverCart\ProductAttributes\Extensions\Pages;
 
-use SilverCart\Admin\Model\Config;
 use SilverCart\Dev\Tools;
 use SilverCart\Model\Pages\SearchResultsPageController;
 use SilverCart\ProductAttributes\Model\Widgets\ProductAttributeFilterWidget;
-use SilverCart\ProductAttributes\Plugins\ProductFilterPlugin;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Convert;
 use SilverStripe\Core\Extension;
 use SilverStripe\ORM\ArrayList;
-use SilverStripe\ORM\Map;
 use SilverStripe\View\ArrayData;
 
 /**
@@ -27,9 +24,10 @@ use SilverStripe\View\ArrayData;
  */
 class ProductGroupPageControllerExtension extends Extension {
     
+    use \SilverCart\ProductAttributes\Control\PriceRangeController;
+    
     const SESSION_KEY_FILTER_PLUGIN = 'SilverCart.ProductAttributeFilterPlugin';
     const SESSION_KEY_FILTER_WIDGET = 'SilverCart.ProductAttributeFilterWidget';
-    const SESSION_KEY_PRICE_RANGE_FORM = 'SilverCart.PriceRangeForm';
     
     /**
      * Is filter enabled?
@@ -57,7 +55,7 @@ class ProductGroupPageControllerExtension extends Extension {
      *
      * @var ProductAttributeFilterWidget
      */
-    protected $widget                       = null;
+    protected $widget = null;
 
     /**
      * List of allowed actions.
@@ -70,20 +68,6 @@ class ProductGroupPageControllerExtension extends Extension {
         'ClearPriceFilter',
         'LoadVariant',
     ];
-    
-    /**
-     * Min price limit.
-     *
-     * @var float
-     */
-    protected $minPriceLimit = null;
-    
-    /**
-     * Max price limit.
-     *
-     * @var float
-     */
-    protected $maxPriceLimit = null;
     
     /**
      * Initializes the attribute filter before the real controller is initialized
@@ -110,14 +94,7 @@ class ProductGroupPageControllerExtension extends Extension {
             $this->initProductAttributeFilter($request);
         }
         
-        $minPrice = $request->postVar('MinPrice');
-        $maxPrice = $request->postVar('MaxPrice');
-        if (!is_null($maxPrice) &&
-            !is_null($minPrice)) {
-            
-            $this->setMinPriceForWidget($minPrice);
-            $this->setMaxPriceForWidget($maxPrice);
-        }
+        $this->initPriceFilterFromRequest($request);
     }
     
     /**
@@ -183,22 +160,6 @@ class ProductGroupPageControllerExtension extends Extension {
      */
     public function ClearProductAttributeFilter(HTTPRequest $request) {
         $this->clearFilter($this->getSessionKey());
-    }
-    
-    /**
-     * Action to clear the attribute filter
-     *
-     * @param HTTPRequest $request Request
-     * 
-     * @return void
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
-     */
-    public function ClearProductAttributePriceFilter(HTTPRequest $request) {
-        Tools::Session()->clear(static::SESSION_KEY_PRICE_RANGE_FORM . '.MinPrice.' . $this->getSessionKey());
-        Tools::Session()->clear(static::SESSION_KEY_PRICE_RANGE_FORM . '.MaxPrice.' . $this->getSessionKey());
-        $this->owner->redirectBack();
     }
     
     /**
@@ -482,86 +443,6 @@ class ProductGroupPageControllerExtension extends Extension {
     public function setPreviousSessionKey($previousSessionKey) {
         Tools::Session()->set(static::SESSION_KEY_FILTER_WIDGET . '.PreviousSessionKey', $previousSessionKey);
         Tools::saveSession();
-    }
-    
-    /**
-     * Returns the min price
-     *
-     * @return string
-     */
-    public function getMinPriceForWidget() {
-        return Tools::Session()->get(static::SESSION_KEY_PRICE_RANGE_FORM . '.MinPrice.' . $this->getSessionKey());
-    }
-    
-    /**
-     * Sets the min price
-     *
-     * @param string $minPrice Min price
-     * 
-     * @return void
-     */
-    public function setMinPriceForWidget($minPrice) {
-        Tools::Session()->set(static::SESSION_KEY_PRICE_RANGE_FORM . '.MinPrice.' . $this->getSessionKey(), $minPrice);
-        Tools::saveSession();
-    }
-    
-    /**
-     * Returns the max price
-     *
-     * @return string
-     */
-    public function getMaxPriceForWidget() {
-        return Tools::Session()->get(static::SESSION_KEY_PRICE_RANGE_FORM . '.MaxPrice.' . $this->getSessionKey());
-    }
-    
-    /**
-     * Sets the max price
-     *
-     * @param string $maxPrice Max price
-     * 
-     * @return void
-     */
-    public function setMaxPriceForWidget($maxPrice) {
-        Tools::Session()->set(static::SESSION_KEY_PRICE_RANGE_FORM . '.MaxPrice.' . $this->getSessionKey(), $maxPrice);
-        Tools::saveSession();
-    }
-
-    /**
-     * Returns the min price limit
-     *
-     * @return string
-     */
-    public function getMinPriceLimit() {
-        if (is_null($this->minPriceLimit)) {
-            ProductFilterPlugin::$skip_filter_once = true;
-            $priceType = Config::PriceType();
-            $prices    = $this->owner->getProducts(false, false, true, true)->map('ID', 'Price' . ucfirst($priceType) . 'Amount');
-            if ($prices instanceof Map) {
-                $prices = $prices->toArray();
-            }
-            sort($prices);
-            $this->minPriceLimit = array_shift($prices);
-        }
-        return $this->minPriceLimit;
-    }
-    
-    /**
-     * Returns the max price limit
-     *
-     * @return string
-     */
-    public function getMaxPriceLimit() {
-        if (is_null($this->maxPriceLimit)) {
-            ProductFilterPlugin::$skip_filter_once = true;
-            $priceType = Config::PriceType();
-            $prices    = $this->owner->getProducts(false, false, true, true)->map('ID', 'Price' . ucfirst($priceType) . 'Amount');
-            if ($prices instanceof Map) {
-                $prices = $prices->toArray();
-            }
-            rsort($prices);
-            $this->maxPriceLimit = array_shift($prices);
-        }
-        return $this->maxPriceLimit;
     }
     
 }

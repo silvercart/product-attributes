@@ -9,6 +9,7 @@ use SilverCart\Model\Pages\ProductGroupPageController;
 use SilverCart\ORM\FieldType\DBMoney;
 use SilverCart\ProductAttributes\Model\Widgets\PriceFilterWidget;
 use SilverStripe\Control\Controller;
+use SilverStripe\Forms\FormAction;
 
 /**
  * Form to enter a price range.
@@ -51,22 +52,22 @@ class PriceRangeForm extends CustomForm {
             $maxPrice = '';
             $widget   = PriceFilterWidget::singleton();
             
-            if (Controller::curr() instanceof ProductGroupPageController &&
-                !Controller::curr()->isProductDetailView()) {
-                $minPrice = $this->getController()->getMinPriceForWidget();
-                $maxPrice = $this->getController()->getMaxPriceForWidget();
+            if ($this->getCurrentController() instanceof ProductGroupPageController &&
+                !$this->getCurrentController()->isProductDetailView()) {
+                $minPrice = $this->getCurrentController()->getMinPriceForWidget();
+                $maxPrice = $this->getCurrentController()->getMaxPriceForWidget();
 
                 if (is_null($minPrice)) {
-                    $minPrice = round(Controller::curr()->getMinPriceLimit(), 2);
-                    $maxPrice = round(Controller::curr()->getMaxPriceLimit(), 2);
+                    $minPrice = round($this->getCurrentController()->getMinPriceLimit(), 2);
+                    $maxPrice = round($this->getCurrentController()->getMaxPriceLimit(), 2);
                 }
             }
             
             $fields = array_merge(
                     $fields,
                     [
-                        TextField::create('MinPrice', $widget->fieldLabel('MinPrice'), $minPrice),
-                        TextField::create('MaxPrice', $widget->fieldLabel('MaxPrice'), $maxPrice),
+                        TextField::create('MinPrice', $widget->fieldLabel('MinPrice'), $minPrice)->setPlaceholder($widget->fieldLabel('MinPrice')),
+                        TextField::create('MaxPrice', $widget->fieldLabel('MaxPrice'), $maxPrice)->setPlaceholder($widget->fieldLabel('MaxPrice')),
                     ]
             );
         });
@@ -101,9 +102,9 @@ class PriceRangeForm extends CustomForm {
      * @since 30.05.2018
      */
     public function doSubmit($data, CustomForm $form) {
-        $this->getController()->setMinPriceForWidget($data['MinPrice']);
-        $this->getController()->setMaxPriceForWidget($data['MaxPrice']);
-        $this->getController()->redirectBack();
+        $this->getCurrentController()->setMinPriceForWidget($data['MinPrice']);
+        $this->getCurrentController()->setMaxPriceForWidget($data['MaxPrice']);
+        $this->getCurrentController()->redirectBack();
     }
     
     /**
@@ -112,7 +113,7 @@ class PriceRangeForm extends CustomForm {
      * @return string
      */
     public function getCacheKeyExtension() {
-        return md5($this->getController()->data()->ID . '-' . $this->getController()->getMinPriceForWidget() . '-' . $this->getController()->getMaxPriceForWidget());
+        return md5($this->getCurrentController()->data()->ID . '-' . $this->getCurrentController()->getMinPriceForWidget() . '-' . $this->getCurrentController()->getMaxPriceForWidget());
     }
     
     /**
@@ -131,6 +132,10 @@ class PriceRangeForm extends CustomForm {
      */
     public function getCurrencySymbol() {
         return DBMoney::create()->setCurrency($this->getCurrency())->getSymbol();
+    }
+    
+    public function getCurrentController() {
+        return Controller::curr();
     }
     
 }
