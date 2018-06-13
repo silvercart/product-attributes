@@ -34,7 +34,7 @@ class SilvercartProductAttributeDropdownField extends DropdownField {
      * @since 12.09.2012
      */
     public function Field($properties = array()) {
-        Requirements::javascript('silvercart_product_attributes/js/SilvercartProductAttributeDropdownField.js');
+        Requirements::javascript(SilvercartTools::get_module_name() . '/js/SilvercartProductAttributeDropdownField.js');
         $options    = '';
         $source     = $this->getSource();
 

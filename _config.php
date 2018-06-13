@@ -14,7 +14,7 @@ SilvercartProductGroupPage_Controller::registerFilterPlugin('SilvercartProductAt
 SilvercartSearchResultsPage_Controller::registerFilterPlugin('SilvercartProductAttributeProductFilterPlugin');
 SilvercartWidget_Controller::registerFilterPlugin('SilvercartProductAttributeProductFilterPlugin');
 // register module to use with CustomHtmlForm
-CustomHtmlForm::registerModule('silvercart_product_attributes');
+CustomHtmlForm::registerModule(SilvercartTools::get_module_name());
 
 if (class_exists('RequirementsEngine')) {
     // ----------------------------------------------------------------------------
@@ -25,5 +25,5 @@ if (class_exists('RequirementsEngine')) {
     // ----------------------------------------------------------------------------
     // Register JS requirements
     // ----------------------------------------------------------------------------
-    RequirementsEngine::registerJsFile(SilvercartTools::getBaseURLSegment() . 'silvercart_product_attributes/js/SilvercartProductAttributeFilterWidget.js');
+    RequirementsEngine::registerJsFile(SilvercartTools::getBaseURLSegment() . SilvercartTools::get_module_name() . '/js/SilvercartProductAttributeFilterWidget.js');
 }

@@ -31,7 +31,7 @@ class SilvercartProductAttributePageExtension_Controller extends DataExtension {
      * @since 02.03.2016
      */
     public function updatedJSRequirements(&$jsFiles) {
-        $jsFiles[] = 'silvercart_product_attributes/js/SilvercartProductAttributeFilterWidget.js';
+        $jsFiles[] = SilvercartTools::get_module_name() . '/js/SilvercartProductAttributeFilterWidget.js';
     }
     
     /**
@@ -44,8 +44,9 @@ class SilvercartProductAttributePageExtension_Controller extends DataExtension {
      * @since 02.03.2016
      */
     public function onAfterInit() {
-        Requirements::themedCss('SilvercartProductAttribute', 'silvercart_product_attributes');
-        Requirements::themedCss('SilvercartProductAttributePriceRangeFormField', 'silvercart_product_attributes');
+        Requirements::themedCss('SilvercartProductAttribute', SilvercartTools::get_module_name());
+        Requirements::themedCss('SilvercartProductAttributePriceRangeFormField', SilvercartTools::get_module_name());
+        Requirements::customScript('var SCPA_MODULE_NAME = "' . SilvercartTools::get_module_name() . '";', SilvercartTools::get_module_name() . 'ModuleName');
     }
     
 }

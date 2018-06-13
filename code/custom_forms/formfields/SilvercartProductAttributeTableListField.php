@@ -56,7 +56,7 @@ class SilvercartProductAttributeTableListField extends FormField {
      * @since 14.03.2012
     */
    public function FieldHolder($properties = array()) {
-        Requirements::css('silvercart_product_attributes/css/SilvercartProductAttributeTableListField.css');
+        Requirements::css(SilvercartTools::get_module_name() . '/css/SilvercartProductAttributeTableListField.css');
         $data       = self::getFieldData($this->controller);
         $pluginData = SilvercartPlugin::call(
             $this,
