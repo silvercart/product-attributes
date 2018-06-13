@@ -21,7 +21,8 @@
 class SilvercartProductAttributeValue extends DataObject {
     
     private static $has_one = array(
-        'SilvercartProductAttribute'  => 'SilvercartProductAttribute',
+        'SilvercartProductAttribute' => 'SilvercartProductAttribute',
+        'Image'                      => 'Image',
     );
     
     private static $has_many = array(
@@ -68,6 +69,7 @@ class SilvercartProductAttributeValue extends DataObject {
                 'SilvercartProductAttributeValueLanguages'  => _t('SilvercartProductAttributeValueLanguage.PLURALNAME'),
                 'SilvercartProductAttribute'                => _t('SilvercartProductAttribute.SINGULARNAME'),
                 'SilvercartProducts'                        => _t('SilvercartProduct.PLURALNAME'),
+                'Image'                                     => SilvercartImage::singleton()->singular_name(),
             )
         );
 

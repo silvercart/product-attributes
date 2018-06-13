@@ -32,6 +32,8 @@ class SilvercartProductAttributePageExtension_Controller extends DataExtension {
      */
     public function updatedJSRequirements(&$jsFiles) {
         $jsFiles[] = SilvercartTools::get_module_name() . '/js/SilvercartProductAttributeFilterWidget.js';
+        $jsFiles[] = SilvercartTools::get_module_name() . '/js/SilvercartProductAttribute.js';
+        $jsFiles[] = SilvercartTools::get_module_name() . '/js/SilvercartProductAttributeDropdownField.js';
     }
     
     /**

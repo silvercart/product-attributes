@@ -38,20 +38,40 @@ class SilvercartProductAttributeProductPlugin extends DataExtension {
      * @since 11.12.2012
      */
     public function pluginGetPluggedInTabs($callingObject) {
-        $pluggedInTab = null;
+        $pluggedInTabs = ArrayList::create();
         if ($callingObject->SilvercartProductAttributes()->filter('CanBeUsedForDataSheet', true)->count() > 0 &&
             $callingObject->SilvercartProductAttributeValues()->count() > 0) {
             $name       = _t('SilvercartProductAttribute.PLURALNAME');
             $content    = $callingObject->renderWith('SilvercartProductAttributeTab');
             if (!empty($content)) {
-                $data = array(
+                $pluggedInTabs->push(ArrayData::create([
                     'Name'      => $name,
                     'Content'   => $content,
-                );
-                $pluggedInTab = new DataObject($data);
+                ]));
             }
         }
-        return $pluggedInTab;
+        if ($callingObject->SilvercartProductAttributeValues()->exclude('ImageID', 0)->count() > 0) {
+            $valuesWithImage = $callingObject->SilvercartProductAttributeValues()->filter('IsActive', true)->exclude('ImageID', 0);
+            $attributes   = GroupedList::create($valuesWithImage)->groupBy('SilvercartProductAttributeID');
+            $attributeIDs = array_keys($attributes);
+            foreach ($attributeIDs as $attributeID) {
+                $attribute = $callingObject->SilvercartProductAttributes()->byID($attributeID);
+                $values    = $callingObject->SilvercartProductAttributeValues()->filter([
+                    'SilvercartProductAttributeID' => $attributeID,
+                    'IsActive'                     => true,
+                ]);
+                $content   = $callingObject->customise([
+                    'ProductAttributeValuesWithImage' => $values,
+                ])->renderWith('SilvercartProductAttributeValueWithImageTab');
+                if (!empty($content)) {
+                    $pluggedInTabs->push(ArrayData::create([
+                        'Name'    => $attribute->PluralTitle,
+                        'Content' => $content,
+                    ]));
+                }
+            }
+        }
+        return $pluggedInTabs;
     }
     
     /**
