@@ -938,7 +938,7 @@ class ProductExtension extends DataExtension {
      * @since 30.05.2018
      */
     public function addPluggedInTab(ArrayList &$pluggedInTabs) {
-        if ($this->owner->ProductAttributes()->exists() &&
+        if ($this->owner->ProductAttributes()->filter('CanBeUsedForDataSheet', true)->exists() &&
             $this->owner->ProductAttributeValues()->exists()) {
             $content = $this->owner->renderWith(ProductAttribute::class . '_Tab');
             if (!empty($content)) {
