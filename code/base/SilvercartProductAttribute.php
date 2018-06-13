@@ -751,10 +751,13 @@ class SilvercartProductAttribute_VariantImporter {
         $products = array();
         if ($attributeSetProductRelations->numRecords() > 0) {
             foreach ($attributeSetProductRelations as $attributeSetProductRelation) {
-                $productID  = $attributeSetProductRelation['SilvercartProductID'];
-                $attributeD = $this->importAttributeMap[$attributeSetProductRelation['SilvercartProductVariantAttributeSetID']];
-                $product    = SilvercartProduct::get()->byID($productID);
-                $attribute  = SilvercartProductAttribute::get()->byID($attributeD);
+                if (!array_key_exists($attributeSetProductRelation['SilvercartProductVariantAttributeSetID'], $this->importAttributeMap)) {
+                    continue;
+                }
+                $productID   = $attributeSetProductRelation['SilvercartProductID'];
+                $attributeID = $this->importAttributeMap[$attributeSetProductRelation['SilvercartProductVariantAttributeSetID']];
+                $product     = SilvercartProduct::get()->byID($productID);
+                $attribute   = SilvercartProductAttribute::get()->byID($attributeID);
                 $this->importAttributeSetProductMap[$attributeSetProductRelation['ID']] = $productID;
                 $products[$productID] = $product;
                 if ($product instanceof SilvercartProduct &&
