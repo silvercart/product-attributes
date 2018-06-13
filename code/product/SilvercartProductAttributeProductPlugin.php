@@ -39,8 +39,8 @@ class SilvercartProductAttributeProductPlugin extends DataExtension {
      */
     public function pluginGetPluggedInTabs($callingObject) {
         $pluggedInTab = null;
-        if ($callingObject->SilvercartProductAttributes()->Count() > 0 &&
-            $callingObject->SilvercartProductAttributeValues()->Count() > 0) {
+        if ($callingObject->SilvercartProductAttributes()->filter('CanBeUsedForDataSheet', true)->count() > 0 &&
+            $callingObject->SilvercartProductAttributeValues()->count() > 0) {
             $name       = _t('SilvercartProductAttribute.PLURALNAME');
             $content    = $callingObject->renderWith('SilvercartProductAttributeTab');
             if (!empty($content)) {
