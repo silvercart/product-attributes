@@ -948,6 +948,31 @@ class ProductExtension extends DataExtension {
                 ]));
             }
         }
+        
+        if ($this->owner->ProductAttributeValues()->exclude('ImageID', 0)->exists()) {
+            $valuesWithImage = $this->owner->ProductAttributeValues()->filter('IsActive', true)->exclude('ImageID', 0);
+            $attributes   = GroupedList::create($valuesWithImage)->groupBy('ProductAttributeID');
+            $attributeIDs = array_keys($attributes);
+            foreach ($attributeIDs as $attributeID) {
+                $attribute = $this->owner->ProductAttributes()->byID($attributeID);
+                if (!$attribute->CanBeUsedForSingleVariants) {
+                    continue;
+                }
+                $values    = $this->owner->ProductAttributeValues()->filter([
+                    'ProductAttributeID' => $attributeID,
+                    'IsActive'           => true,
+                ]);
+                $content   = $this->owner->customise([
+                    'ProductAttributeValuesWithImage' => $values,
+                ])->renderWith(ProductAttributeValue::class . '_ImageTab');
+                if (!empty($content)) {
+                    $pluggedInTabs->push(ArrayData::create([
+                        'Name'    => $attribute->PluralTitle,
+                        'Content' => $content,
+                    ]));
+                }
+            }
+        }
     }
     
     /**

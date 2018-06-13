@@ -28,6 +28,7 @@ class PageControllerExtension extends Extension {
      * @since 30.05.2018
      */
     public function updatedJSRequirements(&$jsFiles) {
+        $jsFiles[] = 'silvercart/product-attributes:client/js/ProductAttribute.js';
         $jsFiles[] = 'silvercart/product-attributes:client/js/ProductAttributeFilterWidget.js';
         $jsFiles[] = 'silvercart/product-attributes:client/js/ProductAttributeDropdownField.js';
     }

@@ -3,8 +3,10 @@
 namespace SilverCart\ProductAttributes\Model\Product;
 
 use SilverCart\Dev\Tools;
+use SilverCart\Model\Product\Image as SilverCartImage;
 use SilverCart\Model\Product\Product;
 use SilverCart\ORM\DataObjectExtension;
+use SilverStripe\Assets\Image;
 use SilverStripe\Control\Controller;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Filters\ExactMatchFilter;
@@ -29,6 +31,7 @@ class ProductAttributeValue extends DataObject {
      */
     private static $has_one = [
         'ProductAttribute' => ProductAttribute::class,
+        'Image'            => Image::class,
     ];
 
     /**
@@ -118,6 +121,7 @@ class ProductAttributeValue extends DataObject {
                 'ProductAttributeValueTranslations' => ProductAttributeValueTranslation::singleton()->plural_name(),
                 'ProductAttribute'                  => ProductAttribute::singleton()->singular_name(),
                 'Products'                          => Product::singleton()->plural_name(),
+                'Image'                             => SilverCartImage::singleton()->singular_name(),
             ]
         );
 
