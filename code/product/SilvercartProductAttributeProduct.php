@@ -739,7 +739,7 @@ class SilvercartProductAttributeProduct extends DataExtension {
         $product    = $this->owner;
         $fieldGroup = array();
         if ($product->hasSingleProductVariants()) {
-            $attributes         = $product->getSingleProductVariantAttributes();
+            $attributes         = $product->getSingleProductVariantAttributes()->filter('IsUserInputField', false);
             $fieldModifierNotes = array();
 
             foreach ($attributes as $attribute) {
