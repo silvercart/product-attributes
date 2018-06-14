@@ -19,6 +19,7 @@ de:
     ImportSuffixDesc: "Text, der jedem zu importierenden Merkmal angehängt wird."
     IsUserInputField: "Freitexteingabe aktivierten"
     IsUserInputFieldDesc: "Wird die Freitexteingabe aktiviert, erscheint am Artikel die Möglichkeit, einen vom Kunden beliebig wählbaren Text einzugeben (z.B. \"Gravur\"/\"T-Shirt-Aufdruck\")"
+    NoUserInput: "Ohne"
     PLURALNAME: "Artikelmerkmale"
     PLURALTITLE: "Pluralname"
     SINGULARNAME: "Artikelmerkmal"

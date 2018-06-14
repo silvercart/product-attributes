@@ -62,13 +62,18 @@ class SilvercartProductAttributeShoppingCartPositionPlugin extends DataExtension
         if ($product instanceof SilvercartProduct &&
             $product->exists()) {
             
-            $variantAttributes = $callingObject->getVariantAttributes();
+            $variantAttributes = ArrayList::create($callingObject->getVariantAttributes()->toArray());
+            $variantAttributes->merge($callingObject->getUserInputAttributes());
             if (!is_null($variantAttributes) &&
                 $variantAttributes->exists()) {
                 
                 foreach ($variantAttributes as $variantAttributeValue) {
                     $productAttribute = $product->SilvercartProductAttributeValues()->byID($variantAttributeValue->ID);
                     $priceAmount      = 0;
+                    if (!($productAttribute instanceof SilvercartProductAttributeValue) ||
+                        !$productAttribute->exists()) {
+                        continue;
+                    }
                     if (!empty($productAttribute->ModifyPriceValue)) {
                         $priceAmount = $this->prepareAmount($productAttribute->ModifyPriceValue);
                     }

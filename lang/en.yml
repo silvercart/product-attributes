@@ -19,6 +19,7 @@ en:
     ImportSuffixDesc: "Text will be suffixed to every imported attribute."
     IsUserInputField: "Is user input field"
     IsUserInputFieldDesc: "If you are using the user input field, the customer can enter a custom text before adding a product to cart (z.B. \"engraving\"/\"t-shirt overprint\")."
+    NoUserInput: "None"
     PLURALNAME: "Product Attributes"
     PLURALTITLE: "Plural title"
     SINGULARNAME: "Product Attribute"

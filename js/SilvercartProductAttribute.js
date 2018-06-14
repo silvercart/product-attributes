@@ -17,4 +17,16 @@
         }, 750);
         return false;
     });
+    $(document).on('click', '.silvercartchooseengraving input[type="radio"]', function() {
+        if (!$(this).is(':checked')) {
+            return;
+        }
+        var textField = $('.hidden-textfield', $(this).closest('.silvercartchooseengraving'));
+        if ($(this).val() === '') {
+            textField.hide();
+        } else {
+            textField.show();
+        }
+    });
+    $('.silvercartchooseengraving .hidden-textfield').hide();
 })})(jQuery);

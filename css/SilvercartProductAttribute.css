@@ -101,3 +101,7 @@
     font-weight: bold;
     color: #008554;
 }
+
+.silvercartchooseengraving ul {
+    list-style-type: none;
+}

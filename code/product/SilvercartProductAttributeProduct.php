@@ -159,6 +159,7 @@ class SilvercartProductAttributeProduct extends DataExtension {
                     'SilvercartSlaveProducts'           => _t('SilvercartProductAttributeProduct.SLAVE_PRODUCTS'),
                     'SilvercartProductAttribute'        => _t('SilvercartProductAttributeProduct.PRODUCT_ATTRIBUTE'),
                     'SilvercartProductAttributeValue'   => _t('SilvercartProductAttributeProduct.PRODUCT_ATTRIBUTE_VALUE'),
+                    'NoUserInput'                       => _t('SilvercartProductAttribute.NoUserInput', 'None'),
                 )
         );
     }
@@ -766,18 +767,19 @@ class SilvercartProductAttributeProduct extends DataExtension {
                     $priceAmount   = new Money();
                     $priceAmount->setAmount($product->getPrice()->getAmount());
                     $addition      = $product->getPrice()->Nice();
-                    if ($attributedValue->ModifyPriceValue > 0) {
+                    $priceValue    = SilvercartMoneyField::create('tmp')->prepareAmount($attributedValue->ModifyPriceValue);
+                    if ($priceValue > 0) {
                         if ($attributedValue->ModifyPriceAction == 'add') {
                             $priceIsModified = true;
-                            $priceAmount->setAmount($product->getPrice()->getAmount() + $attributedValue->ModifyPriceValue);
+                            $priceAmount->setAmount($product->getPrice()->getAmount() + $priceValue);
                             $addition = $priceAmount->Nice();
                         } elseif ($attributedValue->ModifyPriceAction == 'subtract') {
                             $priceIsModified = true;
-                            $priceAmount->setAmount($product->getPrice()->getAmount() - $attributedValue->ModifyPriceValue);
+                            $priceAmount->setAmount($product->getPrice()->getAmount() - $priceValue);
                             $addition = $priceAmount->Nice();
                         } elseif ($attributedValue->ModifyPriceAction == 'setTo') {
                             $priceIsModified = true;
-                            $priceAmount->setAmount($attributedValue->ModifyPriceValue);
+                            $priceAmount->setAmount($priceValue);
                             $addition = $priceAmount->Nice();
                         }
                     }
@@ -819,7 +821,101 @@ class SilvercartProductAttributeProduct extends DataExtension {
                 }
             }
         }
-        return $fieldGroup;
+        return array_merge($fieldGroup, $this->getVariantUserInputFields());
+    }
+    
+    /**
+     * Returns the form fields for the choice of a products user input variant
+     * fields to use with CustomHtmlForm
+     * 
+     * @return array
+     */
+    protected function getVariantUserInputFields() {
+        $fields = [];
+        if (!$this->owner->hasSingleProductVariants()) {
+            return $fields;
+        }
+        $userInputAttributes = $this->owner->getSingleProductVariantAttributes()->filter('IsUserInputField', true);
+        if ($userInputAttributes->exists()) {
+            foreach ($userInputAttributes as $userInputAttribute) {
+                $options = [];
+                $requirements = [];
+                if (!$userInputAttribute->UserInputFieldMustBeFilledIn) {
+                    $options[''] = $this->owner->fieldLabel('NoUserInput');
+                } else {
+                    $requirements = [
+                        'isFilledIn' => true,
+                    ];
+                }
+                $userInputValues = $this->owner->SilvercartProductAttributeValues()->filter('SilvercartProductAttributeID', $userInputAttribute->ID);
+                if ($userInputValues->exists()) {
+                    foreach ($userInputValues as $value) {
+                        $options[$value->ID] = $value->Title . $this->getVariantPriceStringIfDifferent($value, true);
+                    }
+                } else {
+                    $options[0] = $userInputAttribute->Title;
+                }
+                $selectedValue = '';
+                $priceAmounts  = [];
+
+                $fields['SilvercartProductAttribute' . $userInputAttribute->ID] = array(
+                    'type'              => 'SilvercartChooseEngravingField',
+                    'title'             => $userInputAttribute->Title,
+                    'value'             => $options,
+                    'selectedValue'     => $selectedValue,
+                    'silvercartProduct' => $this->owner,
+                    'checkRequirements' => $requirements,
+                    'data'              => [
+                        'prices'     => json_encode($priceAmounts),
+                        'type'       => 'single-variant',
+                        'product-id' => $this->owner->ID,
+                    ],
+                );
+            }
+        }
+        return $fields;
+    }
+    
+    /**
+     * Returns the price difference string to show when choosing a product variant.
+     * 
+     * @param SilvercartProductAttributeValue $attributeValue   Attribute value
+     * @param bool                            $returnAsAddition Return string as addition? (e.g. "+15,00 €"/"+$15,00")
+     * 
+     * @return string
+     */
+    protected function getVariantPriceStringIfDifferent($attributeValue, $returnAsAddition = false) {
+        $priceString = '';
+        $totalPrice  = new Money();
+        $addition    = new Money();
+        $priceValue  = SilvercartMoneyField::create('tmp')->prepareAmount($attributeValue->ModifyPriceValue);
+        if ($priceValue) {
+            if ($attributeValue->ModifyPriceAction == 'add') {
+                $priceIsModified = true;
+                $totalPrice->setAmount($this->owner->getPrice()->getAmount() + $priceValue);
+                $addition->setAmount($priceValue);
+            } elseif ($attributeValue->ModifyPriceAction == 'subtract') {
+                $priceIsModified = true;
+                $totalPrice->setAmount($this->owner->getPrice()->getAmount() - $priceValue);
+                $addition->setAmount($priceValue * -1);
+            } elseif ($attributeValue->ModifyPriceAction == 'setTo') {
+                $priceIsModified = true;
+                $totalPrice->setAmount($priceValue);
+                $addition->setAmount($priceValue - $this->owner->getPrice()->getAmount());
+            }
+        }
+        if ($returnAsAddition) {
+            if ($addition->getAmount() != 0) {
+                $sign = '+';
+                if ($addition->getAmount() < 0) {
+                    $sign = '-';
+                }
+                $priceString = ' (' . $sign . $addition->Nice() . ')';
+            }
+        } elseif ($totalPrice->getAmount() > 0) {
+            $priceString = ' (' . $totalPrice->Nice() . ')';
+        }
+        return $priceString;
     }
     
     /**
@@ -836,14 +932,9 @@ class SilvercartProductAttributeProduct extends DataExtension {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 07.11.2016
      */
-    public function SPAPaddToCartWithAttributes($cartID, $quantity = 1, $attributes = array(), $userInputAttributes =  false) {
-        if ($userInputAttributes === false) {
-            $userInputAttributes = array();
-        }
-        
-        if (empty($userInputAttributes) &&
-            (!is_array($attributes) ||
-              count($attributes) == 0)) {
+    public function SPAPaddToCartWithAttributes($cartID, $quantity = 1, $attributes = []) {
+        if (!is_array($attributes) ||
+             count($attributes) == 0) {
 
             return $this->owner->addToCart($cartID, $quantity, true);
         }
