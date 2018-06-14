@@ -55,6 +55,7 @@ de:
     TITLE: "Preis-Filter"
   SilverCart\ProductAttributes\Extensions\Product\ProductExtension:
     MASTER_PRODUCT: "Dieser Artikel ist eine Variante des Artikels mit der Artikelnummer"
+    NoUserInput: "Ohne"
     PRODUCT_ATTRIBUTE: "Merkmal"
     PRODUCT_ATTRIBUTES: "Merkmale"
     PRODUCT_ATTRIBUTE_VALUE: "Wert"

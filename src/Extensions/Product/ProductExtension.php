@@ -3,12 +3,14 @@
 namespace SilverCart\ProductAttributes\Extensions\Product;
 
 use SilverCart\Dev\Tools;
+use SilverCart\Forms\FormFields\MoneyField;
 use SilverCart\Forms\FormFields\TextField;
 use SilverCart\Model\Order\ShoppingCartPosition;
 use SilverCart\Model\Order\ShoppingCartPositionNotice;
 use SilverCart\Model\Product\Product;
 use SilverCart\ORM\FieldType\DBMoney;
 use SilverCart\ProductAttributes\Admin\Forms\GridField\GridFieldSubObjectHandler;
+use SilverCart\ProductAttributes\Forms\FormFields\ChooseEngravingField;
 use SilverCart\ProductAttributes\Forms\FormFields\ProductAttributeDropdownField;
 use SilverCart\ProductAttributes\Model\Product\ProductAttribute;
 use SilverCart\ProductAttributes\Model\Product\ProductAttributeValue;
@@ -176,6 +178,7 @@ class ProductExtension extends DataExtension {
                     'SlaveProducts'          => _t(static::class . '.SLAVE_PRODUCTS', 'This product has the following variants:'),
                     'ProductAttribute'       => _t(static::class . '.PRODUCT_ATTRIBUTE', 'Attribute'),
                     'ProductAttributeValue'  => _t(static::class . '.PRODUCT_ATTRIBUTE_VALUE', 'Value'),
+                    'NoUserInput'            => _t(static::class . '.NoUserInput', 'None'),
                 ]
         );
     }
@@ -779,7 +782,7 @@ class ProductExtension extends DataExtension {
         $product = $this->owner;
         $fields  = [];
         if ($product->hasSingleProductVariants()) {
-            $attributes = $product->getSingleProductVariantAttributes();
+            $attributes = $product->getSingleProductVariantAttributes()->filter('IsUserInputField', false);
 
             foreach ($attributes as $attribute) {
                 $values        = [];
@@ -807,21 +810,22 @@ class ProductExtension extends DataExtension {
                     $price->setAmount($product->getPrice()->getAmount());
                     $price->setCurrency($product->getPrice()->getCurrency());
                     $addition      = $product->getPrice()->Nice();
-                    if ($attributedValue->ModifyPriceValue > 0) {
+                    $priceAmount   = MoneyField::create('tmp')->prepareAmount($attributedValue->ModifyPriceValue);
+                    if ($priceAmount > 0) {
                         switch ($attributedValue->ModifyPriceAction) {
                             case 'add':
                                 $priceIsModified = true;
-                                $price->setAmount($product->getPrice()->getAmount() + $attributedValue->ModifyPriceValue);
+                                $price->setAmount($product->getPrice()->getAmount() + $priceAmount);
                                 $addition = $price->Nice();
                                 break;
                             case 'subtract':
                                 $priceIsModified = true;
-                                $price->setAmount($product->getPrice()->getAmount() - $attributedValue->ModifyPriceValue);
+                                $price->setAmount($product->getPrice()->getAmount() - $priceAmount);
                                 $addition = $price->Nice();
                                 break;
                             case 'setTo':
                                 $priceIsModified = true;
-                                $price->setAmount($attributedValue->ModifyPriceValue);
+                                $price->setAmount($priceAmount);
                                 $addition = $price->Nice();
                                 break;
                             default:
@@ -865,7 +869,99 @@ class ProductExtension extends DataExtension {
                 }
             }
         }
+        return array_merge($fields, $this->getVariantUserInputFields());
+    }
+    
+    /**
+     * Returns the form fields for the choice of a products user input variant
+     * fields.
+     * 
+     * @return array
+     */
+    protected function getVariantUserInputFields() {
+        $fields = [];
+        if (!$this->owner->hasSingleProductVariants()) {
+            return $fields;
+        }
+        $userInputAttributes = $this->owner->getSingleProductVariantAttributes()->filter('IsUserInputField', true);
+        if ($userInputAttributes->exists()) {
+            foreach ($userInputAttributes as $userInputAttribute) {
+                $options = [];
+                $requirements = [];
+                if (!$userInputAttribute->UserInputFieldMustBeFilledIn) {
+                    $options[''] = $this->owner->fieldLabel('NoUserInput');
+                } else {
+                    $requirements = [
+                        'isFilledIn' => true,
+                    ];
+                }
+                $prices          = [];
+                $userInputValues = $this->owner->ProductAttributeValues()->filter('ProductAttributeID', $userInputAttribute->ID);
+                if ($userInputValues->exists()) {
+                    foreach ($userInputValues as $value) {
+                        $options[$value->ID] = $value->Title . $this->getVariantPriceStringIfDifferent($value, $prices, true);
+                    }
+                } else {
+                    $options[0] = $userInputAttribute->Title;
+                }
+                
+                $field = ChooseEngravingField::create(
+                        'ProductAttribute' . $userInputAttribute->ID,
+                        $userInputAttribute->Title,
+                        $options,
+                        ''
+                );
+                $field->setProductID($this->owner->ID)
+                        ->setProductPrices(json_encode($prices))
+                        ->setProductVariantType(ProductAttributeDropdownField::VARIANT_TYPE_SINGLE);
+                $fields[] = $field;
+            }
+        }
         return $fields;
+    }
+    
+    /**
+     * Returns the price difference string to show when choosing a product variant.
+     * 
+     * @param ProductAttributeValue $attributeValue   Attribute value
+     * @param array                 &$prices          List of variant prices
+     * @param bool                  $returnAsAddition Return string as addition? (e.g. "+15,00 €"/"+$15,00")
+     * 
+     * @return string
+     */
+    protected function getVariantPriceStringIfDifferent($attributeValue, &$prices, $returnAsAddition = false) {
+        $priceString = '';
+        $totalPrice  = DBMoney::create();
+        $addition    = DBMoney::create();
+        $priceAmount = MoneyField::create('tmp')->prepareAmount($attributeValue->ModifyPriceValue);
+        if ($priceAmount > 0) {
+            if ($attributeValue->ModifyPriceAction == 'add') {
+                $priceIsModified = true;
+                $totalPrice->setAmount($this->owner->getPrice()->getAmount() + $priceAmount);
+                $addition->setAmount($priceAmount);
+            } elseif ($attributeValue->ModifyPriceAction == 'subtract') {
+                $priceIsModified = true;
+                $totalPrice->setAmount($this->owner->getPrice()->getAmount() - $priceAmount);
+                $addition->setAmount($priceAmount * -1);
+            } elseif ($attributeValue->ModifyPriceAction == 'setTo') {
+                $priceIsModified = true;
+                $totalPrice->setAmount($priceAmount);
+                $addition->setAmount($priceAmount - $this->owner->getPrice()->getAmount());
+            }
+        }
+        if ($returnAsAddition) {
+            if ($addition->getAmount() != 0) {
+                $sign = '+';
+                if ($addition->getAmount() < 0) {
+                    $sign = '-';
+                }
+                $priceString = ' (' . $sign . $addition->Nice() . ')';
+            }
+        } elseif ($totalPrice->getAmount() > 0) {
+            $priceString = ' (' . $totalPrice->Nice() . ')';
+        }
+        $prices[$attributeValue->ID] = $totalPrice->Nice();
+        return $priceString;
     }
     
     /**
@@ -882,14 +978,9 @@ class ProductExtension extends DataExtension {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 07.11.2016
      */
-    public function SPAPaddToCartWithAttributes($cartID, $quantity = 1, $attributes = [], $userInputAttributes =  false) {
-        if ($userInputAttributes === false) {
-            $userInputAttributes = [];
-        }
-        
-        if (empty($userInputAttributes) &&
-            (!is_array($attributes) ||
-              count($attributes) == 0)) {
+    public function SPAPaddToCartWithAttributes($cartID, $quantity = 1, $attributes = []) {
+        if (!is_array($attributes) ||
+            count($attributes) == 0) {
 
             return $this->owner->addToCart($cartID, $quantity, true);
         }

@@ -33,11 +33,18 @@ class OrderExtension extends DataExtension {
     public function onBeforeConvertSingleShoppingCartPositionToOrderPosition(ShoppingCartPosition &$shoppingCartPosition, OrderPosition &$orderPosition) {
         $productAttributeVariantDefinition = '';
         $variantAttributeValues            = $shoppingCartPosition->getVariantAttributes();
+        $userInputAttributeValues          = $shoppingCartPosition->getUserInputAttributes();
         foreach ($variantAttributeValues as $variantAttributeValue) {
             if (!empty($productAttributeVariantDefinition)) {
                 $productAttributeVariantDefinition .= ', ';
             }
             $productAttributeVariantDefinition .= '<em>' . $variantAttributeValue->ProductAttribute()->Title . '</em>: ' . $variantAttributeValue->Title;
+        }
+        foreach ($userInputAttributeValues as $userInputAttributeValue) {
+            if (!empty($productAttributeVariantDefinition)) {
+                $productAttributeVariantDefinition .= ', ';
+            }
+            $productAttributeVariantDefinition .= '<em>' . $userInputAttributeValue->AttributeTitle . '</em>: ' . $userInputAttributeValue->Title;
         }
 
         $orderPosition->ProductAttributeVariantDefinition = $productAttributeVariantDefinition;

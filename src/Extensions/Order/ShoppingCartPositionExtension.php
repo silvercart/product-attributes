@@ -2,14 +2,16 @@
 
 namespace SilverCart\ProductAttributes\Extensions\Order;
 
-use SilverCart\Admin\Model\Config;
 use SilverCart\Forms\FormFields\MoneyField;
 use SilverCart\Model\Product\Product;
 use SilverCart\ORM\FieldType\DBMoney;
+use SilverCart\ProductAttributes\Model\Product\ProductAttribute;
 use SilverCart\ProductAttributes\Model\Product\ProductAttributeValue;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataExtension;
+use SilverStripe\ORM\SS_List;
+use SilverStripe\View\ArrayData;
 
 /**
  * Extension for shopping cart positions.
@@ -52,16 +54,81 @@ class ShoppingCartPositionExtension extends DataExtension {
      * @return \SilverStripe\ORM\DataList
      */
     public function getVariantAttributes() {
-        $attributeValues      = new ArrayList();
+        $attributeValues      = ArrayList::create();
         $serializedAttributes = $this->owner->ProductAttributes;
         $attributesArray      = unserialize($serializedAttributes);
         if (is_array($attributesArray) &&
             count($attributesArray) > 0) {
             
+            foreach ($attributesArray as $ID => $attribute) {
+                if (is_array($attribute)) {
+                    unset($attributesArray[$ID]);
+                }
+            }
             $attributeValues = ProductAttributeValue::get()
                 ->where('"' . ProductAttributeValue::config()->get('table_name') . '"."ID" IN (' . implode(',', $attributesArray) . ')');
         }
         return $attributeValues;
+    }
+    
+    /**
+     * Returns the related variant attributes.
+     * 
+     * @return DataList
+     */
+    public function getUserInputAttributes() {
+        $attributeValues      = null;
+        $userInputValues      = ArrayList::create();
+        $serializedAttributes = $this->owner->ProductAttributes;
+        $attributesArray      = unserialize($serializedAttributes);
+        if (is_array($attributesArray) &&
+            count($attributesArray) > 0) {
+            
+            $userInputAttributes = [];
+            foreach ($attributesArray as $ID => $attribute) {
+                if (is_array($attribute)) {
+                    $userInputAttributes[$ID] = $attribute;
+                }
+            }
+            $attributesArray = [];
+            foreach ($userInputAttributes as $ID => $data) {
+                $attributesArray[$ID] = $data['Option'];
+            }
+            if (count($attributesArray) > 0) {
+                $idString = implode(',', $attributesArray);
+                if (!empty($idString)) {
+                    $attributeValues = ProductAttributeValue::get()
+                        ->where('"' . ProductAttributeValue::config()->get('table_name') . '"."ID" IN (' . implode(',', $attributesArray) . ')');
+
+                    foreach ($attributeValues as $value) {
+                        if (!array_key_exists($value->ProductAttribute()->ID, $userInputAttributes)) {
+                            continue;
+                        }
+                        $userInputValues->push(ArrayData::create([
+                            'AttributeTitle' => $value->ProductAttribute()->Title,
+                            'Title'          => $value->Title . ' "' . $userInputAttributes[$value->ProductAttribute()->ID]['TextValue'] . '"',
+                            'ID'             => $value->ID,
+                        ]));
+                    }
+                }
+            }
+            
+            if (!($attributeValues instanceof SS_List) ||
+                $attributeValues->count() < count($attributesArray)) {
+                foreach ($userInputAttributes as $ID => $userInputAttribute) {
+                    if (array_key_exists($ID, $userInputValues)) {
+                        continue;
+                    }
+                    $attribute = ProductAttribute::get()->byID($ID);
+                    $userInputValues->push(ArrayData::create([
+                        'AttributeTitle' => $attribute->Title,
+                        'Title'          => '"' . $userInputAttribute['TextValue'] . '"',
+                        'ID'             => 0,
+                    ]));
+                }
+            }
+        }
+        return $userInputValues;
     }
 
     /**
@@ -86,12 +153,17 @@ class ShoppingCartPositionExtension extends DataExtension {
         if ($product instanceof Product &&
             $product->exists()) {
             
-            $variantAttributes = $this->owner->getVariantAttributes();
+            $variantAttributes = ArrayList::create($this->owner->getVariantAttributes()->toArray());
+            $variantAttributes->merge($this->owner->getUserInputAttributes());
             foreach ($variantAttributes as $variantAttributeValue) {
                 $productAttribute = $product->ProductAttributeValues()->byID($variantAttributeValue->ID);
                 $priceAmount      = 0;
+                if (!($productAttribute instanceof ProductAttributeValue) ||
+                    !$productAttribute->exists()) {
+                    continue;
+                }
                 if (!empty($productAttribute->ModifyPriceValue)) {
-                    $priceAmount = $productAttribute->ModifyPriceValue;
+                    $priceAmount = MoneyField::create('tmp')->prepareAmount($productAttribute->ModifyPriceValue);
                 }
                 switch ($productAttribute->ModifyPriceAction) {
                     case 'add':

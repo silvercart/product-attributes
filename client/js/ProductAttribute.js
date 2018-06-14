@@ -18,5 +18,17 @@ $(function() {
             }, 750);
             return false;
         });
+        $(document).on('click', '.chooseengraving input[type="radio"]', function() {
+            if (!$(this).is(':checked')) {
+                return;
+            }
+            var textField = $('.hidden-textfield', $(this).closest('.chooseengraving'));
+            if ($(this).val() === '') {
+                textField.hide();
+            } else {
+                textField.show();
+            }
+        });
+        $('.chooseengraving .hidden-textfield').hide();
     });
 });

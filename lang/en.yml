@@ -55,6 +55,7 @@ en:
     TITLE: "Price-Filter"
   SilverCart\ProductAttributes\Extensions\Product\ProductExtension:
     MASTER_PRODUCT: "This product is a variant of the product with the following product number"
+    NoUserInput: "None"
     PRODUCT_ATTRIBUTE: "Attribute"
     PRODUCT_ATTRIBUTES: "Attribute"
     PRODUCT_ATTRIBUTE_VALUE: "Value"
