@@ -74,10 +74,10 @@ class SilvercartProductAttributeShoppingCartPositionPlugin extends DataExtension
                         !$productAttribute->exists()) {
                         continue;
                     }
-                    if (!empty($productAttribute->ModifyPriceValue)) {
-                        $priceAmount = $this->prepareAmount($productAttribute->ModifyPriceValue);
+                    if (!empty($productAttribute->FinalModifyPriceValue)) {
+                        $priceAmount = $this->prepareAmount($productAttribute->FinalModifyPriceValue);
                     }
-                    switch ($productAttribute->ModifyPriceAction) {
+                    switch ($productAttribute->FinalModifyPriceAction) {
                         case 'add':
                             $finalPriceAmount = $price->getAmount() + $priceAmount;
                             break;
@@ -130,12 +130,12 @@ class SilvercartProductAttributeShoppingCartPositionPlugin extends DataExtension
                 
                 foreach ($variantAttributes as $variantAttributeValue) {
                     $productAttribute = $product->SilvercartProductAttributeValues()->byID($variantAttributeValue->ID);
-                    switch ($productAttribute->ModifyProductNumberAction) {
+                    switch ($productAttribute->FinalModifyProductNumberAction) {
                         case 'add':
-                            $productNumber .= $productAttribute->ModifyProductNumberValue;
+                            $productNumber .= $productAttribute->FinalModifyProductNumberValue;
                             break;
                         case 'setTo':
-                            $productNumber = $productAttribute->ModifyProductNumberValue;
+                            $productNumber = $productAttribute->FinalModifyProductNumberValue;
                             break;
                         default:
                             break;
@@ -171,12 +171,12 @@ class SilvercartProductAttributeShoppingCartPositionPlugin extends DataExtension
                 
                 foreach ($variantAttributes as $variantAttributeValue) {
                     $productAttribute = $product->SilvercartProductAttributeValues()->byID($variantAttributeValue->ID);
-                    switch ($productAttribute->ModifyTitleAction) {
+                    switch ($productAttribute->FinalModifyTitleAction) {
                         case 'add':
-                            $title .= $productAttribute->ModifyTitleValue;
+                            $title .= $productAttribute->FinalModifyTitleValue;
                             break;
                         case 'setTo':
-                            $title = $productAttribute->ModifyTitleValue;
+                            $title = $productAttribute->FinalModifyTitleValue;
                             break;
                         default:
                             break;

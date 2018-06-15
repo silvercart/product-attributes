@@ -5,9 +5,9 @@
         <thead>
             <tr>
                 <td>Wert</td>
-                <td>Anpassung Artikeltitel</td>
-                <td>Anpassung Artikelpreis</td>
-                <td>Anpassung Artikelnummer</td>
+                <td><%t SilvercartProductAttributeValue.ModifyTitle 'Modify product title' %></td>
+                <td><%t SilvercartProductAttributeValue.ModifyPrice 'Modify product price' %></td>
+                <td><%t SilvercartProductAttributeValue.ModifyProductNumber 'Modify product number' %></td>
                 <td>Aktionen</td>
             </tr>
         </thead>
@@ -22,6 +22,7 @@
                         <option value="add" <% if $ModifyTitleAction == 'add' %>selected<% end_if %> >Anhängen</option>
                     </select>
                     <input type="text" value="{$ModifyTitleValue}" name="subItem[variantModification][{$ID}][Title][value]" />
+                    <% if $DefaultModifyTitle %>{$DefaultModifyTitleText}<% end_if %>
                 </td>
                 <td>
                     <select name="subItem[variantModification][{$ID}][Price][action]">
@@ -31,6 +32,7 @@
                         <option value="subtract" <% if $ModifyPriceAction == 'subtract' %>selected<% end_if %> >Abschlag</option>
                     </select>
                     <input type="text" value="{$ModifyPriceValue}" name="subItem[variantModification][{$ID}][Price][value]" style="width: 50px;" />
+                    <% if $DefaultModifyPrice %>{$DefaultModifyPriceText}<% end_if %>
                 </td>
                 <td>
                     <select name="subItem[variantModification][{$ID}][ProductNumber][action]">
@@ -39,6 +41,7 @@
                         <option value="add" <% if $ModifyProductNumberAction == 'add' %>selected<% end_if %> >Anhängen</option>
                     </select>
                     <input type="text" value="{$ModifyProductNumberValue}" name="subItem[variantModification][{$ID}][ProductNumber][value]" />
+                    <% if $DefaultModifyProductNumber %>{$DefaultModifyProductNumberText}<% end_if %>
                 </td>
                 <td>
                 <% if $SubObjectHasIsActive %>

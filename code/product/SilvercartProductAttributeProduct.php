@@ -767,17 +767,17 @@ class SilvercartProductAttributeProduct extends DataExtension {
                     $priceAmount   = new Money();
                     $priceAmount->setAmount($product->getPrice()->getAmount());
                     $addition      = $product->getPrice()->Nice();
-                    $priceValue    = SilvercartMoneyField::create('tmp')->prepareAmount($attributedValue->ModifyPriceValue);
+                    $priceValue    = SilvercartMoneyField::create('tmp')->prepareAmount($attributedValue->FinalModifyPriceValue);
                     if ($priceValue > 0) {
-                        if ($attributedValue->ModifyPriceAction == 'add') {
+                        if ($attributedValue->FinalModifyPriceAction == 'add') {
                             $priceIsModified = true;
                             $priceAmount->setAmount($product->getPrice()->getAmount() + $priceValue);
                             $addition = $priceAmount->Nice();
-                        } elseif ($attributedValue->ModifyPriceAction == 'subtract') {
+                        } elseif ($attributedValue->FinalModifyPriceAction == 'subtract') {
                             $priceIsModified = true;
                             $priceAmount->setAmount($product->getPrice()->getAmount() - $priceValue);
                             $addition = $priceAmount->Nice();
-                        } elseif ($attributedValue->ModifyPriceAction == 'setTo') {
+                        } elseif ($attributedValue->FinalModifyPriceAction == 'setTo') {
                             $priceIsModified = true;
                             $priceAmount->setAmount($priceValue);
                             $addition = $priceAmount->Nice();
@@ -888,17 +888,17 @@ class SilvercartProductAttributeProduct extends DataExtension {
         $priceString = '';
         $totalPrice  = new Money();
         $addition    = new Money();
-        $priceValue  = SilvercartMoneyField::create('tmp')->prepareAmount($attributeValue->ModifyPriceValue);
+        $priceValue  = SilvercartMoneyField::create('tmp')->prepareAmount($attributeValue->FinalModifyPriceValue);
         if ($priceValue) {
-            if ($attributeValue->ModifyPriceAction == 'add') {
+            if ($attributeValue->FinalModifyPriceAction == 'add') {
                 $priceIsModified = true;
                 $totalPrice->setAmount($this->owner->getPrice()->getAmount() + $priceValue);
                 $addition->setAmount($priceValue);
-            } elseif ($attributeValue->ModifyPriceAction == 'subtract') {
+            } elseif ($attributeValue->FinalModifyPriceAction == 'subtract') {
                 $priceIsModified = true;
                 $totalPrice->setAmount($this->owner->getPrice()->getAmount() - $priceValue);
                 $addition->setAmount($priceValue * -1);
-            } elseif ($attributeValue->ModifyPriceAction == 'setTo') {
+            } elseif ($attributeValue->FinalModifyPriceAction == 'setTo') {
                 $priceIsModified = true;
                 $totalPrice->setAmount($priceValue);
                 $addition->setAmount($priceValue - $this->owner->getPrice()->getAmount());
