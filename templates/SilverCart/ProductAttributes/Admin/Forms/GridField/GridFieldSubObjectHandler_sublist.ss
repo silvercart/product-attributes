@@ -4,11 +4,11 @@
     <table>
         <thead>
             <tr>
-                <td>Wert</td>
-                <td>Anpassung Artikeltitel</td>
-                <td>Anpassung Artikelpreis</td>
-                <td>Anpassung Artikelnummer</td>
-                <td>Aktionen</td>
+                <td><%t SilverCart\ProductAttributes\Model\Product\ProductAttributeValue.DefaultModifyValue 'Value' %></td>
+                <td><%t SilverCart\ProductAttributes\Model\Product\ProductAttributeValue.ModifyTitle 'Modify product title' %></td>
+                <td><%t SilverCart\ProductAttributes\Model\Product\ProductAttributeValue.ModifyPrice 'Modify product price' %></td>
+                <td><%t SilverCart\ProductAttributes\Model\Product\ProductAttributeValue.ModifyProductNumber 'Modify product number' %></td>
+                <td><%t SilverCart\ProductAttributes\Model\Product\ProductAttributeValue.DefaultModifyAction 'Action' %></td>
             </tr>
         </thead>
         <tbody>
@@ -17,28 +17,31 @@
                 <td class="title">{$Title}</td>
                 <td>
                     <select name="subItem[variantModification][{$ID}][Title][action]">
-                        <option value="">- ohne -</option>
-                        <option value="setTo" <% if $ModifyTitleAction == 'setTo' %>selected<% end_if %> >Überschreiben</option>
-                        <option value="add" <% if $ModifyTitleAction == 'add' %>selected<% end_if %> >Anhängen</option>
+                        <option value=""><%t SilverCart\ProductAttributes\Model\Product\ProductAttributeValue.DefaultModifyActionNone '- none -' %></option>
+                        <option value="setTo" <% if $ModifyTitleAction == 'setTo' %>selected<% end_if %> ><%t SilverCart\ProductAttributes\Model\Product\ProductAttributeValue.DefaultModifyActionSetTo 'Set to' %></option>
+                        <option value="add" <% if $ModifyTitleAction == 'add' %>selected<% end_if %> ><%t SilverCart\ProductAttributes\Model\Product\ProductAttributeValue.DefaultModifyActionAdd 'Add' %></option>
                     </select>
                     <input type="text" value="{$ModifyTitleValue}" name="subItem[variantModification][{$ID}][Title][value]" />
+                    <% if $DefaultModifyTitle %>{$DefaultModifyTitleText}<% end_if %>
                 </td>
                 <td>
                     <select name="subItem[variantModification][{$ID}][Price][action]">
-                        <option value="">- ohne -</option>
-                        <option value="setTo" <% if $ModifyPriceAction == 'setTo' %>selected<% end_if %> >Überschreiben</option>
-                        <option value="add" <% if $ModifyPriceAction == 'add' %>selected<% end_if %> >Aufschlag</option>
-                        <option value="subtract" <% if $ModifyPriceAction == 'subtract' %>selected<% end_if %> >Abschlag</option>
+                        <option value=""><%t SilverCart\ProductAttributes\Model\Product\ProductAttributeValue.DefaultModifyActionNone '- none -' %></option>
+                        <option value="setTo" <% if $ModifyPriceAction == 'setTo' %>selected<% end_if %> ><%t SilverCart\ProductAttributes\Model\Product\ProductAttributeValue.DefaultModifyActionSetTo 'Set to' %></option>
+                        <option value="add" <% if $ModifyPriceAction == 'add' %>selected<% end_if %> ><%t SilverCart\ProductAttributes\Model\Product\ProductAttributeValue.DefaultModifyActionAdd 'Add' %></option>
+                        <option value="subtract" <% if $ModifyPriceAction == 'subtract' %>selected<% end_if %> ><%t SilverCart\ProductAttributes\Model\Product\ProductAttributeValue.DefaultModifyActionSubtract 'Subtract' %></option>
                     </select>
                     <input type="text" value="{$ModifyPriceValue}" name="subItem[variantModification][{$ID}][Price][value]" style="width: 50px;" />
+                    <% if $DefaultModifyPrice %>{$DefaultModifyPriceText}<% end_if %>
                 </td>
                 <td>
                     <select name="subItem[variantModification][{$ID}][ProductNumber][action]">
-                        <option value="">- ohne -</option>
-                        <option value="setTo" <% if $ModifyProductNumberAction == 'setTo' %>selected<% end_if %> >Überschreiben</option>
-                        <option value="add" <% if $ModifyProductNumberAction == 'add' %>selected<% end_if %> >Anhängen</option>
+                        <option value=""><%t SilverCart\ProductAttributes\Model\Product\ProductAttributeValue.DefaultModifyActionNone '- none -' %></option>
+                        <option value="setTo" <% if $ModifyProductNumberAction == 'setTo' %>selected<% end_if %> ><%t SilverCart\ProductAttributes\Model\Product\ProductAttributeValue.DefaultModifyActionSetTo 'Set to' %></option>
+                        <option value="add" <% if $ModifyProductNumberAction == 'add' %>selected<% end_if %> ><%t SilverCart\ProductAttributes\Model\Product\ProductAttributeValue.DefaultModifyActionAdd 'Add' %></option>
                     </select>
                     <input type="text" value="{$ModifyProductNumberValue}" name="subItem[variantModification][{$ID}][ProductNumber][value]" />
+                    <% if $DefaultModifyProductNumber %>{$DefaultModifyProductNumberText}<% end_if %>
                 </td>
                 <td>
                 <% if $SubObjectHasIsActive %>

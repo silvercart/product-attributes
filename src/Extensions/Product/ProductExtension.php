@@ -810,9 +810,9 @@ class ProductExtension extends DataExtension {
                     $price->setAmount($product->getPrice()->getAmount());
                     $price->setCurrency($product->getPrice()->getCurrency());
                     $addition      = $product->getPrice()->Nice();
-                    $priceAmount   = MoneyField::create('tmp')->prepareAmount($attributedValue->ModifyPriceValue);
+                    $priceAmount   = MoneyField::create('tmp')->prepareAmount($attributedValue->FinalModifyPriceValue);
                     if ($priceAmount > 0) {
-                        switch ($attributedValue->ModifyPriceAction) {
+                        switch ($attributedValue->FinalModifyPriceAction) {
                             case 'add':
                                 $priceIsModified = true;
                                 $price->setAmount($product->getPrice()->getAmount() + $priceAmount);
@@ -933,27 +933,33 @@ class ProductExtension extends DataExtension {
         $priceString = '';
         $totalPrice  = DBMoney::create();
         $addition    = DBMoney::create();
-        $priceAmount = MoneyField::create('tmp')->prepareAmount($attributeValue->ModifyPriceValue);
+        $priceAmount = MoneyField::create('tmp')->prepareAmount($attributeValue->FinalModifyPriceValue);
         if ($priceAmount > 0) {
-            if ($attributeValue->ModifyPriceAction == 'add') {
-                $priceIsModified = true;
-                $totalPrice->setAmount($this->owner->getPrice()->getAmount() + $priceAmount);
-                $addition->setAmount($priceAmount);
-            } elseif ($attributeValue->ModifyPriceAction == 'subtract') {
-                $priceIsModified = true;
-                $totalPrice->setAmount($this->owner->getPrice()->getAmount() - $priceAmount);
-                $addition->setAmount($priceAmount * -1);
-            } elseif ($attributeValue->ModifyPriceAction == 'setTo') {
-                $priceIsModified = true;
-                $totalPrice->setAmount($priceAmount);
-                $addition->setAmount($priceAmount - $this->owner->getPrice()->getAmount());
+            switch ($attributeValue->FinalModifyPriceAction) {
+                case 'add':
+                    $priceIsModified = true;
+                    $totalPrice->setAmount($this->owner->getPrice()->getAmount() + $priceAmount);
+                    $addition->setAmount($priceAmount);
+                    break;
+                case 'subtract':
+                    $priceIsModified = true;
+                    $totalPrice->setAmount($this->owner->getPrice()->getAmount() - $priceAmount);
+                    $addition->setAmount($priceAmount * -1);
+                    break;
+                case 'setTo':
+                    $priceIsModified = true;
+                    $totalPrice->setAmount($priceAmount);
+                    $addition->setAmount($priceAmount - $this->owner->getPrice()->getAmount());
+                    break;
+                default:
+                    break;
             }
         }
         if ($returnAsAddition) {
             if ($addition->getAmount() != 0) {
                 $sign = '+';
                 if ($addition->getAmount() < 0) {
-                    $sign = '-';
+                    $sign = '';
                 }
                 $priceString = ' (' . $sign . $addition->Nice() . ')';
             }

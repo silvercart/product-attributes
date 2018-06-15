@@ -3,6 +3,8 @@
 namespace SilverCart\ProductAttributes\Model\Product;
 
 use SilverCart\Dev\Tools;
+use SilverCart\Admin\Forms\AlertField;
+use SilverCart\Forms\FormFields\FieldGroup;
 use SilverCart\Model\Product\Image as SilverCartImage;
 use SilverCart\Model\Product\Product;
 use SilverCart\ORM\DataObjectExtension;
@@ -23,7 +25,21 @@ use SilverStripe\ORM\Filters\PartialMatchFilter;
  * @license see license file in modules root directory
  */
 class ProductAttributeValue extends DataObject {
-
+    
+    /**
+     * DB attributes
+     *
+     * @var array
+     */
+    private static $db = [
+        'DefaultModifyTitleAction'         => 'Enum(",add,setTo",null)',
+        'DefaultModifyTitleValue'          => 'Varchar(256)',
+        'DefaultModifyPriceAction'         => 'Enum(",add,subtract,setTo",null)',
+        'DefaultModifyPriceValue'          => 'Varchar(10)',
+        'DefaultModifyProductNumberAction' => 'Enum(",add,setTo",null)',
+        'DefaultModifyProductNumberValue'  => 'Varchar(50)',
+    ];
+    
     /**
      * has-one relations
      *
@@ -58,7 +74,13 @@ class ProductAttributeValue extends DataObject {
      * @var array
      */
     private static $casting = [
-        'Title' => 'Text',
+        'Title'                          => 'Text',
+        'FinalModifyTitleAction'         => 'Text',
+        'FinalModifyTitleValue'          => 'Text',
+        'FinalModifyPriceAction'         => 'Text',
+        'FinalModifyPriceValue'          => 'Text',
+        'FinalModifyProductNumberAction' => 'Text',
+        'FinalModifyProductNumberValue'  => 'Text',
     ];
 
     /**
@@ -117,11 +139,35 @@ class ProductAttributeValue extends DataObject {
             parent::fieldLabels($includerelations),
             Tools::field_labels_for(static::class),
             [
-                'Title'                             => _t(static::class . '.TITLE', 'Title'),
-                'ProductAttributeValueTranslations' => ProductAttributeValueTranslation::singleton()->plural_name(),
-                'ProductAttribute'                  => ProductAttribute::singleton()->singular_name(),
-                'Products'                          => Product::singleton()->plural_name(),
-                'Image'                             => SilverCartImage::singleton()->singular_name(),
+                'Title'                                 => _t(static::class . '.TITLE', 'Title'),
+                'ProductAttributeValueTranslations'     => ProductAttributeValueTranslation::singleton()->plural_name(),
+                'ProductAttribute'                      => ProductAttribute::singleton()->singular_name(),
+                'Products'                              => Product::singleton()->plural_name(),
+                'Image'                                 => SilverCartImage::singleton()->singular_name(),
+                'Default'                               => _t(static::class . '.Default', "default"),
+                'DefaultModifyDesc'                     => _t(static::class . '.DefaultModifyDesc', "Will be used as default for related products. Can be overwritten individually for each product."),
+                'DefaultModifyAction'                   => _t(static::class . '.DefaultModifyAction', "Action"),
+                'DefaultModifyActionNone'               => _t(static::class . '.DefaultModifyActionNone', "-none-"),
+                'DefaultModifyValue'                    => _t(static::class . '.DefaultModifyValue', "Value"),
+                'DefaultModifyPrice'                    => _t(static::class . '.DefaultModifyPrice', "Default product price modification"),
+                'DefaultModifyPriceAction'              => _t(static::class . '.DefaultModifyAction', "Action"),
+                'DefaultModifyPriceActionAdd'           => _t(static::class . '.DefaultModifyActionAdd', "Add"),
+                'DefaultModifyPriceActionSetTo'         => _t(static::class . '.DefaultModifyActionSetTo', "Set to"),
+                'DefaultModifyPriceActionSubtract'      => _t(static::class . '.DefaultModifyActionSubtract', "Subtract"),
+                'DefaultModifyPriceValue'               => _t(static::class . '.DefaultModifyValue', "Value"),
+                'DefaultModifyProductNumber'            => _t(static::class . '.DefaultModifyProductNumber', "Default product number modification"),
+                'DefaultModifyProductNumberAction'      => _t(static::class . '.DefaultModifyAction', "Action"),
+                'DefaultModifyProductNumberActionAdd'   => _t(static::class . '.DefaultModifyActionAdd', "Add"),
+                'DefaultModifyProductNumberActionSetTo' => _t(static::class . '.DefaultModifyActionSetTo', "Set to"),
+                'DefaultModifyProductNumberValue'       => _t(static::class . '.DefaultModifyValue', "Value"),
+                'DefaultModifyTitle'                    => _t(static::class . '.DefaultModifyTitle', "Default product title modification"),
+                'DefaultModifyTitleAction'              => _t(static::class . '.DefaultModifyAction', "Action"),
+                'DefaultModifyTitleActionAdd'           => _t(static::class . '.DefaultModifyActionAdd', "Add"),
+                'DefaultModifyTitleActionSetTo'         => _t(static::class . '.DefaultModifyActionSetTo', "Set to"),
+                'DefaultModifyTitleValue'               => _t(static::class . '.DefaultModifyValue', "Value"),
+                'ModifyPrice'                           => _t(static::class . '.ModifyPrice', "Modify product price"),
+                'ModifyProductNumber'                   => _t(static::class . '.ModifyProductNumber', "Modify product number"),
+                'ModifyTitle'                           => _t(static::class . '.ModifyTitle', "Modify product title"),
             ]
         );
 
@@ -136,6 +182,47 @@ class ProductAttributeValue extends DataObject {
      */
     public function getCMSFields() {
         $fields = DataObjectExtension::getCMSFields($this);
+        if ($this->ProductAttribute()->CanBeUsedForSingleVariants) {
+            $fields->dataFieldByName('DefaultModifyPriceValue')->setRightTitle($this->fieldLabel('DefaultModifyDesc'));
+            $fields->dataFieldByName('DefaultModifyProductNumberValue')->setRightTitle($this->fieldLabel('DefaultModifyDesc'));
+            $fields->dataFieldByName('DefaultModifyTitleValue')->setRightTitle($this->fieldLabel('DefaultModifyDesc'));
+            
+            $fields->dataFieldByName('DefaultModifyPriceAction')->setHasEmptyDefault(true);
+            $fields->dataFieldByName('DefaultModifyPriceAction')->setEmptyString($this->fieldLabel('DefaultModifyActionNone'));
+            $fields->dataFieldByName('DefaultModifyPriceAction')->setSource(Tools::enum_i18n_labels($this, 'DefaultModifyPriceAction', $this->fieldLabel('DefaultModifyActionNone')));
+            $fields->dataFieldByName('DefaultModifyProductNumberAction')->setHasEmptyDefault(true);
+            $fields->dataFieldByName('DefaultModifyProductNumberAction')->setEmptyString($this->fieldLabel('DefaultModifyActionNone'));
+            $fields->dataFieldByName('DefaultModifyProductNumberAction')->setSource(Tools::enum_i18n_labels($this, 'DefaultModifyProductNumberAction', $this->fieldLabel('DefaultModifyActionNone')));
+            $fields->dataFieldByName('DefaultModifyTitleAction')->setHasEmptyDefault(true);
+            $fields->dataFieldByName('DefaultModifyTitleAction')->setEmptyString($this->fieldLabel('DefaultModifyActionNone'));
+            $fields->dataFieldByName('DefaultModifyTitleAction')->setSource(Tools::enum_i18n_labels($this, 'DefaultModifyTitleAction', $this->fieldLabel('DefaultModifyActionNone')));
+            
+            $priceField = FieldGroup::create('DefaultModifyPrice', $this->fieldLabel('DefaultModifyPrice'), $fields);
+            $priceField->push($fields->dataFieldByName('DefaultModifyPriceAction'));
+            $priceField->push($fields->dataFieldByName('DefaultModifyPriceValue'));
+            $priceField->breakAndPush(AlertField::create('DefaultModifyPriceDesc', $this->fieldLabel('DefaultModifyDesc')));
+            
+            $productNumberField = FieldGroup::create('DefaultModifyProductNumber', $this->fieldLabel('DefaultModifyProductNumber'), $fields);
+            $productNumberField->push($fields->dataFieldByName('DefaultModifyProductNumberAction'));
+            $productNumberField->push($fields->dataFieldByName('DefaultModifyProductNumberValue'));
+            $productNumberField->breakAndPush(AlertField::create('DefaultModifyProductNumberDesc', $this->fieldLabel('DefaultModifyDesc')));
+            
+            $titleField = FieldGroup::create('DefaultModifyTitle', $this->fieldLabel('DefaultModifyTitle'), $fields);
+            $titleField->push($fields->dataFieldByName('DefaultModifyTitleAction'));
+            $titleField->push($fields->dataFieldByName('DefaultModifyTitleValue'));
+            $titleField->breakAndPush(AlertField::create('DefaultModifyTitleDesc', $this->fieldLabel('DefaultModifyDesc')));
+            
+            $fields->addFieldToTab('Root.Main', $priceField);
+            $fields->addFieldToTab('Root.Main', $productNumberField);
+            $fields->addFieldToTab('Root.Main', $titleField);
+        } else {
+            $fields->removeByName('DefaultModifyPriceAction');
+            $fields->removeByName('DefaultModifyPriceValue');
+            $fields->removeByName('DefaultModifyProductNumberAction');
+            $fields->removeByName('DefaultModifyProductNumberValue');
+            $fields->removeByName('DefaultModifyTitleAction');
+            $fields->removeByName('DefaultModifyTitleValue');
+        }
         return $fields;
     }
 
@@ -232,6 +319,202 @@ class ProductAttributeValue extends DataObject {
      */
     public function SubObjectHasIsDefault() {
         return true;
+    }
+    
+    /**
+     * Returns the abbreviation for the given action.
+     * 
+     * @param string $action Action
+     * 
+     * @return string
+     */
+    public function getActionAbbreviation($action) {
+        $abbr = '';
+        switch ($action) {
+            case 'add':
+                $abbr = '+';
+                break;
+            case 'setTo':
+                $abbr = '=';
+                break;
+            case 'subtract':
+                $abbr = '-';
+                break;
+            default:
+                break;
+        }
+        return $abbr;
+    }
+    
+    /**
+     * Returns the default modification text.
+     * 
+     * @param string $action Action
+     * 
+     * @return string
+     */
+    public function getDefaultModificationText($text, $action) {
+        $defaultText = '(' . $this->fieldLabel('Default') . ': ' . $this->getActionAbbreviation($action) . $text . ')';
+        return $defaultText;
+    }
+    
+    /**
+     * Returns whether the title has a default modification or not.
+     * 
+     * @return bool
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 14.06.2018
+     */
+    public function DefaultModifyTitle() {
+        return !empty($this->DefaultModifyTitleAction) && !empty($this->DefaultModifyTitleValue);
+    }
+    
+    /**
+     * Returns the default title modification.
+     * 
+     * @return string
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 14.06.2018
+     */
+    public function DefaultModifyTitleText() {
+        $text = '';
+        if ($this->DefaultModifyTitle()) {
+            $text = $this->getDefaultModificationText($this->DefaultModifyTitleValue, $this->DefaultModifyTitleAction);
+        }
+        return $text;
+    }
+    
+    /**
+     * Returns whether the price has a default modification or not.
+     * 
+     * @return bool
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 14.06.2018
+     */
+    public function DefaultModifyPrice() {
+        return !empty($this->DefaultModifyPriceAction) && !empty($this->DefaultModifyPriceValue);
+    }
+    
+    /**
+     * Returns the default price modification.
+     * 
+     * @return string
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 14.06.2018
+     */
+    public function DefaultModifyPriceText() {
+        $text = '';
+        if ($this->DefaultModifyPrice()) {
+            $text = $this->getDefaultModificationText($this->DefaultModifyPriceValue, $this->DefaultModifyPriceAction);
+        }
+        return $text;
+    }
+    
+    /**
+     * Returns whether the product number has a default modification or not.
+     * 
+     * @return bool
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 14.06.2018
+     */
+    public function DefaultModifyProductNumber() {
+        return !empty($this->DefaultModifyProductNumberAction) && !empty($this->DefaultModifyProductNumberValue);
+    }
+    
+    /**
+     * Returns the default product number modification.
+     * 
+     * @return string
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 14.06.2018
+     */
+    public function DefaultModifyProductNumberText() {
+        $text = '';
+        if ($this->DefaultModifyProductNumber()) {
+            $text = $this->getDefaultModificationText($this->DefaultModifyProductNumberValue, $this->DefaultModifyProductNumberAction);
+        }
+        return $text;
+    }
+    
+    /**
+     * Returns the final price modification action.
+     * 
+     * @return string
+     */
+    public function getFinalModifyPriceAction() {
+        if (!empty($this->ModifyPriceAction)) {
+            return $this->ModifyPriceAction;
+        }
+        return $this->DefaultModifyPriceAction;
+    }
+    
+    /**
+     * Returns the final price modification value.
+     * 
+     * @return string
+     */
+    public function getFinalModifyPriceValue() {
+        if (!empty($this->ModifyPriceValue) &&
+            !empty($this->ModifyPriceAction)) {
+            return $this->ModifyPriceValue;
+        }
+        return $this->DefaultModifyPriceValue;
+    }
+    
+    /**
+     * Returns the final product number modification action.
+     * 
+     * @return string
+     */
+    public function getFinalModifyProductNumberAction() {
+        if (!empty($this->ModifyProductNumberAction)) {
+            return $this->ModifyProductNumberAction;
+        }
+        return $this->DefaultModifyProductNumberAction;
+    }
+    
+    /**
+     * Returns the final product number modification value.
+     * 
+     * @return string
+     */
+    public function getFinalModifyProductNumberValue() {
+        if (!empty($this->ModifyProductNumberValue) &&
+            !empty($this->ModifyProductNumberAction)) {
+            return $this->ModifyProductNumberValue;
+        }
+        return $this->DefaultModifyProductNumberValue;
+    }
+    
+    /**
+     * Returns the final title modification action.
+     * 
+     * @return string
+     */
+    public function getFinalModifyTitleAction() {
+        if (!empty($this->ModifyTitleAction)) {
+            return $this->ModifyTitleAction;
+        }
+        return $this->DefaultModifyTitleAction;
+    }
+    
+    /**
+     * Returns the final title modification value.
+     * 
+     * @return string
+     */
+    public function getFinalModifyTitleValue() {
+        if (!empty($this->ModifyTitleValue) &&
+            !empty($this->ModifyTitleAction)) {
+            return $this->ModifyTitleValue;
+        }
+        return $this->DefaultModifyTitleValue;
     }
     
 }
