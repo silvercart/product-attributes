@@ -792,57 +792,19 @@ class ProductExtension extends DataExtension {
 
                 $attributedValues = $product->ProductAttributeValues()->filter('ProductAttributeID', $attribute->ID);
                 if ($attributedValues->exists()) {
-                    $selectedAttributeValue = $attributedValues->filter('IsDefault', true);
-                    if (!($selectedAttributeValue instanceof ProductAttributeValue)) {
-                        $selectedAttributeValue = $attributedValues->first();
+                    $selectedAttributeValue = $attributedValues->filter('IsDefault', true)->first();
+                    if ($selectedAttributeValue instanceof ProductAttributeValue) {
+                        $selectedValue = $selectedAttributeValue->ID;
                     }
-                    $selectedValue = $selectedAttributeValue->ID;
                 }
                 $attributedValues->sort('Title');
-
-                $priceIsModified = false;
                 foreach ($attributedValues as $attributedValue) {
                     if (!$attributedValue->IsActive) {
                         continue;
                     }
-                    $attributeName = $attributedValue->Title;
-                    $price         = new DBMoney();
-                    $price->setAmount($product->getPrice()->getAmount());
-                    $price->setCurrency($product->getPrice()->getCurrency());
-                    $addition      = $product->getPrice()->Nice();
-                    $priceAmount   = MoneyField::create('tmp')->prepareAmount($attributedValue->FinalModifyPriceValue);
-                    if ($priceAmount > 0) {
-                        switch ($attributedValue->FinalModifyPriceAction) {
-                            case 'add':
-                                $priceIsModified = true;
-                                $price->setAmount($product->getPrice()->getAmount() + $priceAmount);
-                                $addition = $price->Nice();
-                                break;
-                            case 'subtract':
-                                $priceIsModified = true;
-                                $price->setAmount($product->getPrice()->getAmount() - $priceAmount);
-                                $addition = $price->Nice();
-                                break;
-                            case 'setTo':
-                                $priceIsModified = true;
-                                $price->setAmount($priceAmount);
-                                $addition = $price->Nice();
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-
-                    $plainValues[$attributedValue->ID] = $attributeName;
-                    if (!empty($addition)) {
-                        $attributeName .= ' (' . $addition . ')';
-                    }
+                    $attributeName  = $attributedValue->Title;
+                    $attributeName .= $this->getVariantPriceStringIfDifferent($attributedValue, $prices, true);
                     $values[$attributedValue->ID] = $attributeName;
-                    $prices[$attributedValue->ID] = $price->Nice();
-                }
-                if (!$priceIsModified) {
-                    $values = $plainValues;
-                    $prices = [];
                 }
 
                 if (count($values) > 0) {
