@@ -6,8 +6,8 @@
         <col width="80%" />
     </colgroup>
     <tr>
-        <th>{$fieldLabel(ProductAttribute)}</th>
-        <th>{$fieldLabel(ProductAttributeValue)}</th>
+        <th>{$fieldLabel('ProductAttribute')}</th>
+        <th>{$fieldLabel('ProductAttributeValue')}</th>
     </tr>
     <% loop $AttributesWithValues %>
     <tr class="{$EvenOdd}">
