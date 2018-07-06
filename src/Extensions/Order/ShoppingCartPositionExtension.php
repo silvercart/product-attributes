@@ -65,8 +65,10 @@ class ShoppingCartPositionExtension extends DataExtension {
                     unset($attributesArray[$ID]);
                 }
             }
-            $attributeValues = ProductAttributeValue::get()
-                ->where('"' . ProductAttributeValue::config()->get('table_name') . '"."ID" IN (' . implode(',', $attributesArray) . ')');
+            if (count($attributesArray) > 0) {
+                $attributeValues = ProductAttributeValue::get()
+                    ->where('"' . ProductAttributeValue::config()->get('table_name') . '"."ID" IN (' . implode(',', $attributesArray) . ')');
+            }
         }
         return $attributeValues;
     }
