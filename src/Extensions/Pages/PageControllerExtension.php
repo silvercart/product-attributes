@@ -18,19 +18,24 @@ use SilverStripe\View\Requirements;
 class PageControllerExtension extends Extension {
     
     /**
-     * Updates the default JS files.
+     * Adds some JS files.
      * 
      * @param array &$jsFiles JS files
      * 
      * @return void
      *
      * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
+     * @since 10.07.2018
      */
-    public function updatedJSRequirements(&$jsFiles) {
-        $jsFiles[] = 'silvercart/product-attributes:client/js/ProductAttribute.js';
-        $jsFiles[] = 'silvercart/product-attributes:client/js/ProductAttributeFilterWidget.js';
-        $jsFiles[] = 'silvercart/product-attributes:client/js/ProductAttributeDropdownField.js';
+    public function updateRequireExtendedJavaScript(&$jsFiles) {
+        $jsFiles = array_merge(
+            $jsFiles,
+            [
+                'silvercart/product-attributes:client/js/ProductAttribute.js',
+                'silvercart/product-attributes:client/js/ProductAttributeFilterWidget.js',
+                'silvercart/product-attributes:client/js/ProductAttributeDropdownField.js',
+            ]
+        );
     }
     
     /**
@@ -39,7 +44,7 @@ class PageControllerExtension extends Extension {
      * @return void
      *
      * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
+     * @since 10.07.2018
      */
     public function onAfterInit() {
         Requirements::themedCss('client/css/ProductAttribute');
