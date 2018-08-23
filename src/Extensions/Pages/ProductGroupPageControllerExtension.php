@@ -22,8 +22,8 @@ use SilverStripe\View\ArrayData;
  * @license see license file in modules root directory
  * @copyright 2018 pixeltricks GmbH
  */
-class ProductGroupPageControllerExtension extends Extension {
-    
+class ProductGroupPageControllerExtension extends Extension
+{
     use \SilverCart\ProductAttributes\Control\PriceRangeController;
     
     const SESSION_KEY_FILTER_PLUGIN = 'SilverCart.ProductAttributeFilterPlugin';
@@ -35,28 +35,24 @@ class ProductGroupPageControllerExtension extends Extension {
      * @var bool
      */
     protected $filterEnabled = true;
-    
     /**
      * Is filter disabled permanently?
      *
      * @var bool
      */
     protected $filterDisabledPermanently = false;
-
     /**
      * Filter values.
      *
      * @var array 
      */
     protected $filterValues = null;
-    
     /**
      * Context widget
      *
      * @var ProductAttributeFilterWidget
      */
     protected $widget = null;
-
     /**
      * List of allowed actions.
      *
@@ -78,38 +74,27 @@ class ProductGroupPageControllerExtension extends Extension {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
-    public function onBeforeInit() {
+    public function onBeforeInit()
+    {
         $request    = $this->owner->getRequest();
         $allParams  = $request->allParams();
         $action     = $allParams['Action'];
         $widget     = $this->getProductAttributeFilterWidget($this->getPreviousSessionKey());
-        if ($widget instanceof ProductAttributeFilterWidget &&
-            !$widget->RememberFilter &&
-            $this->getSessionKey() != $this->getPreviousSessionKey()) {
+        if ($widget instanceof ProductAttributeFilterWidget
+            && !$widget->RememberFilter
+            && $this->getSessionKey() != $this->getPreviousSessionKey()
+        ) {
             $this->clearFilter($this->getPreviousSessionKey());
             $this->clearFilter($this->getSessionKey());
         }
         $this->setPreviousSessionKey($this->getSessionKey());
-        if ($action == 'ProductAttributeFilter' &&
-            $this->owner->getRequest()->isPOST()) {
+        if ($action == 'ProductAttributeFilter'
+            && $this->owner->getRequest()->isPOST()
+        ) {
             $this->initProductAttributeFilter($request);
         }
         
         $this->initPriceFilterFromRequest($request);
-    }
-    
-    /**
-     * Adds a hash of the filter values to the product group cache key
-     * 
-     * @param array &$cacheKeyParts Cache key parts to update
-     * 
-     * @return void
-     *
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 23.11.2012
-     */
-    public function updateCacheKeyParts(&$cacheKeyParts) {
-        $cacheKeyParts[] = sha1(implode('-', $this->getFilterValues()));;
     }
 
     /**
@@ -122,7 +107,8 @@ class ProductGroupPageControllerExtension extends Extension {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
-    public function initProductAttributeFilter(HTTPRequest $request) {
+    public function initProductAttributeFilter(HTTPRequest $request)
+    {
         $widgetID            = $request->postVar('silvercart-product-attribute-widget');
         $widget              = ProductAttributeFilterWidget::get()->byID($widgetID);
         $selectedValues      = $request->postVar('silvercart-product-attribute-selected-values');
@@ -141,7 +127,8 @@ class ProductGroupPageControllerExtension extends Extension {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
-    public function ProductAttributeFilter(HTTPRequest $request) {
+    public function ProductAttributeFilter(HTTPRequest $request)
+    {
         if (Director::is_ajax()) {
             return $this->owner->renderWith(str_replace('Pages', 'Pages\Layout', $this->owner->data()->ClassName));
         } else {
@@ -159,7 +146,8 @@ class ProductGroupPageControllerExtension extends Extension {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
-    public function ClearProductAttributeFilter(HTTPRequest $request) {
+    public function ClearProductAttributeFilter(HTTPRequest $request)
+    {
         $this->clearFilter($this->getSessionKey());
     }
     
@@ -173,7 +161,8 @@ class ProductGroupPageControllerExtension extends Extension {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
-    public function LoadVariant(HTTPRequest $request) {
+    public function LoadVariant(HTTPRequest $request)
+    {
         $owner      = $this->owner;
         $redirectTo = $owner->Link();
         if ($owner->isProductDetailView()) {
@@ -181,8 +170,9 @@ class ProductGroupPageControllerExtension extends Extension {
             $variantAttributes = $request->postVar('ProductAttributeValue');
             if (is_array($variantAttributes)) {
                 foreach ($variantAttributes as $key => $value) {
-                    if (empty($value) ||
-                        !is_numeric($value)) {
+                    if (empty($value)
+                        || !is_numeric($value)
+                    ) {
                         unset($variantAttributes[$key]);
                     }
                 }
@@ -204,7 +194,8 @@ class ProductGroupPageControllerExtension extends Extension {
      * 
      * @return DataList
      */
-    public function getUnfilteredProducts($numberOfProducts = false, $sort = false, $disableLimit = false) {
+    public function getUnfilteredProducts($numberOfProducts = false, $sort = false, $disableLimit = false)
+    {
         $this->disableFilter();
         $products = $this->owner->getProducts($numberOfProducts, $sort, $disableLimit);
         $this->enableFilter();
@@ -216,7 +207,8 @@ class ProductGroupPageControllerExtension extends Extension {
      * 
      * @return array
      */
-    public function getFilterValues() {
+    public function getFilterValues()
+    {
         if (is_null($this->filterValues)) {
             $filterValues = Tools::Session()->get(static::SESSION_KEY_FILTER_PLUGIN . '.' . $this->getSessionKey());
             $this->setFilterValues($filterValues);
@@ -231,11 +223,13 @@ class ProductGroupPageControllerExtension extends Extension {
      * 
      * @return void
      */
-    public function setFilterValues($filterValues) {
+    public function setFilterValues($filterValues)
+    {
         $uniqueFilterValues = array_unique((array) $filterValues);
-        if (count($uniqueFilterValues) == 1 &&
-            array_key_exists(0, $uniqueFilterValues) &&
-            empty($uniqueFilterValues[0])) {
+        if (count($uniqueFilterValues) == 1
+            && array_key_exists(0, $uniqueFilterValues)
+            && empty($uniqueFilterValues[0])
+        ) {
             $uniqueFilterValues = [];
         }
         Tools::Session()->set(static::SESSION_KEY_FILTER_PLUGIN . '.' . $this->getSessionKey(), $uniqueFilterValues);
@@ -253,7 +247,8 @@ class ProductGroupPageControllerExtension extends Extension {
      *
      * @return ProductAttributeFilterWidget 
      */
-    public function getProductAttributeFilterWidget($sessionKey = null) {
+    public function getProductAttributeFilterWidget($sessionKey = null)
+    {
         if (is_null($sessionKey)) {
             $sessionKey = $this->getSessionKey();
         }
@@ -272,7 +267,8 @@ class ProductGroupPageControllerExtension extends Extension {
      * 
      * @return void
      */
-    public function setProductAttributeFilterWidget($widget) {
+    public function setProductAttributeFilterWidget($widget)
+    {
         $widgetID = 0;
         if ($widget instanceof ProductAttributeFilterWidget) {
             $widgetID = $widget->ID;
@@ -292,11 +288,13 @@ class ProductGroupPageControllerExtension extends Extension {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 13.03.2012 
      */
-    public function isFilterValue($value) {
+    public function isFilterValue($value)
+    {
         $isFilterValue  = false;
         $filterValues   = $this->getFilterValues();
-        if (is_array($filterValues) &&
-            in_array($value->ID, $filterValues)) {
+        if (is_array($filterValues)
+            && in_array($value->ID, $filterValues)
+        ) {
             $isFilterValue = true;
         }
         return $isFilterValue;
@@ -307,7 +305,8 @@ class ProductGroupPageControllerExtension extends Extension {
      *
      * @return string
      */
-    public function getFilterValueList() {
+    public function getFilterValueList()
+    {
         $FilterValueList = '';
         if (is_array($this->getFilterValues())) {
             $FilterValueList = implode(',', $this->getFilterValues());
@@ -320,12 +319,13 @@ class ProductGroupPageControllerExtension extends Extension {
      *
      * @return ArrayList
      */
-    public function getFilterValueArrayList() {
-        $filterValueArrayList = new ArrayList();
+    public function getFilterValueArrayList()
+    {
+        $filterValueArrayList = ArrayList::create();
         if (is_array($this->getFilterValues())) {
             foreach ($this->getFilterValues() as $filterValue) {
                 $filterValueArrayList->push(
-                        new ArrayData(['ID' => $filterValue])
+                        ArrayData::create(['ID' => $filterValue])
                 );
             }
         }
@@ -340,7 +340,8 @@ class ProductGroupPageControllerExtension extends Extension {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 13.03.2012 
      */
-    public function enableFilter() {
+    public function enableFilter()
+    {
         if (!$this->permanentlyDisableFilter()) {
             $this->filterEnabled = true;
         }
@@ -354,7 +355,8 @@ class ProductGroupPageControllerExtension extends Extension {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 13.03.2012 
      */
-    public function disableFilter() {
+    public function disableFilter()
+    {
         $this->filterEnabled = false;
     }
     
@@ -366,7 +368,8 @@ class ProductGroupPageControllerExtension extends Extension {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 13.03.2012 
      */
-    public function filterEnabled() {
+    public function filterEnabled()
+    {
         return $this->filterEnabled;
     }
     
@@ -378,7 +381,8 @@ class ProductGroupPageControllerExtension extends Extension {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 28.03.2012 
      */
-    public function filterPermanentlyDisabled() {
+    public function filterPermanentlyDisabled()
+    {
         return $this->filterDisabledPermanently;
     }
     
@@ -390,7 +394,8 @@ class ProductGroupPageControllerExtension extends Extension {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 28.03.2012 
      */
-    public function permanentlyDisableFilter() {
+    public function permanentlyDisableFilter()
+    {
         $this->filterDisabledPermanently = true;
         $this->disableFilter();
     }
@@ -405,7 +410,8 @@ class ProductGroupPageControllerExtension extends Extension {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
-    public function clearFilter($sessionKey) {
+    public function clearFilter($sessionKey)
+    {
         Tools::Session()->clear(static::SESSION_KEY_FILTER_PLUGIN . '.' . $sessionKey);
         Tools::saveSession();
     }
@@ -415,7 +421,8 @@ class ProductGroupPageControllerExtension extends Extension {
      *
      * @return string 
      */
-    public function getSessionKey() {
+    public function getSessionKey()
+    {
         $sessionKey = $this->owner->ID;
         if ($this->owner instanceof SearchResultsPageController) {
             $searchQuery = Convert::raw2sql(Tools::Session()->get(SearchResultsPageController::SESSION_KEY_SEARCH_QUERY));
@@ -429,7 +436,8 @@ class ProductGroupPageControllerExtension extends Extension {
      *
      * @return string
      */
-    public function getPreviousSessionKey() {
+    public function getPreviousSessionKey()
+    {
         $previousSessionKey = Tools::Session()->get(static::SESSION_KEY_FILTER_WIDGET . '.PreviousSessionKey');
         return $previousSessionKey;
     }
@@ -441,7 +449,8 @@ class ProductGroupPageControllerExtension extends Extension {
      * 
      * @return void
      */
-    public function setPreviousSessionKey($previousSessionKey) {
+    public function setPreviousSessionKey($previousSessionKey)
+    {
         Tools::Session()->set(static::SESSION_KEY_FILTER_WIDGET . '.PreviousSessionKey', $previousSessionKey);
         Tools::saveSession();
     }

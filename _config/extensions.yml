@@ -16,6 +16,9 @@ SilverCart\Model\Order\ShoppingCartPosition:
 SilverCart\Model\Pages\PageController:
   extensions:
     - SilverCart\ProductAttributes\Extensions\Pages\PageControllerExtension
+SilverCart\Model\Pages\ProductGroupPage:
+  extensions:
+    - SilverCart\ProductAttributes\Extensions\Pages\ProductGroupPageExtension
 SilverCart\Model\Pages\ProductGroupPageController:
   extensions:
     - SilverCart\ProductAttributes\Extensions\Pages\ProductGroupPageControllerExtension
