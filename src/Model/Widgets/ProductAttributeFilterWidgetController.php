@@ -122,10 +122,7 @@ class ProductAttributeFilterWidgetController extends WidgetController {
                             $values = $attributeValues->filter('ProductAttributeID', $attribute->ID);
                             if ($values->count() > 0) {
                                 $attribute->assignValues($values);
-                                if (!(!$attribute->hasAssignedValues() ||
-                                      ($attribute->getAssignedValues()->count() == 1 &&
-                                      !$attribute->getAssignedValues()->first()->IsFilterValue()))) {
-                                    
+                                if ($attribute->hasAssignedValues()) {
                                     $attributes->push($attribute);
                                 }
                             }
