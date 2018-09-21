@@ -124,6 +124,19 @@ $(function() {
         if ($(".silvercart-product-group-page-selectors")) {
             $(".silvercart-product-group-page-selectors input[type=submit]").hide();
         }
+        var filterForm   = $('form[name="silvercart-product-attribute-filter-form"]'),
+            mainSelector = filterForm.data('main-selector'),
+            filterList   = filterForm.data('filter-list');
+            if (typeof mainSelector !== "undefined") {
+                silvercart.attributes.filter.setMainSelector(mainSelector);
+            }
+            if (typeof filterList === "number") {
+                silvercart.attributes.filter.Push(filterList);
+            } else if (typeof filterList === "string") {
+                $(filterList.split(',')).each(function() {
+                    silvercart.attributes.filter.Push(parseInt(this));
+                });
+            }
     });
 
     var triggerFilter = function() {
