@@ -3,11 +3,11 @@
 namespace SilverCart\ProductAttributes\Extensions\Pages;
 
 use SilverCart\Dev\Tools;
+use SilverCart\Model\Pages\SearchResultsPage;
 use SilverCart\Model\Pages\SearchResultsPageController;
 use SilverCart\ProductAttributes\Model\Widgets\ProductAttributeFilterWidget;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
-use SilverStripe\Core\Convert;
 use SilverStripe\Core\Extension;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\View\ArrayData;
@@ -425,7 +425,7 @@ class ProductGroupPageControllerExtension extends Extension
     {
         $sessionKey = $this->owner->ID;
         if ($this->owner instanceof SearchResultsPageController) {
-            $searchQuery = Convert::raw2sql(Tools::Session()->get(SearchResultsPageController::SESSION_KEY_SEARCH_QUERY));
+            $searchQuery = SearchResultsPage::getCurrentSearchQuery();
             $sessionKey .= md5($searchQuery) . sha1($searchQuery);
         }
         return $sessionKey;
@@ -454,5 +454,4 @@ class ProductGroupPageControllerExtension extends Extension
         Tools::Session()->set(static::SESSION_KEY_FILTER_WIDGET . '.PreviousSessionKey', $previousSessionKey);
         Tools::saveSession();
     }
-    
 }

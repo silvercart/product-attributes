@@ -2,13 +2,13 @@
 
 namespace SilverCart\ProductAttributes\Model\Widgets;
 
-use SilverCart\Dev\Tools;
 use SilverCart\Model\Pages\ProductGroupPageController;
+use SilverCart\Model\Pages\SearchResultsPage;
 use SilverCart\Model\Pages\SearchResultsPageController;
 use SilverCart\Model\Widgets\WidgetController;
 use SilverCart\ProductAttributes\Forms\PriceRangeForm;
+use SilverStripe\CMS\Controllers\ContentController;
 use SilverStripe\Control\Controller;
-use SilverStripe\Core\Convert;
 
 /**
  * Provides a widget to filter a product list by a price range
@@ -20,8 +20,8 @@ use SilverStripe\Core\Convert;
  * @license see license file in modules root directory
  * @copyright 2018 pixeltricks GmbH
  */
-class PriceFilterWidgetController extends WidgetController {
-    
+class PriceFilterWidgetController extends WidgetController
+{
     use \SilverCart\ProductAttributes\Control\PriceRangeController;
     
     /**
@@ -32,7 +32,6 @@ class PriceFilterWidgetController extends WidgetController {
     private static $allowed_actions = [
         'PriceRangeForm',
     ];
-
     /**
      * Form action for filter form
      *
@@ -48,7 +47,8 @@ class PriceFilterWidgetController extends WidgetController {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
-    protected function init() {
+    protected function init()
+    {
         parent::init();
         $this->initPriceFilterFromRequest($this->getRequest());
     }
@@ -61,8 +61,9 @@ class PriceFilterWidgetController extends WidgetController {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
-    public function PriceRangeForm() {
-        $form = new PriceRangeForm($this);
+    public function PriceRangeForm()
+    {
+        $form = PriceRangeForm::create($this);
         return $form;
     }
 
@@ -74,11 +75,13 @@ class PriceFilterWidgetController extends WidgetController {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
-    public function Content() {
+    public function Content()
+    {
         $content = false;
-        if (Controller::curr() instanceof ProductGroupPageController &&
-            !Controller::curr()->isProductDetailView() &&
-            Controller::curr()->HasMoreProductsThan(0)) {
+        if (Controller::curr() instanceof ProductGroupPageController
+         && !Controller::curr()->isProductDetailView()
+         && Controller::curr()->HasMoreProductsThan(0)
+        ) {
             $content = parent::Content();
         }
         return $content;
@@ -89,7 +92,8 @@ class PriceFilterWidgetController extends WidgetController {
      *
      * @return string
      */
-    public function getFormAction() {
+    public function getFormAction()
+    {
         return $this->formAction;
     }
     
@@ -100,7 +104,8 @@ class PriceFilterWidgetController extends WidgetController {
      * 
      * @return void
      */
-    public function setFormAction($formAction) {
+    public function setFormAction($formAction)
+    {
         $this->formAction = $formAction;
     }
     
@@ -109,17 +114,17 @@ class PriceFilterWidgetController extends WidgetController {
      *
      * @return string 
      */
-    public function getSessionKey() {
+    public function getSessionKey()
+    {
         $sessionKey = null;
         $controller = $this->getParentController();
-        if ($controller instanceof \SilverStripe\CMS\Controllers\ContentController) {
+        if ($controller instanceof ContentController) {
             $sessionKey = $controller->data()->ID;
             if ($controller instanceof SearchResultsPageController) {
-                $searchQuery = Convert::raw2sql(Tools::Session()->get(SearchResultsPageController::SESSION_KEY_SEARCH_QUERY));
+                $searchQuery = SearchResultsPage::getCurrentSearchQuery();
                 $sessionKey .= md5($searchQuery) . sha1($searchQuery);
             }
         }
         return $sessionKey;
     }
-    
 }
