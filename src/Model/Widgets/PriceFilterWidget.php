@@ -104,7 +104,7 @@ class PriceFilterWidget extends Widget {
                     'MinPrice'          => _t(static::class . '.MIN_PRICE', 'From'),
                     'MaxPrice'          => _t(static::class . '.MAX_PRICE', 'to'),
                     'WidgetTitle'       => _t(static::class . '.TITLE', 'Price Filter'),
-                    'WidgetFrontTitle'  => _t(static::class . '.FRONTTITLE', 'Price'),
+                    'WidgetFrontTitle'  => _t(static::class . '.FRONTTITLE', 'Filter by price'),
                     'WidgetCMSTitle'    => _t(static::class . '.CMSTITLE', 'Price Filter'),
                     'WidgetDescription' => _t(static::class . '.DESCRIPTION', 'Provides a widget which allows to enter a price range to filter a product list.'),
                 ]

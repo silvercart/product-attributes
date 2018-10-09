@@ -49,7 +49,7 @@ de:
     DESCRIPTION: "Liefert ein Widget, welches die Eingabe einer Preisspanne erlaubt, nach der Artikel gefiltert werden."
     DISABLE_FILTER: "Preis-Filter aufheben"
     FILTER: "Filtern"
-    FRONTTITLE: "Preis"
+    FRONTTITLE: "Nach Preis filtern"
     MAX_PRICE: "bis"
     MIN_PRICE: "Von"
     TITLE: "Preis-Filter"

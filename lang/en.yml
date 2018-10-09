@@ -49,7 +49,7 @@ en:
     DESCRIPTION: "Provides a widget which allows to enter a price range to filter a product list."
     DISABLE_FILTER: "Reset price filter"
     FILTER: "Filter"
-    FRONTTITLE: "Price"
+    FRONTTITLE: "Filter by price"
     MAX_PRICE: "to"
     MIN_PRICE: "From"
     TITLE: "Price-Filter"
