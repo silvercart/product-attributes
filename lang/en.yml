@@ -47,7 +47,7 @@ en:
   SilverCart\ProductAttributes\Model\Widgets\PriceFilterWidget:
     CMSTITLE: "Price-Filter"
     DESCRIPTION: "Provides a widget which allows to enter a price range to filter a product list."
-    DISABLE_FILTER: "Reset price filter"
+    DISABLE_FILTER: "Reset filter"
     FILTER: "Filter"
     FRONTTITLE: "Filter by price"
     MAX_PRICE: "to"
