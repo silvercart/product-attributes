@@ -17,8 +17,10 @@ use SilverStripe\Control\Controller;
  * @license see license file in modules root directory
  * @copyright 2018 pixeltricks GmbH
  */
-class PriceFilterWidget extends Widget {
-
+class PriceFilterWidget extends Widget
+{
+    use \SilverCart\ORM\ExtensibleDataObject;
+    
     /**
      * Returns the title of this widget.
      * 
@@ -27,7 +29,8 @@ class PriceFilterWidget extends Widget {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
-    public function Title() {
+    public function Title()
+    {
         return $this->fieldLabel('WidgetTitle');
     }
 
@@ -39,7 +42,8 @@ class PriceFilterWidget extends Widget {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
-    public function FrontTitle() {
+    public function FrontTitle()
+    {
         return $this->fieldLabel('WidgetFrontTitle');
     }
     
@@ -51,7 +55,8 @@ class PriceFilterWidget extends Widget {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
-    public function CMSTitle() {
+    public function CMSTitle()
+    {
         return $this->fieldLabel('WidgetCMSTitle');
     }
     
@@ -64,7 +69,8 @@ class PriceFilterWidget extends Widget {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
-    public function Description() {
+    public function Description()
+    {
         return $this->fieldLabel('WidgetDescription');
     }
     
@@ -76,10 +82,12 @@ class PriceFilterWidget extends Widget {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 21.03.2012
      */
-    public function Content() {
+    public function Content()
+    {
         $content = false;
-        if (Controller::curr() instanceof ProductGroupPageController &&
-            !Controller::curr()->isProductDetailView()) {
+        if (Controller::curr() instanceof ProductGroupPageController
+         && !Controller::curr()->isProductDetailView()
+        ) {
             $content = parent::Content();
         }
         return $content;
@@ -95,20 +103,24 @@ class PriceFilterWidget extends Widget {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
-    public function fieldLabels($includerelations = true) {
-        return array_merge(
-                parent::fieldLabels($includerelations),
-                Tools::field_labels_for(static::class),
-                [
-                    'Filter'            => _t(static::class . '.FILTER', 'Filter'),
-                    'MinPrice'          => _t(static::class . '.MIN_PRICE', 'From'),
-                    'MaxPrice'          => _t(static::class . '.MAX_PRICE', 'to'),
-                    'WidgetTitle'       => _t(static::class . '.TITLE', 'Price Filter'),
-                    'WidgetFrontTitle'  => _t(static::class . '.FRONTTITLE', 'Filter by price'),
-                    'WidgetCMSTitle'    => _t(static::class . '.CMSTITLE', 'Price Filter'),
-                    'WidgetDescription' => _t(static::class . '.DESCRIPTION', 'Provides a widget which allows to enter a price range to filter a product list.'),
-                ]
-        );
+    public function fieldLabels($includerelations = true)
+    {
+        $this->beforeUpdateFieldLabels(function(&$labels) {
+            $labels = array_merge(
+                    $labels,
+                    Tools::field_labels_for(static::class),
+                    [
+                        'Go'                => _t('SilverCart.Go', 'Go'),
+                        'Filter'            => _t(static::class . '.FILTER', 'Filter'),
+                        'MinPrice'          => _t(static::class . '.MIN_PRICE', 'From'),
+                        'MaxPrice'          => _t(static::class . '.MAX_PRICE', 'to'),
+                        'WidgetTitle'       => _t(static::class . '.TITLE', 'Price Filter'),
+                        'WidgetFrontTitle'  => _t(static::class . '.FRONTTITLE', 'Filter by price'),
+                        'WidgetCMSTitle'    => _t(static::class . '.CMSTITLE', 'Price Filter'),
+                        'WidgetDescription' => _t(static::class . '.DESCRIPTION', 'Provides a widget which allows to enter a price range to filter a product list.'),
+                    ]
+            );
+        });
+        return parent::fieldLabels($includerelations);
     }
-    
 }

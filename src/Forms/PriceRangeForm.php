@@ -83,7 +83,7 @@ class PriceRangeForm extends CustomForm {
     public function getCustomActions() {
         $this->beforeUpdateCustomActions(function (array &$actions) {
             $actions += [
-                FormAction::create('submit', PriceFilterWidget::singleton()->fieldLabel('Filter'))
+                FormAction::create('submit', PriceFilterWidget::singleton()->fieldLabel('Go'))
                     ->setUseButtonTag(true)->addExtraClass('btn-primary')
             ];
         });
