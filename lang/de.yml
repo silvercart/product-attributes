@@ -51,7 +51,7 @@ de:
     FILTER: "Filtern"
     FRONTTITLE: "Nach Preis filtern"
     MAX_PRICE: "bis"
-    MIN_PRICE: "Von"
+    MIN_PRICE: "von"
     TITLE: "Preis-Filter"
   SilverCart\ProductAttributes\Extensions\Product\ProductExtension:
     MASTER_PRODUCT: "Dieser Artikel ist eine Variante des Artikels mit der Artikelnummer"

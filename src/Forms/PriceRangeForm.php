@@ -58,11 +58,6 @@ class PriceRangeForm extends CustomForm
             ) {
                 $minPrice = $this->getCurrentController()->getMinPriceForWidget();
                 $maxPrice = $this->getCurrentController()->getMaxPriceForWidget();
-
-                if (is_null($minPrice)) {
-                    $minPrice = round($this->getCurrentController()->getMinPriceLimit(), 2);
-                    $maxPrice = round($this->getCurrentController()->getMaxPriceLimit(), 2);
-                }
             }
             
             $fields = array_merge(
