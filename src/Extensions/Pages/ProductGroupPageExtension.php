@@ -58,21 +58,39 @@ class ProductGroupPageExtension extends DataExtension
             $ctrl     = ModelAsController::controller_for($this->owner);
             $minPrice = $ctrl->getMinPriceForWidget();
             $maxPrice = $ctrl->getMaxPriceForWidget();
-            $paramPairs = [];
-            $params     = [
-                'MinPrice' => $minPrice,
-                'MaxPrice' => $maxPrice,
-            ];
-            foreach ($params as $name => $value) {
-                $encodedValue = urlencode($value);
-                $paramPairs[] = "{$name}={$encodedValue}";
-            }
-            $paramString = implode("&", $paramPairs);
-            if (strpos($link, "?") === false) {
-                $link .= "?{$paramString}";
-            } else {
-                $link .= "&{$paramString}";
-            }
+            $link     = $this->PriceRangeLink($minPrice, $maxPrice);
+        }
+        return $link;
+    }
+    
+    /**
+     * Returns a price range link for the given $minPrice and $maxPrice.
+     * 
+     * @param double $minPrice Min price
+     * @param double $maxPrice Max price
+     * 
+     * @return string
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 12.10.2018
+     */
+    public function PriceRangeLink($minPrice, $maxPrice)
+    {
+        $link       = $this->owner->Link();
+        $paramPairs = [];
+        $params     = [
+            'MinPrice' => $minPrice,
+            'MaxPrice' => $maxPrice,
+        ];
+        foreach ($params as $name => $value) {
+            $encodedValue = urlencode($value);
+            $paramPairs[] = "{$name}={$encodedValue}";
+        }
+        $paramString = implode("&", $paramPairs);
+        if (strpos($link, "?") === false) {
+            $link .= "?{$paramString}";
+        } else {
+            $link .= "&{$paramString}";
         }
         return $link;
     }

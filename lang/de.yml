@@ -52,6 +52,9 @@ de:
     FRONTTITLE: "Nach Preis filtern"
     MAX_PRICE: "bis"
     MIN_PRICE: "von"
+    OffersAbove: "über {min} {currency}"
+    ShowOffersAbove: "Angebote über {min} {currency} anzeigen"
+    ShowOffersFromTo: "Angebote zwischen {min} und {max} {currency} anzeigen"
     TITLE: "Preis-Filter"
   SilverCart\ProductAttributes\Extensions\Product\ProductExtension:
     MASTER_PRODUCT: "Dieser Artikel ist eine Variante des Artikels mit der Artikelnummer"
