@@ -19,7 +19,7 @@
     <% loop $Actions %>
         <button class="btn btn-primary pull-right float-right" type="submit" id="{$ID}" title="{$Title}">{$Title}</button> 
     <% end_loop %>
-    <a href="{$CurrentPage.Link}ClearProductAttributePriceFilter" title="<%t SilverCart\ProductAttributes\Model\Widgets\PriceFilterWidget.DISABLE_FILTER 'Reset price filter' %>"><%t SilverCart\ProductAttributes\Model\Widgets\PriceFilterWidget.DISABLE_FILTER 'Reset price filter' %></a>
+    <a href="{$CurrentPage.Link('ClearProductAttributePriceFilter')}" title="<%t SilverCart\ProductAttributes\Model\Widgets\PriceFilterWidget.DISABLE_FILTER 'Reset price filter' %>"><%t SilverCart\ProductAttributes\Model\Widgets\PriceFilterWidget.DISABLE_FILTER 'Reset price filter' %></a>
 
 <% if $IncludeFormTag %>
 </form>

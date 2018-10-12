@@ -18,22 +18,20 @@ use SilverStripe\ORM\Map;
  * @license see license file in modules root directory
  * @copyright 2018 pixeltricks GmbH
  */
-trait PriceRangeController {
-    
+trait PriceRangeController
+{
     /**
      * Session key for the price range filter.
      *
      * @var string
      */
     private static $session_key_price_range = 'SilverCart.PriceRangeForm';
-    
     /**
      * Min price limit.
      *
      * @var float
      */
     protected $minPriceLimit = null;
-    
     /**
      * Max price limit.
      *
@@ -49,16 +47,32 @@ trait PriceRangeController {
      * @return void
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 07.06.2018
+     * @since 12.10.2018
      */
-    public function initPriceFilterFromRequest(HTTPRequest $request) {
+    public function initPriceFilterFromRequest(HTTPRequest $request)
+    {
         $minPrice = $request->postVar('MinPrice');
         $maxPrice = $request->postVar('MaxPrice');
-        if (!is_null($maxPrice) &&
-            !is_null($minPrice)) {
-            
+        if (is_null($maxPrice)
+         && is_null($minPrice)
+        ) {
+            $minPrice = $request->getVar('MinPrice');
+            $maxPrice = $request->getVar('MaxPrice');
+            if (!is_numeric($minPrice)
+             || !is_numeric($maxPrice)
+            ) {
+                $minPrice = null;
+                $maxPrice = null;
+            }
+        }
+        if (!is_null($maxPrice)
+         && !is_null($minPrice)
+        ) {
             $this->setMinPriceForWidget($minPrice);
             $this->setMaxPriceForWidget($maxPrice);
+        } else {
+            Tools::Session()->clear(static::$session_key_price_range . '.MinPrice.' . $this->getSessionKey());
+            Tools::Session()->clear(static::$session_key_price_range . '.MaxPrice.' . $this->getSessionKey());
         }
     }
     
@@ -72,10 +86,11 @@ trait PriceRangeController {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
-    public function ClearProductAttributePriceFilter(HTTPRequest $request) {
+    public function ClearProductAttributePriceFilter(HTTPRequest $request)
+    {
         Tools::Session()->clear(static::$session_key_price_range . '.MinPrice.' . $this->getSessionKey());
         Tools::Session()->clear(static::$session_key_price_range . '.MaxPrice.' . $this->getSessionKey());
-        $this->owner->redirectBack();
+        $this->owner->redirect($this->owner->FilteredLink());
     }
     
     /**
@@ -83,7 +98,8 @@ trait PriceRangeController {
      *
      * @return string
      */
-    public function getMinPriceForWidget() {
+    public function getMinPriceForWidget()
+    {
         return Tools::Session()->get(static::$session_key_price_range . '.MinPrice.' . $this->getSessionKey());
     }
     
@@ -94,7 +110,8 @@ trait PriceRangeController {
      * 
      * @return void
      */
-    public function setMinPriceForWidget($minPrice) {
+    public function setMinPriceForWidget($minPrice)
+    {
         Tools::Session()->set(static::$session_key_price_range . '.MinPrice.' . $this->getSessionKey(), $minPrice);
         Tools::saveSession();
     }
@@ -104,7 +121,8 @@ trait PriceRangeController {
      *
      * @return string
      */
-    public function getMaxPriceForWidget() {
+    public function getMaxPriceForWidget()
+    {
         return Tools::Session()->get(static::$session_key_price_range . '.MaxPrice.' . $this->getSessionKey());
     }
     
@@ -115,7 +133,8 @@ trait PriceRangeController {
      * 
      * @return void
      */
-    public function setMaxPriceForWidget($maxPrice) {
+    public function setMaxPriceForWidget($maxPrice)
+    {
         Tools::Session()->set(static::$session_key_price_range . '.MaxPrice.' . $this->getSessionKey(), $maxPrice);
         Tools::saveSession();
     }
@@ -125,7 +144,8 @@ trait PriceRangeController {
      *
      * @return string
      */
-    public function getMinPriceLimit() {
+    public function getMinPriceLimit()
+    {
         if (is_null($this->minPriceLimit)) {
             ProductFilterPlugin::$skip_filter_once = true;
             $priceType = Config::PriceType();
@@ -144,7 +164,8 @@ trait PriceRangeController {
      *
      * @return string
      */
-    public function getMaxPriceLimit() {
+    public function getMaxPriceLimit()
+    {
         if (is_null($this->maxPriceLimit)) {
             ProductFilterPlugin::$skip_filter_once = true;
             $priceType = Config::PriceType();
@@ -157,5 +178,4 @@ trait PriceRangeController {
         }
         return $this->maxPriceLimit;
     }
-    
 }

@@ -2,8 +2,12 @@
 
 namespace SilverCart\ProductAttributes\Extensions\Pages;
 
+use SilverCart\Admin\Model\Config;
+use SilverStripe\CMS\Controllers\ModelAsController;
 use SilverStripe\Control\Controller;
 use SilverStripe\ORM\DataExtension;
+use SilverStripe\ORM\FieldType\DBText;
+use SilverStripe\View\ArrayData;
 
 /**
  * Extension for SilverCart ProductGroupPage.
@@ -31,5 +35,115 @@ class ProductGroupPageExtension extends DataExtension
     {
         $ctrl            = Controller::curr();
         $cacheKeyParts[] = sha1(implode('-', $ctrl->getFilterValues()));
+    }
+    
+    /**
+     * Updates the link if filters are active.
+     * 
+     * @param string &$link        Link to update
+     * @param string $action       Action to link to
+     * @param string $relativeLink Relative link
+     * 
+     * @return void
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 12.10.2018
+     */
+    public function updateLinkss(&$link, $action, $relativeLink)
+    {
+        if (is_null($action)
+         && $this->owner->isFilteredByPrice()) {
+            $ctrl     = ModelAsController::controller_for($this->owner);
+            $minPrice = $ctrl->getMinPriceForWidget();
+            $maxPrice = $ctrl->getMaxPriceForWidget();
+            $paramPairs = [];
+            $params     = [
+                'MinPrice' => $minPrice,
+                'MaxPrice' => $maxPrice,
+            ];
+            foreach ($params as $name => $value) {
+                $encodedValue = urlencode($value);
+                $paramPairs[] = "{$name}={$encodedValue}";
+            }
+            $paramString = implode("&", $paramPairs);
+            if (strpos($link, "?") === false) {
+                $link .= "?{$paramString}";
+            } else {
+                $link .= "&{$paramString}";
+            }
+        }
+    }
+    
+    public function FilteredLink()
+    {
+        $link = $this->owner->Link();
+        if ($this->owner->isFilteredByPrice()) {
+            $ctrl     = ModelAsController::controller_for($this->owner);
+            $minPrice = $ctrl->getMinPriceForWidget();
+            $maxPrice = $ctrl->getMaxPriceForWidget();
+            $paramPairs = [];
+            $params     = [
+                'MinPrice' => $minPrice,
+                'MaxPrice' => $maxPrice,
+            ];
+            foreach ($params as $name => $value) {
+                $encodedValue = urlencode($value);
+                $paramPairs[] = "{$name}={$encodedValue}";
+            }
+            $paramString = implode("&", $paramPairs);
+            if (strpos($link, "?") === false) {
+                $link .= "?{$paramString}";
+            } else {
+                $link .= "&{$paramString}";
+            }
+        }
+        return $link;
+    }
+    
+    /**
+     * Updates the bread crumb items.
+     * 
+     * @param \SilverStripe\ORM\ArrayList $items Bread crumb items
+     * 
+     * @return void
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 12.10.2018
+     */
+    public function updateBreadcrumbItems($items)
+    {
+        if ($this->owner->isFilteredByPrice()) {
+            $ctrl     = Controller::curr();
+            $currency = Config::DefaultCurrency();
+            $title    = DBText::create();
+            $title->setValue("{$ctrl->getMinPriceForWidget()} - {$ctrl->getMaxPriceForWidget()} {$currency}");
+            $items->push(ArrayData::create([
+                'MenuTitle' => $title,
+                'Title'     => $title,
+                'Link'      => $this->owner->FilteredLink(),
+            ]));
+        }
+    }
+    
+    /**
+     * Returns whether the product list is filtered by price.
+     * 
+     * @return boolean
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 12.10.2018
+     */
+    public function isFilteredByPrice()
+    {
+        $isFilteredByPrice = false;
+        $ctrl              = ModelAsController::controller_for($this->owner);
+        $minPrice          = $ctrl->getMinPriceForWidget();
+        $maxPrice          = $ctrl->getMaxPriceForWidget();
+        if (is_numeric($minPrice)
+         && is_numeric($maxPrice)
+        ) {
+            $isFilteredByPrice = true;
+        }
+        return $isFilteredByPrice;
     }
 }

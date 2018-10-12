@@ -8,6 +8,7 @@ use SilverCart\Forms\CustomForm;
 use SilverCart\Model\Pages\ProductGroupPageController;
 use SilverCart\ORM\FieldType\DBMoney;
 use SilverCart\ProductAttributes\Model\Widgets\PriceFilterWidget;
+use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Controller;
 use SilverStripe\Forms\FormAction;
 
@@ -21,8 +22,8 @@ use SilverStripe\Forms\FormAction;
  * @license see license file in modules root directory
  * @copyright 2018 pixeltricks GmbH
  */
-class PriceRangeForm extends CustomForm {
-    
+class PriceRangeForm extends CustomForm
+{
     /**
      * Don't enable Security token for this type of form because we'll run
      * into caching problems when using it.
@@ -30,7 +31,6 @@ class PriceRangeForm extends CustomForm {
      * @var boolean
      */
     protected $securityTokenEnabled = false;
-    
     /**
      * List of required fields.
      *
@@ -46,14 +46,16 @@ class PriceRangeForm extends CustomForm {
      * 
      * @return array
      */
-    public function getCustomFields() {
+    public function getCustomFields()
+    {
         $this->beforeUpdateCustomFields(function (array &$fields) {
             $minPrice = '';
             $maxPrice = '';
             $widget   = PriceFilterWidget::singleton();
             
-            if ($this->getCurrentController() instanceof ProductGroupPageController &&
-                !$this->getCurrentController()->isProductDetailView()) {
+            if ($this->getCurrentController() instanceof ProductGroupPageController
+             && !$this->getCurrentController()->isProductDetailView()
+            ) {
                 $minPrice = $this->getCurrentController()->getMinPriceForWidget();
                 $maxPrice = $this->getCurrentController()->getMaxPriceForWidget();
 
@@ -80,7 +82,8 @@ class PriceRangeForm extends CustomForm {
      * 
      * @return array
      */
-    public function getCustomActions() {
+    public function getCustomActions()
+    {
         $this->beforeUpdateCustomActions(function (array &$actions) {
             $actions += [
                 FormAction::create('submit', PriceFilterWidget::singleton()->fieldLabel('Go'))
@@ -99,12 +102,21 @@ class PriceRangeForm extends CustomForm {
      * @return void
      *
      * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
+     * @since 12.10.2018
      */
-    public function doSubmit($data, CustomForm $form) {
-        $this->getCurrentController()->setMinPriceForWidget($data['MinPrice']);
-        $this->getCurrentController()->setMaxPriceForWidget($data['MaxPrice']);
-        $this->getCurrentController()->redirectBack();
+    public function doSubmit($data, CustomForm $form)
+    {
+        $ctrl   = $this->getCurrentController();
+        $ctrl->setMinPriceForWidget($data['MinPrice']);
+        $ctrl->setMaxPriceForWidget($data['MaxPrice']);
+        $widget = $ctrl->data();
+        $link   = str_replace("widgetset/{$widget->ID}", "", $ctrl->Link());
+        $page   = SiteTree::get_by_link($link);
+        if ($page instanceof SiteTree) {
+            $ctrl->redirect($page->FilteredLink());
+        } else {
+            $ctrl->redirectBack();
+        }
     }
     
     /**
@@ -112,7 +124,8 @@ class PriceRangeForm extends CustomForm {
      * 
      * @return string
      */
-    public function getCacheKeyExtension() {
+    public function getCacheKeyExtension()
+    {
         return md5($this->getCurrentController()->data()->ID . '-' . $this->getCurrentController()->getMinPriceForWidget() . '-' . $this->getCurrentController()->getMaxPriceForWidget());
     }
     
@@ -121,7 +134,8 @@ class PriceRangeForm extends CustomForm {
      *
      * @return string
      */
-    public function getCurrency() {
+    public function getCurrency()
+    {
         return Config::DefaultCurrency();
     }
     
@@ -130,12 +144,18 @@ class PriceRangeForm extends CustomForm {
      *
      * @return string
      */
-    public function getCurrencySymbol() {
+    public function getCurrencySymbol()
+    {
         return DBMoney::create()->setCurrency($this->getCurrency())->getSymbol();
     }
     
-    public function getCurrentController() {
+    /**
+     * Returns the current controller.
+     * 
+     * @return Controller
+     */
+    public function getCurrentController()
+    {
         return Controller::curr();
     }
-    
 }
