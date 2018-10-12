@@ -35,45 +35,22 @@ class ProductGroupPageExtension extends DataExtension
     {
         $ctrl            = Controller::curr();
         $cacheKeyParts[] = sha1(implode('-', $ctrl->getFilterValues()));
+        if ($this->owner->isFilteredByPrice()) {
+            $ctrl            = ModelAsController::controller_for($this->owner);
+            $minPrice        = $ctrl->getMinPriceForWidget();
+            $maxPrice        = $ctrl->getMaxPriceForWidget();
+            $cacheKeyParts[] = "price-filter-{$minPrice}-{$maxPrice}";
+        }
     }
     
     /**
-     * Updates the link if filters are active.
+     * Returns the link with filter parameters as HTTP GET parameters.
      * 
-     * @param string &$link        Link to update
-     * @param string $action       Action to link to
-     * @param string $relativeLink Relative link
-     * 
-     * @return void
+     * @return string
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 12.10.2018
      */
-    public function updateLinkss(&$link, $action, $relativeLink)
-    {
-        if (is_null($action)
-         && $this->owner->isFilteredByPrice()) {
-            $ctrl     = ModelAsController::controller_for($this->owner);
-            $minPrice = $ctrl->getMinPriceForWidget();
-            $maxPrice = $ctrl->getMaxPriceForWidget();
-            $paramPairs = [];
-            $params     = [
-                'MinPrice' => $minPrice,
-                'MaxPrice' => $maxPrice,
-            ];
-            foreach ($params as $name => $value) {
-                $encodedValue = urlencode($value);
-                $paramPairs[] = "{$name}={$encodedValue}";
-            }
-            $paramString = implode("&", $paramPairs);
-            if (strpos($link, "?") === false) {
-                $link .= "?{$paramString}";
-            } else {
-                $link .= "&{$paramString}";
-            }
-        }
-    }
-    
     public function FilteredLink()
     {
         $link = $this->owner->Link();
