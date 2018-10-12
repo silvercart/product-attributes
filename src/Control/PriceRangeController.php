@@ -58,16 +58,21 @@ trait PriceRangeController
         ) {
             $minPrice = $request->getVar('MinPrice');
             $maxPrice = $request->getVar('MaxPrice');
-            if (!is_numeric($minPrice)
-             || !is_numeric($maxPrice)
-            ) {
-                $minPrice = null;
-                $maxPrice = null;
-            }
+        }
+        if (!is_numeric($minPrice)
+         || !is_numeric($maxPrice)
+        ) {
+            $minPrice = null;
+            $maxPrice = null;
         }
         if (!is_null($maxPrice)
          && !is_null($minPrice)
         ) {
+            if ($minPrice > $maxPrice) {
+                $tmpPrice = $maxPrice;
+                $maxPrice = $minPrice;
+                $minPrice = $tmpPrice;
+            }
             $this->setMinPriceForWidget($minPrice);
             $this->setMaxPriceForWidget($maxPrice);
         } else {
@@ -112,6 +117,9 @@ trait PriceRangeController
      */
     public function setMinPriceForWidget($minPrice)
     {
+        if ($minPrice < 0) {
+            $minPrice = 0;
+        }
         Tools::Session()->set(static::$session_key_price_range . '.MinPrice.' . $this->getSessionKey(), $minPrice);
         Tools::saveSession();
     }
