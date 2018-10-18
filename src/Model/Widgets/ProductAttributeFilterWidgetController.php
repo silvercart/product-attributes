@@ -269,8 +269,10 @@ class ProductAttributeFilterWidgetController extends WidgetController {
         
         if ($products->Count() > 0) {
             $productMap           = $products->map('ID', 'LastEditedForCache')->toArray();
-            $productMapIDs        = implode('-', array_keys($productMap));
+            $productMapIDs        = array_keys($productMap);
             sort($productMap);
+            sort($productMapIDs);
+            $productMapIDString   = implode('-', $productMapIDs);
             $productMapLastEdited = array_pop($productMap);
             $attributesMapIDs     = '';
             $filterValueMapIDs    = $this->getProductGroup()->getFilterValueList();
@@ -282,7 +284,7 @@ class ProductAttributeFilterWidgetController extends WidgetController {
             
             $keyParts = [
                 i18n::get_locale(),
-                $productMapIDs,
+                $productMapIDString,
                 $productMapLastEdited,
                 $this->LastEdited,
                 $attributesMapIDs,
