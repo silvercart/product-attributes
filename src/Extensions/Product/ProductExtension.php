@@ -18,7 +18,10 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataExtension;
+use SilverStripe\ORM\DataList;
+use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\ORM\GroupedList;
+use SilverStripe\ORM\SS_List;
 use SilverStripe\View\ArrayData;
 
 /**
@@ -31,8 +34,8 @@ use SilverStripe\View\ArrayData;
  * @license see license file in modules root directory
  * @copyright 2018 pixeltricks GmbH
  */
-class ProductExtension extends DataExtension {
-    
+class ProductExtension extends DataExtension
+{
     /**
      * Many to many relations
      *
@@ -42,7 +45,6 @@ class ProductExtension extends DataExtension {
         'ProductAttributes'      => ProductAttribute::class,
         'ProductAttributeValues' => ProductAttributeValue::class,
     ];
-    
     /**
      * Extra fields for many to many relations.
      *
@@ -60,27 +62,24 @@ class ProductExtension extends DataExtension {
             'ModifyProductNumberValue'  => "Varchar(50)",
         ],
     ];
-
     /**
      * Set of variants related with this product
      *
-     * @var ArrayList 
+     * @var ArrayList[] 
      */
-    protected $variants = null;
-    
+    protected $variants = [];
     /**
      * Field list vor variation data
      *
      * @var array
      */
     protected $variantFieldList = [];
-    
     /**
      * A set of the products attributes with the related values
      *
-     * @var ArrayList 
+     * @var ArrayList[]
      */
-    protected $attributesWithValues = null;
+    protected $attributesWithValues = [];
     
     /**
      * A request cached map of attribute value IDs
@@ -106,7 +105,8 @@ class ProductExtension extends DataExtension {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
-    public function updateCMSFields(FieldList $fields) {
+    public function updateCMSFields(FieldList $fields) : void
+    {
         if (!$this->updateCMSFieldsIsCalled) {
             $this->updateCMSFieldsIsCalled = true;
             $fields->removeByName('ProductAttributeValues');
@@ -118,16 +118,15 @@ class ProductExtension extends DataExtension {
             }
         }
         
-        if ($this->owner->exists() &&
-            $this->CanBeUsedAsVariant()) {
-            
+        if ($this->owner->exists()
+         && $this->CanBeUsedAsVariant()
+        ) {
             if ($this->hasVariants()) {
                 $this->addSlaveProductsField($fields);
             }
             if (!$this->isMasterProduct()) {
-                $masterProductField = new TextField('MasterProductNumber', $this->owner->fieldLabel('MasterProduct'), $this->owner->MasterProduct()->ProductNumberShop);
+                $masterProductField = TextField::create('MasterProductNumber', $this->owner->fieldLabel('MasterProduct'), $this->owner->MasterProduct()->ProductNumberShop);
                 $fields->addFieldToTab('Root.ProductAttributes', $masterProductField);
-                
             }
         }
     }
@@ -137,12 +136,13 @@ class ProductExtension extends DataExtension {
      * 
      * @param FieldList $fields Fields
      * 
-     * @return void
+     * @return Product
      *
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
-    public function addSlaveProductsField($fields) {
+    public function addSlaveProductsField(FieldList $fields) : Product
+    {
         if ($this->owner->isMasterProduct()) {
             $master = $this->owner;
         } else {
@@ -153,8 +153,9 @@ class ProductExtension extends DataExtension {
             'ID'              => $master->ID,
         ];
         $slaveProducts      = Product::get()->filterAny($filter);
-        $slaveProductsField = new GridField('SlaveProducts', $this->owner->fieldLabel('SlaveProducts'), $slaveProducts);
+        $slaveProductsField = GridField::create('SlaveProducts', $this->owner->fieldLabel('SlaveProducts'), $slaveProducts);
         $fields->addFieldToTab('Root.ProductAttributes', $slaveProductsField);
+        return $this->owner;
     }
     
     /**
@@ -167,7 +168,8 @@ class ProductExtension extends DataExtension {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
-    public function updateFieldLabels(&$labels) {
+    public function updateFieldLabels(&$labels) : void
+    {
         $labels = array_merge(
                 $labels,
                 Tools::field_labels_for(static::class),
@@ -193,9 +195,11 @@ class ProductExtension extends DataExtension {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
-    public function updateShortDescription(&$shortDescription) {
-        if (empty($shortDescription) &&
-            $this->isSlaveProduct()) {
+    public function updateShortDescription(string &$shortDescription = null) : void
+    {
+        if (empty($shortDescription)
+         && $this->isSlaveProduct()
+        ) {
             $shortDescription = $this->owner->MasterProduct()->ShortDescription;
         }
     }
@@ -210,9 +214,11 @@ class ProductExtension extends DataExtension {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
-    public function updateLongDescription(&$longDescription) {
-        if (empty($longDescription) &&
-            $this->isSlaveProduct()) {
+    public function updateLongDescription(string &$longDescription = null) : void
+    {
+        if (empty($longDescription)
+         && $this->isSlaveProduct()
+        ) {
             $longDescription = $this->owner->MasterProduct()->LongDescription;
         }
     }
@@ -226,14 +232,16 @@ class ProductExtension extends DataExtension {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
-    public function onBeforeWrite() {
-        if (array_key_exists('MasterProductNumber', $_POST) &&
-            $this->owner->canEdit()) {
-            
+    public function onBeforeWrite() : void
+    {
+        if (array_key_exists('MasterProductNumber', $_POST)
+         && $this->owner->canEdit()
+        ) {
             $masterProductNumber = $_POST['MasterProductNumber'];
             $masterProduct       = Product::get()->filter('ProductNumberShop', $masterProductNumber)->first();
-            if ($masterProduct instanceof Product &&
-                $masterProduct->exists()) {
+            if ($masterProduct instanceof Product
+             && $masterProduct->exists()
+            ) {
                 $this->owner->MasterProductID = $masterProduct->ID;
             }
         }
@@ -248,11 +256,12 @@ class ProductExtension extends DataExtension {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
-    public function onAfterWrite() {
-        if (array_key_exists('subItem', $_POST) &&
-            is_array($_POST['subItem']) &&
-            array_key_exists('variantModification', $_POST['subItem'])) {
-            
+    public function onAfterWrite() : void
+    {
+        if (array_key_exists('subItem', $_POST)
+         && is_array($_POST['subItem'])
+         && array_key_exists('variantModification', $_POST['subItem'])
+        ) {
             $modifications = $_POST['subItem']['variantModification'];
             foreach ($modifications as $attributeValueID => $modification) {
                 $attributeValue = $this->owner->ProductAttributeValues()->byID($attributeValueID);
@@ -264,24 +273,27 @@ class ProductExtension extends DataExtension {
                     'ModifyProductNumberAction' => '',
                     'ModifyProductNumberValue'  => '',
                 ];
-                if (array_key_exists('Title', $modification) &&
-                    is_array($modification['Title']) &&
-                    array_key_exists('action', $modification['Title']) &&
-                    array_key_exists('value', $modification['Title'])) {
+                if (array_key_exists('Title', $modification)
+                 && is_array($modification['Title'])
+                 && array_key_exists('action', $modification['Title'])
+                 && array_key_exists('value', $modification['Title'])
+                ) {
                     $extraFields['ModifyTitleAction'] = $modification['Title']['action'];
                     $extraFields['ModifyTitleValue'] = $modification['Title']['value'];
                 }
-                if (array_key_exists('Price', $modification) &&
-                    is_array($modification['Price']) &&
-                    array_key_exists('action', $modification['Price']) &&
-                    array_key_exists('value', $modification['Price'])) {
+                if (array_key_exists('Price', $modification)
+                 && is_array($modification['Price'])
+                 && array_key_exists('action', $modification['Price'])
+                 && array_key_exists('value', $modification['Price'])
+                ) {
                     $extraFields['ModifyPriceAction'] = $modification['Price']['action'];
                     $extraFields['ModifyPriceValue'] = $modification['Price']['value'];
                 }
-                if (array_key_exists('ProductNumber', $modification) &&
-                    is_array($modification['ProductNumber']) &&
-                    array_key_exists('action', $modification['ProductNumber']) &&
-                    array_key_exists('value', $modification['ProductNumber'])) {
+                if (array_key_exists('ProductNumber', $modification)
+                 && is_array($modification['ProductNumber'])
+                 && array_key_exists('action', $modification['ProductNumber'])
+                 && array_key_exists('value', $modification['ProductNumber'])
+                ) {
                     $extraFields['ModifyProductNumberAction'] = $modification['ProductNumber']['action'];
                     $extraFields['ModifyProductNumberValue'] = $modification['ProductNumber']['value'];
                 }
@@ -295,26 +307,24 @@ class ProductExtension extends DataExtension {
      * 
      * @return ArrayList
      */
-    public function getAttributesWithValues() {
+    public function getAttributesWithValues() : ArrayList
+    {
         $this->owner->extend('overwriteAttributesWithValues', $this->attributesWithValues);
-        if (is_null($this->attributesWithValues)) {
-            $this->attributesWithValues = new ArrayList();
+        if (!array_key_exists($this->owner->ID, $this->attributesWithValues)) {
+            $attributesWithValues = ArrayList::create();
             foreach ($this->owner->ProductAttributes() as $attribute) {
                 $attributedValues = $this->getAttributedValuesFor($attribute);
                 if ($attributedValues->count() > 0) {
-                    $this->attributesWithValues->push(
-                            new ArrayData(
-                                    [
-                                        'Attribute' => $attribute,
-                                        'Values'    => $attributedValues,
-                                    ]
-                            )
-                    );
+                    $this->attributesWithValues->push(ArrayData::create([
+                        'Attribute' => $attribute,
+                        'Values'    => $attributedValues,
+                    ]));
                 }
             }
-            $this->owner->extend('updateAttributesWithValues', $this->attributesWithValues);
+            $this->owner->extend('updateAttributesWithValues', $attributesWithValues);
+            $this->attributesWithValues[$this->owner->ID] = $attributesWithValues;
         }
-        return $this->attributesWithValues;
+        return $this->attributesWithValues[$this->owner->ID];
     }
 
     /**
@@ -324,7 +334,8 @@ class ProductExtension extends DataExtension {
      * 
      * @return DataList
      */
-    public function getAttributedValuesFor($attribute) {
+    public function getAttributedValuesFor(ProductAttribute $attribute) : ArrayList
+    {
         $assignedValueIDs = [];
         if (!array_key_exists($this->owner->ID, $this->relatedAttributeValueMap)) {
             $this->relatedAttributeValueMap[$this->owner->ID] = $this->owner->ProductAttributeValues()->map('ID', 'ID')->toArray();
@@ -337,14 +348,12 @@ class ProductExtension extends DataExtension {
             }
         }
         if (count($assignedValueIDs) > 0) {
+            $pavTableName     = ProductAttributeValue::config()->table_name;
+            $assignedValueStr = implode(',', $assignedValueIDs);
             $attributedValues = ArrayList::create(ProductAttributeValue::get()
-                    ->where(
-                            sprintf(
-                                    "%s.ID IN (%s)",
-                                    ProductAttributeValue::config()->get('table_name'),
-                                    implode(',', $assignedValueIDs)
-                            )
-                    )->toArray());
+                    ->where("{$pavTableName}.ID IN ({$assignedValueStr})")
+                    ->toArray()
+            );
         } else {
             $attributedValues = ArrayList::create();
         }
@@ -354,16 +363,18 @@ class ProductExtension extends DataExtension {
     /**
      * Returns whether this product has variants or not
      * 
-     * @return boolean
+     * @return bool
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 12.09.2012
      */
-    public function hasVariants() {
-        $hasVariants    = false;
-        $variants       = $this->getVariants();
-        if (!is_null($variants) &&
-            $variants->count() > 0) {
+    public function hasVariants() : bool
+    {
+        $hasVariants = false;
+        $variants    = $this->getVariants();
+        if (!is_null($variants)
+         && $variants->count() > 0
+        ) {
             $hasVariants = true;
         }
         return $hasVariants;
@@ -372,12 +383,13 @@ class ProductExtension extends DataExtension {
     /**
      * Returns whether this product has single product variants or not
      * 
-     * @return boolean
+     * @return bool
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 12.09.2012
      */
-    public function hasSingleProductVariants() {
+    public function hasSingleProductVariants() : bool
+    {
         $hasVariants       = false;
         $variantAttributes = $this->getSingleProductVariantAttributes();
         if ($variantAttributes->exists()) {
@@ -391,7 +403,8 @@ class ProductExtension extends DataExtension {
      * 
      * @return DataList
      */
-    public function getSingleProductVariantAttributes() {
+    public function getSingleProductVariantAttributes() : DataList
+    {
         return $this->owner->ProductAttributes()->filter('CanBeUsedForSingleVariants', true);
     }
     
@@ -402,16 +415,16 @@ class ProductExtension extends DataExtension {
      * 
      * @return ArrayList
      */
-    public function getVariantsFor($attributeID) {
-        $matchedVariants            = new ArrayList();
-        $matchingAttributeValues    = new ArrayList();
-        $variants                   = $this->getVariants();
-        $variantAttributes          = $this->getVariantAttributes();
+    public function getVariantsFor(int $attributeID) : ArrayList
+    {
+        $matchedVariants         = ArrayList::create();
+        $matchingAttributeValues = ArrayList::create();
+        $variants                = $this->getVariants();
+        $variantAttributes       = $this->getVariantAttributes();
         $variantAttributes->remove($variantAttributes->find('ID', $attributeID));
         foreach ($variantAttributes as $variantAttribute) {
             $matchingAttributeValues->merge($this->owner->getAttributedValuesFor($variantAttribute));
         }
-        
         foreach ($variants as $variant) {
             if ($variant->ProductAttributes()->find('ID', $attributeID)) {
                 $attributeValueMatches = [];
@@ -433,7 +446,8 @@ class ProductExtension extends DataExtension {
      * 
      * @return Product
      */
-    public function getVariantBy($attributeValueIDs) {
+    public function getVariantBy(array $attributeValueIDs) : ?Product
+    {
         $matchedVariant = null;
         $variants       = $this->getVariants();
         foreach ($variants as $variant) {
@@ -456,10 +470,12 @@ class ProductExtension extends DataExtension {
      * 
      * @return Product
      */
-    public function getVariantAttributeContext() {
+    public function getVariantAttributeContext() : Product
+    {
         $context = $this->owner;
-        if ($context->IsNotBuyable &&
-            $context->hasVariants()) {
+        if ($context->IsNotBuyable
+         && $context->hasVariants()
+        ) {
             $context = $context->getVariants()->First();
         }
         return $context;
@@ -470,11 +486,22 @@ class ProductExtension extends DataExtension {
      * 
      * @return ArrayList
      */
-    public function getVariantAttributes() {
-        $context            = $this->getVariantAttributeContext();
-        $attributes         = $context->ProductAttributes();
-        $variantAttributes  = new ArrayList($attributes->filter('CanBeUsedForVariants', true)->toArray());
-        return $variantAttributes;
+    public function getVariantAttributes() : ArrayList
+    {
+        $context    = $this->getVariantAttributeContext();
+        $attributes = $context->ProductAttributes();
+        return ArrayList::create($attributes->filter('CanBeUsedForVariants', true)->toArray());
+    }
+    
+    /**
+     * Returns the product attributes as a comma seperated list (last item is 
+     * seperated with "&").
+     * 
+     * @return DBHTMLText
+     */
+    public function getVariantAttributesNice() : DBHTMLText
+    {
+        return DBHTMLText::create()->setValue($this->getVariantAttributes()->implode('Title', ', ', ' & '));
     }
     
     /**
@@ -482,9 +509,10 @@ class ProductExtension extends DataExtension {
      * 
      * @return ArrayList
      */
-    public function getVariantAttributeValues() {
+    public function getVariantAttributeValues() : ArrayList
+    {
         $context                = $this->getVariantAttributeContext();
-        $variantAttributeValues = new ArrayList();
+        $variantAttributeValues = ArrayList::create();
         $variantAttributes      = $this->getVariantAttributes();
         foreach ($variantAttributes as $variantAttribute) {
             $variantAttributeValue = $context->ProductAttributeValues()->find('ProductAttributeID', $variantAttribute->ID);
@@ -498,11 +526,13 @@ class ProductExtension extends DataExtension {
     /**
      * Returns the variants of this product
      * 
-     * @return DataList
+     * @return ArrayList
      */
-    public function getVariants() {
-        if (is_null($this->variants) &&
-            $this->isVariant()) {
+    public function getVariants() : ArrayList
+    {
+        if (!array_key_exists($this->owner->ID, $this->variants)
+         && $this->isVariant()
+        ) {
             if ($this->isSlaveProduct()) {
                 $master = $this->owner->MasterProduct();
             } else {
@@ -510,18 +540,22 @@ class ProductExtension extends DataExtension {
             }
             $variants = $master->getSlaveProducts();
             if ($this->isSlaveProduct()) {
-                $arrayList = new ArrayList($variants->toArray());
+                $arrayList = ArrayList::create($variants->toArray());
                 $arrayList->push($master);
             } else {
-                $arrayList = new ArrayList($variants->toArray());
+                $arrayList = ArrayList::create($variants->toArray());
             }
             $activeVariants = $arrayList->filter('isActive',1);
-            if (!is_null($activeVariants) &&
-                $activeVariants->exists()) {
-                $this->variants = $activeVariants;
+            if (!is_null($activeVariants)
+             && $activeVariants->exists()
+            ) {
+                $this->variants[$this->owner->ID] = $activeVariants;
             }
         }
-        return $this->variants;
+        if (!array_key_exists($this->owner->ID, $this->variants)) {
+            $this->variants[$this->owner->ID] = ArrayList::create();
+        }
+        return $this->variants[$this->owner->ID];
     }
     
     /**
@@ -529,26 +563,30 @@ class ProductExtension extends DataExtension {
      * 
      * @param DataList $variants Variants to use
      * 
-     * @return void
+     * @return Product
      */
-    public function setVariants($variants) {
+    public function setVariants($variants) : Product
+    {
         $this->variants = $variants;
+        return $this->owner;
     }
 
 
     /**
      * Returns whether this product is a variant of another product
      * 
-     * @return boolean
+     * @return bool
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 12.09.2012
      */
-    public function isVariant() {
+    public function isVariant() : bool
+    {
         $isVariant = false;
-        if ($this->CanBeUsedAsVariant() &&
-            ($this->isMasterProduct() ||
-             $this->isSlaveProduct())) {
+        if ($this->CanBeUsedAsVariant()
+         && ($this->isMasterProduct()
+          || $this->isSlaveProduct())
+        ) {
             $isVariant = true;
         }
         return $isVariant;
@@ -560,15 +598,15 @@ class ProductExtension extends DataExtension {
      * @param Product          $product   Product to check variation for
      * @param ProductAttribute $attribute Attribute to check variation for
      * 
-     * @return boolean
+     * @return bool
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 04.06.2018
      */
-    public function isVariantOf($product, $attribute) {
+    public function isVariantOf(Product $product, ProductAttribute $attribute) : bool
+    {
         $isVariantOf = false;
         if ($this->owner->isVariant()) {
-            
             $a = array_keys($this->owner->getAttributedValuesFor($attribute)->map()->toArray());
             $b = array_keys($product->getAttributedValuesFor($attribute)->map()->toArray());
             if (array_shift($a) != array_shift($b)) {
@@ -596,19 +634,21 @@ class ProductExtension extends DataExtension {
     /**
      * Returns whether this product can be used as variant or not
      * 
-     * @return boolean
+     * @return bool
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 18.09.2014
      */
-    public function CanBeUsedAsVariant() {
+    public function CanBeUsedAsVariant() : bool
+    {
         $canBeUsedAsVariant         = false;
         $owner                      = $this->owner;
         $productAttributes          = $owner->ProductAttributes();
         $variantProductAttributes   = $productAttributes->filter('CanBeUsedForVariants',1);
-        if ((!is_null($variantProductAttributes) &&
-             $variantProductAttributes->exists()) ||
-            $this->owner->IsNotBuyable) {
+        if ((!is_null($variantProductAttributes)
+          && $variantProductAttributes->exists())
+         || $this->owner->IsNotBuyable
+        ) {
             $canBeUsedAsVariant = true;
         }
         return $canBeUsedAsVariant;
@@ -620,24 +660,26 @@ class ProductExtension extends DataExtension {
      * 
      * @return DataList
      */
-    public function getSlaveProducts() {
-        $slaves = Product::get()->filter('MasterProductID', $this->owner->ID);
-        return $slaves;
+    public function getSlaveProducts() : DataList
+    {
+        return Product::get()->filter('MasterProductID', $this->owner->ID);
     }
     
     /**
      * Returns whether this is a master product or not
      * 
-     * @return boolean
+     * @return bool
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 12.09.2012
      */
-    public function isMasterProduct() {
-        $isMasterProduct    = false;
-        $slaves             = $this->getSlaveProducts();
-        if ($slaves &&
-            $slaves->Count() > 0) {
+    public function isMasterProduct() : bool
+    {
+        $isMasterProduct = false;
+        $slaves          = $this->getSlaveProducts();
+        if ($slaves
+         && $slaves->Count() > 0
+        ) {
             $isMasterProduct = true;
         }
         return $isMasterProduct;
@@ -646,12 +688,13 @@ class ProductExtension extends DataExtension {
     /**
      * Returns whether this is a slave product or not
      * 
-     * @return boolean
+     * @return bool
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 12.09.2012
      */
-    public function isSlaveProduct() {
+    public function isSlaveProduct() : bool
+    {
         $isSlaveProduct = false;
         $owner          = $this->owner;
         if ($owner->MasterProduct()->exists()) {
@@ -665,56 +708,50 @@ class ProductExtension extends DataExtension {
      * 
      * @return array
      */
-    public function getVariantFormFields() {
+    public function getVariantFormFields() : array
+    {
         $product = $this->getVariantAttributeContext();
         $fields  = [];
-        
         if ($product->hasVariants()) {
             $attributes = $product->getVariantAttributes();
-            
             foreach ($attributes as $attribute) {
-                $selectedValue = 0;
-
+                $selectedValue    = 0;
                 $attributedValues = $product->getAttributedValuesFor($attribute);
                 if ($attributedValues->count() > 0) {
                     $selectedValue = $attributedValues->first()->ID;
                 }
-                
                 $fieldModifierNotes = $this->getVariantFormFieldModifierNotes($product, $attribute, $attributedValues, $selectedValue);
                 $values             = $this->getVariantFormFieldAttributeNames($attributedValues, $fieldModifierNotes);
 
                 if (count($values) > 0) {
-                    
                     $contextProduct = $product;
-                    
-                    if ($product->ID != $this->owner->ID &&
-                        $this->owner->IsNotBuyable) {
+                    if ($product->ID != $this->owner->ID
+                     && $this->owner->IsNotBuyable
+                    ) {
                         $selectedValue  = '';
                         $contextProduct = $this->owner;
                     }
-                    
-                    if (!empty($attribute->useCustomFormField) &&
-                        $this->owner->hasMethod('get' . ucfirst($attribute->useCustomFormField))) {
+                    if (!empty($attribute->useCustomFormField)
+                     && $this->owner->hasMethod('get' . ucfirst($attribute->useCustomFormField))
+                    ) {
                         $field = $this->owner->{'get' . ucfirst($attribute->useCustomFormField)}(
-                                'ProductAttribute' . $attribute->ID,
+                                "ProductAttribute{$attribute->ID}",
                                 $attribute->Title,
                                 $values,
                                 $selectedValue
                         );
                     } else {
                         $field = ProductAttributeDropdownField::create(
-                                'ProductAttribute' . $attribute->ID,
+                                "ProductAttribute{$attribute->ID}",
                                 $attribute->Title,
                                 $values,
                                 $selectedValue
                         );
                     }
-                    
                     $fields[] = $field;
                 }
             }
         }
-        
         return $fields;
     }
     
@@ -728,7 +765,8 @@ class ProductExtension extends DataExtension {
      * 
      * @return string[]
      */
-    protected function getVariantFormFieldModifierNotes($product, $attribute, &$attributedValues, $selectedValue) {
+    protected function getVariantFormFieldModifierNotes(Product $product, ProductAttribute $attribute, ArrayList &$attributedValues, int $selectedValue) : array
+    {
         $variants           = $product->getVariantsFor($attribute->ID);
         $fieldModifierNotes = [];
         foreach ($variants as $variant) {
@@ -748,12 +786,13 @@ class ProductExtension extends DataExtension {
     /**
      * Returns a list of attribute names.
      * 
-     * @param type $attributedValues
-     * @param type $fieldModifierNotes
+     * @param SS_List $attributedValues   Attributed values
+     * @param string  $fieldModifierNotes Field modifier notes
      * 
      * @return string[]
      */
-    protected function getVariantFormFieldAttributeNames($attributedValues, $fieldModifierNotes) {
+    protected function getVariantFormFieldAttributeNames(SS_List $attributedValues, string $fieldModifierNotes) : array
+    {
         $attributedValues->sort('Title');
         $attributeNames = [];
         foreach ($attributedValues as $attributedValue) {
@@ -778,18 +817,16 @@ class ProductExtension extends DataExtension {
      * 
      * @return array
      */
-    public function getSingleProductVariantFormFields() {
+    public function getSingleProductVariantFormFields() : array
+    {
         $product = $this->owner;
         $fields  = [];
         if ($product->hasSingleProductVariants()) {
             $attributes = $product->getSingleProductVariantAttributes()->filter('IsUserInputField', false);
-
             foreach ($attributes as $attribute) {
-                $values        = [];
-                $plainValues   = [];
-                $prices        = [];
-                $selectedValue = 0;
-
+                $values           = [];
+                $prices           = [];
+                $selectedValue    = 0;
                 $attributedValues = $product->ProductAttributeValues()->filter('ProductAttributeID', $attribute->ID);
                 if ($attributedValues->exists()) {
                     $selectedAttributeValue = $attributedValues->filter('IsDefault', true)->first();
@@ -808,17 +845,18 @@ class ProductExtension extends DataExtension {
                 }
 
                 if (count($values) > 0) {
-                    if (!empty($attribute->useCustomFormField) &&
-                        $this->owner->hasMethod('get' . ucfirst($attribute->useCustomFormField))) {
+                    if (!empty($attribute->useCustomFormField)
+                     && $this->owner->hasMethod('get' . ucfirst($attribute->useCustomFormField))
+                    ) {
                         $field = $this->owner->{'get' . ucfirst($attribute->useCustomFormField)}(
-                                'ProductAttribute' . $attribute->ID,
+                                "ProductAttribute{$attribute->ID}",
                                 $attribute->Title,
                                 $values,
                                 $selectedValue
                         );
                     } else {
                         $field = ProductAttributeDropdownField::create(
-                                'ProductAttribute' . $attribute->ID,
+                                "ProductAttribute{$attribute->ID}",
                                 $attribute->Title,
                                 $values,
                                 $selectedValue
@@ -840,7 +878,8 @@ class ProductExtension extends DataExtension {
      * 
      * @return array
      */
-    protected function getVariantUserInputFields() {
+    protected function getVariantUserInputFields() : array
+    {
         $fields = [];
         if (!$this->owner->hasSingleProductVariants()) {
             return $fields;
@@ -868,7 +907,7 @@ class ProductExtension extends DataExtension {
                 }
                 
                 $field = ChooseEngravingField::create(
-                        'ProductAttribute' . $userInputAttribute->ID,
+                        "ProductAttribute{$userInputAttribute->ID}",
                         $userInputAttribute->Title,
                         $options,
                         ''
@@ -891,7 +930,8 @@ class ProductExtension extends DataExtension {
      * 
      * @return string
      */
-    protected function getVariantPriceStringIfDifferent($attributeValue, &$prices, $returnAsAddition = false) {
+    protected function getVariantPriceStringIfDifferent(ProductAttributeValue $attributeValue, array &$prices, bool $returnAsAddition = false) : string
+    {
         $priceString = '';
         $totalPrice  = DBMoney::create();
         $addition    = DBMoney::create();
@@ -923,10 +963,10 @@ class ProductExtension extends DataExtension {
                 if ($addition->getAmount() < 0) {
                     $sign = '';
                 }
-                $priceString = ' (' . $sign . $addition->Nice() . ')';
+                $priceString = " ({$sign}{$addition->Nice()})";
             }
         } elseif ($totalPrice->getAmount() > 0) {
-            $priceString = ' (' . $totalPrice->Nice() . ')';
+            $priceString = " ({$totalPrice->Nice()})";
         }
         $prices[$attributeValue->ID] = $totalPrice->Nice();
         return $priceString;
@@ -946,10 +986,11 @@ class ProductExtension extends DataExtension {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 07.11.2016
      */
-    public function SPAPaddToCartWithAttributes($cartID, $quantity = 1, $attributes = []) {
-        if (!is_array($attributes) ||
-            count($attributes) == 0) {
-
+    public function SPAPaddToCartWithAttributes(int $cartID, int $quantity = 1, array $attributes = []) : ?ShoppingCartPosition
+    {
+        if (!is_array($attributes)
+         || count($attributes) == 0
+        ) {
             return $this->owner->addToCart($cartID, $quantity, true);
         }
         $serializedAttributes = serialize($attributes);
@@ -960,10 +1001,10 @@ class ProductExtension extends DataExtension {
                     'ProductAttributes' => $serializedAttributes,
                 ])
                 ->first();
-        if (!($shoppingCartPosition instanceof ShoppingCartPosition) ||
-            !$shoppingCartPosition->exists()) {
-            
-            $shoppingCartPosition = new ShoppingCartPosition();
+        if (!($shoppingCartPosition instanceof ShoppingCartPosition)
+         || !$shoppingCartPosition->exists()
+        ) {
+            $shoppingCartPosition = ShoppingCartPosition::create();
             $shoppingCartPosition->ShoppingCartID    = $cartID;
             $shoppingCartPosition->ProductID         = $this->owner->ID;
             $shoppingCartPosition->ProductAttributes = $serializedAttributes;
@@ -978,7 +1019,7 @@ class ProductExtension extends DataExtension {
                 $shoppingCartPosition->write(); //we have to write because we need the ID
                 ShoppingCartPositionNotice::setNotice($shoppingCartPosition->ID, "remaining");  
             } else {
-                return false;
+                return null;
             }
         }
         $shoppingCartPosition->write();
@@ -996,9 +1037,11 @@ class ProductExtension extends DataExtension {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
-    public function addPluggedInTab(ArrayList &$pluggedInTabs) {
-        if ($this->owner->ProductAttributes()->filter('CanBeUsedForDataSheet', true)->exists() &&
-            $this->owner->ProductAttributeValues()->exists()) {
+    public function addPluggedInTab(ArrayList &$pluggedInTabs) : void
+    {
+        if ($this->owner->ProductAttributes()->filter('CanBeUsedForDataSheet', true)->exists()
+         && $this->owner->ProductAttributeValues()->exists()
+        ) {
             $content = $this->owner->renderWith(ProductAttribute::class . '_Tab');
             if (!empty($content)) {
                 $pluggedInTabs->push(ArrayData::create([
@@ -1010,8 +1053,8 @@ class ProductExtension extends DataExtension {
         
         if ($this->owner->ProductAttributeValues()->exclude('ImageID', 0)->exists()) {
             $valuesWithImage = $this->owner->ProductAttributeValues()->filter('IsActive', true)->exclude('ImageID', 0);
-            $attributes   = GroupedList::create($valuesWithImage)->groupBy('ProductAttributeID');
-            $attributeIDs = array_keys($attributes);
+            $attributes      = GroupedList::create($valuesWithImage)->groupBy('ProductAttributeID');
+            $attributeIDs    = array_keys($attributes);
             foreach ($attributeIDs as $attributeID) {
                 $attribute = $this->owner->ProductAttributes()->byID($attributeID);
                 if (!$attribute->CanBeUsedForSingleVariants) {
@@ -1039,12 +1082,13 @@ class ProductExtension extends DataExtension {
      *
      * @param ArrayList &$pluggedInAfterImageContent List of plugged in after image content
      * 
-     * @return DataObject 
+     * @return void 
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
-    public function addPluggedInAfterImageContent(ArrayList &$pluggedInAfterImageContent) {
+    public function addPluggedInAfterImageContent(ArrayList &$pluggedInAfterImageContent) : void
+    {
         if ($this->owner->hasVariants()) {
             $content = $this->owner->customise([
                 'Headings' => $this->Headings($this->owner->getVariants()),
@@ -1068,20 +1112,20 @@ class ProductExtension extends DataExtension {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
-    public function Headings($variants) {
-        $headings = new ArrayList();
-        $headings->push(new ArrayData(["Name" => 'ProductNumber', "Title" => $this->owner->fieldLabel('ProductNumberShop')]));
-        $headings->push(new ArrayData(["Name" => 'Title',         "Title" => $this->owner->fieldLabel('Title')]));
-        
-        $variantAttributes = new ArrayList();
+    public function Headings(SS_List $variants) : ArrayList
+    {
+        $headings = ArrayList::create();
+        $headings->push(ArrayData::create(["Name" => 'ProductNumber', "Title" => $this->owner->fieldLabel('ProductNumberShop')]));
+        $headings->push(ArrayData::create(["Name" => 'Title',         "Title" => $this->owner->fieldLabel('Title')]));
+        $variantAttributes = ArrayList::create();
         foreach ($variants as $item) {
-            if ($item instanceof Product &&
-                $item->exists()) {
+            if ($item instanceof Product
+             && $item->exists()
+            ) {
                 $variantAttributes->merge($item->getVariantAttributes());
             }
         }
         $variantAttributes->removeDuplicates();
-
         foreach ($variantAttributes as $attribute) {
             $this->variantFieldList[$attribute->ID] = $attribute->Title;
             $headings->push(ArrayData::create([
@@ -1093,9 +1137,7 @@ class ProductExtension extends DataExtension {
                 "SortDirection" => null,
             ]));
         }
-        
-        $headings->push(new ArrayData(["Name" => 'Price', "Title" => $this->owner->fieldLabel('Price')]));
-
+        $headings->push(ArrayData::create(["Name" => 'Price', "Title" => $this->owner->fieldLabel('Price')]));
         return $headings;
     }
     
@@ -1110,9 +1152,11 @@ class ProductExtension extends DataExtension {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 11.08.2014
      */
-    public function Items($variants, $original) {
-        if (!$original->IsNotBuyable &&
-            !$variants->find('ID', $original->ID)) {
+    public function Items(ArrayList $variants, Product $original) : ArrayList
+    {
+        if (!$original->IsNotBuyable
+         && !$variants->find('ID', $original->ID)
+        ) {
             $variants->push($original);
         }
         $variants->sort('Title');
@@ -1135,11 +1179,11 @@ class ProductExtension extends DataExtension {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
-    public function Fields($product) {
-        $fields = new ArrayList();
-        $fields->push(new ArrayData(["Name" => 'ProductNumber', "Value" => $product->ProductNumberShop, "Link" => $product->Link()]));
-        $fields->push(new ArrayData(["Name" => 'Title',         "Value" => $product->Title,             "Link" => $product->Link()]));
-        
+    public function Fields(Product $product) : ArrayList
+    {
+        $fields = ArrayList::create();
+        $fields->push(ArrayData::create(["Name" => 'ProductNumber', "Value" => $product->ProductNumberShop, "Link" => $product->Link()]));
+        $fields->push(ArrayData::create(["Name" => 'Title',         "Value" => $product->Title,             "Link" => $product->Link()]));
         $variantList                 = $this->VariantFieldList();
         $variantAttributeValueGroups = GroupedList::create($product->ProductAttributeValues())->groupBy('ProductAttributeID');
         foreach ($variantList as $variantAttributeID => $variantAttributeTitle) {
@@ -1151,9 +1195,7 @@ class ProductExtension extends DataExtension {
                 ]));
             }
         }
-        
-        $fields->push(new ArrayData(["Name" => 'Price', "Value" => $product->getPriceNice(), "Link" => $product->Link()]));
-        
+        $fields->push(ArrayData::create(["Name" => 'Price', "Value" => $product->getPriceNice(), "Link" => $product->Link()]));
         return $fields;
     }
     
@@ -1165,8 +1207,8 @@ class ProductExtension extends DataExtension {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 13.09.2012
      */
-    public function VariantFieldList() {
+    public function VariantFieldList() : array
+    {
         return $this->variantFieldList;
     }
-    
 }
