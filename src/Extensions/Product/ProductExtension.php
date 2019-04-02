@@ -787,11 +787,11 @@ class ProductExtension extends DataExtension
      * Returns a list of attribute names.
      * 
      * @param SS_List $attributedValues   Attributed values
-     * @param string  $fieldModifierNotes Field modifier notes
+     * @param array   $fieldModifierNotes Field modifier notes
      * 
      * @return string[]
      */
-    protected function getVariantFormFieldAttributeNames(SS_List $attributedValues, string $fieldModifierNotes) : array
+    protected function getVariantFormFieldAttributeNames(SS_List $attributedValues, array $fieldModifierNotes) : array
     {
         $attributedValues->sort('Title');
         $attributeNames = [];
