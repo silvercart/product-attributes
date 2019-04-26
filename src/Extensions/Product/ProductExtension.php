@@ -315,7 +315,7 @@ class ProductExtension extends DataExtension
             foreach ($this->owner->ProductAttributes() as $attribute) {
                 $attributedValues = $this->getAttributedValuesFor($attribute);
                 if ($attributedValues->count() > 0) {
-                    $this->attributesWithValues->push(ArrayData::create([
+                    $attributesWithValues->push(ArrayData::create([
                         'Attribute' => $attribute,
                         'Values'    => $attributedValues,
                     ]));
