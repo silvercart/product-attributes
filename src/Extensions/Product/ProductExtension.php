@@ -555,7 +555,7 @@ class ProductExtension extends DataExtension
         if (!array_key_exists($this->owner->ID, $this->variants)) {
             $this->variants[$this->owner->ID] = ArrayList::create();
         }
-        return $this->variants[$this->owner->ID];
+        return $this->variants[$this->owner->ID]->exclude('ID', $this->owner->ID);
     }
     
     /**
