@@ -21,7 +21,7 @@ silvercart.attributes.filter.Call                = function() {
         var mainContainer = $(silvercart.attributes.filter.MainSelector);
         if ($('.silvercart-product-attribute-filter-mask').length === 0) {
             mainContainer.append('<div class="silvercart-product-attribute-filter-mask"></div>');
-            mainContainer.append('<img class="silvercart-product-attribute-filter-loading-bar" src="/resources/vendor/silvercart/silvercart/client/img/loader.gif" title="" />');
+            mainContainer.append('<img class="silvercart-product-attribute-filter-loading-bar" src="resources/vendor/silvercart/silvercart/client/img/loader.gif" title="" />');
             mainContainer.css({
                 position : 'relative'
             });
@@ -100,7 +100,7 @@ $(function() {
     $(document).ready(function() {
         if ($('.silvercart-product-attribute-filter-mask').length === 0) {
             $(silvercart.attributes.filter.MainSelector).append('<div class="silvercart-product-attribute-filter-mask"></div>');
-            $(silvercart.attributes.filter.MainSelector).append('<img class="silvercart-product-attribute-filter-loading-bar" src="/resources/vendor/silvercart/silvercart/client/img/loader.gif" alt="Loading..." />');
+            $(silvercart.attributes.filter.MainSelector).append('<img class="silvercart-product-attribute-filter-loading-bar" src="resources/vendor/silvercart/silvercart/client/img/loader.gif" alt="Loading..." />');
             $(silvercart.attributes.filter.MainSelector).css({
                 position : 'relative'
             });
