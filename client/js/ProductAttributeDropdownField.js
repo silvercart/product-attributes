@@ -21,7 +21,7 @@ $(function() {
                         top: '0px',
                         opacity: '0.5',
                         backgroundColor: '#ffffff',
-                        backgroundImage: 'url(/resources/vendor/silvercart/silvercart/client/img/loader.gif)',
+                        backgroundImage: 'url(resources/vendor/silvercart/silvercart/client/img/loader.gif)',
                         backgroundPosition: 'center center',
                         backgroundRepeat: 'no-repeat',
                         width: originalForm.css('width'),
