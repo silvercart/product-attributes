@@ -1,0 +1,102 @@
+it:
+    SilverCart\ProductAttributes\Model\Product\ProductAttribute:
+        CAN_BE_USED_FOR_DATASHEET: 'Utilizzare per la scheda tecnica'
+        CAN_BE_USED_FOR_FILTERWIDGET: 'Utilizzare per il filtro articolo'
+        CAN_BE_USED_FOR_VARIANTS: 'Può essere utilizzato per varianti basate su più articoli'
+        CAN_BE_USED_FOR_VARIANTS_DESC: 'Se la funzione variante è attivata su base multi-articolo, è possibile collegare tra loro più articoli e renderli selezionabili tra loro (ad esempio, un articolo ha la caratteristica "Colore" -> "Rosso", un secondo articolo ha la caratteristica "Colore" -> "Giallo", un terzo articolo ha la caratteristica "Colore" -> "Verde").'
+        CanBeUsedForDataSheetShort: 'Scheda tecnica'
+        CanBeUsedForFilterWidgetShort: 'Filtro articolo'
+        CanBeUsedForSingleVariants: 'Può essere utilizzato per varianti basate su un singolo articolo'
+        CanBeUsedForSingleVariantsDesc: 'Le caratteristiche dell''articolo possono essere utilizzate per le varianti basate su un singolo articolo. Ciò significa che un articolo ha diverse caratteristiche che possono essere selezionate dal cliente (ad esempio, un articolo ha le caratteristiche "Colore" -> "Rosso", "Giallo", "Verde").'
+        CanBeUsedForSingleVariantsShort: 'Varianti singole'
+        CanBeUsedForVariantsShort: 'Varianti multiple'
+        ImportList: 'Importazione caratteristiche'
+        ImportListDesc: 'Inserisci qui un elenco di funzionalità che desideri importare. Si noti che è stata inserita una funzione per riga.'
+        ImportPrefix: 'Importa Prefisso'
+        ImportPrefixDesc: 'Testo che precede ogni caratteristica da importare.'
+        ImportSuffix: 'Importa suffisso'
+        ImportSuffixDesc: 'Testo allegato ad ogni caratteristica da importare.'
+        IsUserInputField: 'Attivare inserimento di testo libero '
+        IsUserInputFieldDesc: 'Se l''immissione di testo libero viene attivata, sull''articolo compare la possibilità di inserire un testo che il cliente può selezionare a piacere (ad es. "incisione"/"T-shirt imprint").'
+        PLURALNAME: 'Caratteristiche dell''articolo'
+        PLURALTITLE: 'Nome plurale'
+        SINGULARNAME: 'Caratteristica dell''articolo'
+        TABNAME: Caratteristiche
+        TITLE: Nome
+        UserInputFieldMustBeFilledIn: 'È necessario inserire un testo libero'
+        UserInputFieldMustBeFilledInDesc: 'Se questo campo viene attivato, il cliente deve inserire un testo prima di poter inserire un articolo collegato nel carrello.'
+    SilverCart\ProductAttributes\Extensions\Forms\AddToCartFormExtension:
+        HEADLINE: 'Opzioni a scelta'
+    SilverCart\ProductAttributes\Admin\Controllers\ProductAttributeAdmin:
+        MENUTITLE: 'Caratteristiche dell''articolo'
+    SilverCart\ProductAttributes\Model\Widgets\ProductAttributeFilterWidget:
+        CMSTITLE: 'Filtro caratteristica articolo'
+        DESCRIPTION: 'Fornisce una selezione raggruppata di filtri creati in base alle caratteristiche dell''articolo assegnato alla categoria merceologica corrente.'
+        DISABLE_FILTER_FOR: 'Annulla tutti i filtri per &quot;{title}&quot;'
+        FB_HINT: 'Il campo &quot;Filter-Behaviour&quot; determina il modo in cui il filtro reagisce all''input dell''utente.<br/> <b>Multiple Choise:</b> Il cliente può scegliere più valori di un attributo contemporaneamente. Ad esempio, il cliente può visualizzare tutti i prodotti con i colori rosso OR nero. Tutti i valori degli attributi di filtro sono selezionabili, indipendentemente dal filtro attualmente impostato.<br/> <b>Single Choise:</b> Il cliente può scegliere solo UN valore di un attributo. I valori degli attributi di filtro disponibili saranno vincolati dai filtri attualmente impostati.'
+        FB_MULTIPLECHOICE: 'Selezione multipla'
+        FB_SINGLECHOICE: 'Selezione semplice'
+        FILTERBEHAVIOUR: 'Comportamento del filtro'
+        REMEMBERFILTER: 'Ricordare il filtro per gruppo di prodotti'
+        TITLE: 'Filtro caratteristica articolo'
+    SilverCart\ProductAttributes\Model\Product\ProductAttributeTranslation:
+        PLURALNAME: Traduzioni
+        SINGULARNAME: Traduzione
+    SilverCart\ProductAttributes\Extensions\Order\OrderPositionExtension:
+        VARIANTDEFINITION: 'Descrizione della variante'
+    SilverCart\ProductAttributes\Model\Widgets\PriceFilterWidget:
+        CMSTITLE: 'Filtro prezzo'
+        DESCRIPTION: 'Restituisce un widget che consente d''inserire un intervallo di prezzo in base al quale gli articoli vengono filtrati.'
+        DISABLE_FILTER: 'Rimuovi filtro'
+        FILTER: Filtri
+        FRONTTITLE: 'Filtrare per prezzo'
+        MAX_PRICE: 'Fino a'
+        MIN_PRICE: Da
+        OffersAbove: 'circa {min} {currency}'
+        ShowOffersAbove: 'Mostra offerte su {min} {currency}'
+        ShowOffersFromTo: 'Mostra le offerte tra {min} e {max} {currency}'
+        TITLE: 'Filtro prezzi'
+    SilverCart\ProductAttributes\Extensions\Product\ProductExtension:
+        MASTER_PRODUCT: 'Questo prodotto è una variante del prodotto con il seguente numero di prodotto'
+        NoUserInput: Nessuno
+        PRODUCT_ATTRIBUTE: Attributo
+        PRODUCT_ATTRIBUTES: Attributo
+        PRODUCT_ATTRIBUTE_VALUE: Valore
+        PRODUCT_ATTRIBUTE_VALUES: Valore
+        SLAVE_PRODUCTS: 'Questo prodotto ha le seguenti varianti:'
+    SilverCart\ProductAttributes\Model\Product\ProductAttributeSet:
+        PLURALNAME: 'Set di attributi del prodotto'
+        SINGULARNAME: 'Set di attributi del prodotto'
+        TABNAME: 'Set di attributi'
+        TITLE: Titolo
+    SilverCart\ProductAttributes\Model\Product\ProductAttributeSetTranslation:
+        PLURALNAME: Traduzioni
+        SINGULARNAME: Traduzione
+    SilverCart\ProductAttributes\Model\Product\ProductAttributeValue:
+        PLURALNAME: 'Valori degli attributi del prodotto'
+        SINGULARNAME: 'Valore dell''attributo del prodotto'
+        TABNAME: Valori
+        TITLE: Titolo
+        Default: Standard
+        DefaultModifyDesc: 'Se viene utilizzato come valore predefinito per gli elementi collegati. Può essere sovrascritto singolarmente per ogni articolo.'
+        DefaultModifyAction: Azione
+        DefaultModifyActionNone: '- senza -'
+        DefaultModifyActionAdd: Aggiungere
+        DefaultModifyActionSetTo: Sovrascrivere
+        DefaultModifyActionSubtract: Rimuovere/Scollegare
+        DefaultModifyValue: Valore
+        DefaultModifyPrice: 'Adeguamento standard prezzo dell''articolo'
+        DefaultModifyPriceAction: 'Adeguamento azione prezzo articolo'
+        DefaultModifyPriceValue: 'Valore predefinito di modifica del prezzo del prodotto'
+        DefaultModifyProductNumber: 'Modifica del numero di prodotto predefinito'
+        DefaultModifyProductNumberAction: 'Azione di modifica del numero di prodotto predefinito'
+        DefaultModifyProductNumberValue: 'Valore di modifica del numero di prodotto predefinito'
+        DefaultModifyTitle: 'Modifica del titolo del prodotto predefinito'
+        DefaultModifyTitleAction: 'Azione di modifica del titolo del prodotto predefinito'
+        DefaultModifyTitleValue: 'Valore predefinito di modifica del titolo del prodotto'
+        ModifyPrice: 'Modificare il prezzo del prodotto'
+        ModifyProductNumber: 'Modificare il numero del prodotto'
+        ModifyTitle: 'Modificare il titolo del prodotto'
+    SilverCart\ProductAttributes\Model\Product\ProductAttributeValueTranslation:
+        PLURALNAME: Traduzioni
+        SINGULARNAME: Traduzione
