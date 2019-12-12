@@ -5,6 +5,7 @@ namespace SilverCart\ProductAttributes\Extensions\Pages;
 use SilverCart\Admin\Model\Config;
 use SilverStripe\CMS\Controllers\ModelAsController;
 use SilverStripe\Control\Controller;
+use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\FieldType\DBText;
 use SilverStripe\View\ArrayData;
@@ -31,7 +32,7 @@ class ProductGroupPageExtension extends DataExtension
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 23.08.2018
      */
-    public function updateCacheKeyParts(&$cacheKeyParts)
+    public function updateCacheKeyParts(array &$cacheKeyParts) : void
     {
         $ctrl            = Controller::curr();
         $cacheKeyParts[] = sha1(implode('-', $ctrl->getFilterValues()));
@@ -51,7 +52,7 @@ class ProductGroupPageExtension extends DataExtension
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 12.10.2018
      */
-    public function FilteredLink()
+    public function FilteredLink() : string
     {
         $link = $this->owner->Link();
         if ($this->owner->isFilteredByPrice()) {
@@ -60,7 +61,7 @@ class ProductGroupPageExtension extends DataExtension
             $maxPrice = $ctrl->getMaxPriceForWidget();
             $link     = $this->PriceRangeLink($minPrice, $maxPrice);
         }
-        return $link;
+        return (string) $link;
     }
     
     /**
@@ -74,7 +75,7 @@ class ProductGroupPageExtension extends DataExtension
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 12.10.2018
      */
-    public function PriceRangeLink($minPrice, $maxPrice)
+    public function PriceRangeLink($minPrice, $maxPrice) : string
     {
         $link       = $this->owner->Link();
         $paramPairs = [];
@@ -92,43 +93,45 @@ class ProductGroupPageExtension extends DataExtension
         } else {
             $link .= "&{$paramString}";
         }
-        return $link;
+        return (string) $link;
     }
     
     /**
      * Updates the bread crumb items.
      * 
-     * @param \SilverStripe\ORM\ArrayList $items Bread crumb items
+     * @param ArrayList $items Bread crumb items
      * 
      * @return void
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 12.10.2018
      */
-    public function updateBreadcrumbItems($items)
+    public function updateBreadcrumbItems(ArrayList $items) : void
     {
         if ($this->owner->isFilteredByPrice()) {
-            $ctrl     = Controller::curr();
-            $currency = Config::DefaultCurrency();
-            $title    = DBText::create();
-            $title->setValue("{$ctrl->getMinPriceForWidget()} - {$ctrl->getMaxPriceForWidget()} {$currency}");
-            $items->push(ArrayData::create([
-                'MenuTitle' => $title,
-                'Title'     => $title,
-                'Link'      => $this->owner->FilteredLink(),
-            ]));
+            $ctrl = Controller::curr();
+            if ($ctrl->hasMethod('getMinPriceForWidget')) {
+                $currency = Config::DefaultCurrency();
+                $title    = DBText::create();
+                $title->setValue("{$ctrl->getMinPriceForWidget()} - {$ctrl->getMaxPriceForWidget()} {$currency}");
+                $items->push(ArrayData::create([
+                    'MenuTitle' => $title,
+                    'Title'     => $title,
+                    'Link'      => $this->owner->FilteredLink(),
+                ]));
+            }
         }
     }
     
     /**
      * Returns whether the product list is filtered by price.
      * 
-     * @return boolean
+     * @return bool
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 12.10.2018
      */
-    public function isFilteredByPrice()
+    public function isFilteredByPrice() : bool
     {
         $isFilteredByPrice = false;
         $ctrl              = ModelAsController::controller_for($this->owner);
