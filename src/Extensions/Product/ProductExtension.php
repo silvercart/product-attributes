@@ -1004,15 +1004,20 @@ class ProductExtension extends DataExtension
         if (!($shoppingCartPosition instanceof ShoppingCartPosition)
          || !$shoppingCartPosition->exists()
         ) {
-            $shoppingCartPosition = ShoppingCartPosition::create();
-            $shoppingCartPosition->ShoppingCartID    = $cartID;
-            $shoppingCartPosition->ProductID         = $this->owner->ID;
-            $shoppingCartPosition->ProductAttributes = $serializedAttributes;
-            $shoppingCartPosition->write();
+            if ($quantity <= 0) {
+                return null;
+            }
+            $shoppingCartPosition = ShoppingCartPosition::create()
+                    ->castedUpdate([
+                        'ShoppingCartID'    => $cartID,
+                        'ProductID'         => $this->owner->ID,
+                        'ProductAttributes' => $serializedAttributes,
+                    ]);
         }
         
-        if ($shoppingCartPosition->isQuantityIncrementableBy($quantity)) {
-            $shoppingCartPosition->Quantity += $quantity;
+        $quantityToAdd = $quantity - $shoppingCartPosition->Quantity;
+        if ($shoppingCartPosition->isQuantityIncrementableBy($quantityToAdd, $this->owner)) {
+            $shoppingCartPosition->Quantity += $quantityToAdd;
         } else {
             if ($this->owner->StockQuantity > 0) {
                 $shoppingCartPosition->Quantity += $this->owner->StockQuantity - $shoppingCartPosition->Quantity;
