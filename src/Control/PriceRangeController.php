@@ -166,13 +166,8 @@ trait PriceRangeController
     {
         if (is_null($this->minPriceLimit)) {
             ProductFilterPlugin::$skip_filter_once = true;
-            $priceType = Config::PriceType();
-            $prices    = $this->owner->getProducts(false, false, true, true)->map('ID', 'Price' . ucfirst($priceType) . 'Amount');
-            if ($prices instanceof Map) {
-                $prices = $prices->toArray();
-            }
-            sort($prices);
-            $this->minPriceLimit = round(array_shift($prices), 2);
+            $priceType           = Config::PriceType();
+            $this->minPriceLimit = round($this->owner->getProducts()->getList()->min('Price' . ucfirst($priceType) . 'Amount'), 2);
         }
         return $this->minPriceLimit;
     }
@@ -186,13 +181,8 @@ trait PriceRangeController
     {
         if (is_null($this->maxPriceLimit)) {
             ProductFilterPlugin::$skip_filter_once = true;
-            $priceType = Config::PriceType();
-            $prices    = $this->owner->getProducts(false, false, true, true)->map('ID', 'Price' . ucfirst($priceType) . 'Amount');
-            if ($prices instanceof Map) {
-                $prices = $prices->toArray();
-            }
-            rsort($prices);
-            $this->maxPriceLimit = round(array_shift($prices), 2);
+            $priceType           = Config::PriceType();
+            $this->maxPriceLimit = round($this->owner->getProducts()->getList()->max('Price' . ucfirst($priceType) . 'Amount'), 2);
         }
         return $this->maxPriceLimit;
     }
