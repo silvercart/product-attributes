@@ -312,13 +312,14 @@ class ProductAttributeValue extends DataObject {
      * Returns true to use buttons to toggle IsDefault state of a product related
      * attribute value used as variant.
      * 
-     * @return boolean
+     * @return bool
      *
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 21.09.2016
      */
-    public function SubObjectHasIsDefault() {
-        return true;
+    public function SubObjectHasIsDefault() : bool
+    {
+        return (bool) $this->ProductAttribute()->CanBeUsedForVariants;
     }
     
     /**
