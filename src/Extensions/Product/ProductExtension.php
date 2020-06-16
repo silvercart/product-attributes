@@ -80,6 +80,12 @@ class ProductExtension extends DataExtension
      * @var ArrayList[]
      */
     protected $attributesWithValues = [];
+    /**
+     * A set of the products attributes with the related values
+     *
+     * @var ArrayList[]
+     */
+    protected $dataSheetAttributesWithValues = [];
     
     /**
      * A request cached map of attribute value IDs
@@ -325,6 +331,31 @@ class ProductExtension extends DataExtension
             $this->attributesWithValues[$this->owner->ID] = $attributesWithValues;
         }
         return $this->attributesWithValues[$this->owner->ID];
+    }
+
+    /**
+     * Returns the products attributes with related values
+     * 
+     * @return ArrayList
+     */
+    public function getDataSheetAttributesWithValues() : ArrayList
+    {
+        $this->owner->extend('overwriteDataSheetAttributesWithValues', $this->dataSheetAttributesWithValues);
+        if (!array_key_exists($this->owner->ID, $this->dataSheetAttributesWithValues)) {
+            $attributesWithValues = ArrayList::create();
+            foreach ($this->owner->ProductAttributes()->filter('CanBeUsedForDataSheet', true) as $attribute) {
+                $attributedValues = $this->getAttributedValuesFor($attribute);
+                if ($attributedValues->count() > 0) {
+                    $attributesWithValues->push(ArrayData::create([
+                        'Attribute' => $attribute,
+                        'Values'    => $attributedValues,
+                    ]));
+                }
+            }
+            $this->owner->extend('updateDataSheetAttributesWithValues', $attributesWithValues);
+            $this->dataSheetAttributesWithValues[$this->owner->ID] = $attributesWithValues;
+        }
+        return $this->dataSheetAttributesWithValues[$this->owner->ID];
     }
 
     /**
@@ -993,6 +1024,7 @@ class ProductExtension extends DataExtension
         ) {
             return $this->owner->addToCart($cartID, $quantity, true);
         }
+        $isNewPosition        = false;
         $serializedAttributes = serialize($attributes);
         $shoppingCartPosition = ShoppingCartPosition::get()
                 ->filter([
@@ -1007,6 +1039,7 @@ class ProductExtension extends DataExtension
             if ($quantity <= 0) {
                 return null;
             }
+            $isNewPosition        = true;
             $shoppingCartPosition = ShoppingCartPosition::create()
                     ->castedUpdate([
                         'ShoppingCartID'    => $cartID,
@@ -1018,17 +1051,15 @@ class ProductExtension extends DataExtension
         $quantityToAdd = $quantity - $shoppingCartPosition->Quantity;
         if ($shoppingCartPosition->isQuantityIncrementableBy($quantityToAdd, $this->owner)) {
             $shoppingCartPosition->Quantity += $quantityToAdd;
+        } elseif ($this->owner->StockQuantity > 0) {
+            $shoppingCartPosition->Quantity += $this->owner->StockQuantity - $shoppingCartPosition->Quantity;
+            $shoppingCartPosition->write(); //we have to write because we need the ID
+            ShoppingCartPositionNotice::setNotice($shoppingCartPosition->ID, "remaining");  
         } else {
-            if ($this->owner->StockQuantity > 0) {
-                $shoppingCartPosition->Quantity += $this->owner->StockQuantity - $shoppingCartPosition->Quantity;
-                $shoppingCartPosition->write(); //we have to write because we need the ID
-                ShoppingCartPositionNotice::setNotice($shoppingCartPosition->ID, "remaining");  
-            } else {
-                return null;
-            }
+            return null;
         }
         $shoppingCartPosition->write();
-        
+        $this->owner->extend('onAfterAddToCart', $shoppingCartPosition, $isNewPosition);
         return $shoppingCartPosition;
     }
     

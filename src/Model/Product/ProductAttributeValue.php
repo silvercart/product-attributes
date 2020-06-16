@@ -2,6 +2,7 @@
 
 namespace SilverCart\ProductAttributes\Model\Product;
 
+use NumberFormatter;
 use SilverCart\Dev\Tools;
 use SilverCart\Admin\Forms\AlertField;
 use SilverCart\Forms\FormFields\FieldGroup;
@@ -10,7 +11,9 @@ use SilverCart\Model\Product\Product;
 use SilverCart\ORM\DataObjectExtension;
 use SilverStripe\Assets\Image;
 use SilverStripe\Control\Controller;
+use SilverStripe\i18n\i18n;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\ORM\Filters\ExactMatchFilter;
 use SilverStripe\ORM\Filters\PartialMatchFilter;
 
@@ -23,6 +26,8 @@ use SilverStripe\ORM\Filters\PartialMatchFilter;
  * @copyright 2018 pixeltricks GmbH
  * @since 30.05.2018
  * @license see license file in modules root directory
+ * 
+ * @method ProductAttribute ProductAttribute() Returns the related ProductAttribute
  */
 class ProductAttributeValue extends DataObject {
     
@@ -277,6 +282,75 @@ class ProductAttributeValue extends DataObject {
      */
     public function getTitle() {
         return $this->getTranslationFieldValue('Title');
+    }
+    
+    /**
+     * Returns the advertisement title including the attribute.
+     * 
+     * @param string $valueCssClasses     CSS classes to wrap around the value title
+     * @param string $attributeCssClasses CSS classes to wrap around the attribute title
+     * 
+     * @return DBHTMLText
+     */
+    public function getFullAdTitle(string $valueCssClasses = '', string $attributeCssClasses = '') : DBHTMLText
+    {
+        $adValue = $this->getAdTitle();
+        $adTitle = $this->ProductAttribute()->AdTitle;
+        if (!empty($valueCssClasses)) {
+            $adValue = "<span class=\"{$valueCssClasses}\">{$adValue}</span>";
+        }
+        if (!empty($attributeCssClasses)) {
+            $adValue = "<span class=\"{$attributeCssClasses}\">{$adTitle}</span>";
+        }
+        if (strpos($adTitle, '{$Value}') === false) {
+            $adTitle = "{$adValue} {$adTitle}";
+        } else {
+            $adTitle = str_replace('{$Value}', $adValue, $adTitle);
+        }
+        return DBHTMLText::create()->setValue((string) $adTitle);
+    }
+    
+    /**
+     * Returns the advertisement title including the attribute.
+     * Alis for $this->getAdTitle().
+     * 
+     * @param string $valueCssClasses     CSS classes to wrap around the value title
+     * @param string $attributeCssClasses CSS classes to wrap around the attribute title
+     * 
+     * @return DBHTMLText
+     */
+    public function FullAdTitle(string $valueCssClasses = '', string $attributeCssClasses = '') : DBHTMLText
+    {
+        return $this->getFullAdTitle($valueCssClasses, $attributeCssClasses);
+    }
+    
+    /**
+     * Returns the advertisement title of this value (without attribute).
+     * 
+     * @return string
+     */
+    public function getAdTitle() : string
+    {
+        $adTitle   = $this->Title;
+        $attribute = $this->ProductAttribute();
+        if (is_numeric($adTitle)) {
+            if ($adTitle === '0'
+             && $attribute->DisplayZeroAsUnlimited
+            ) {
+                $adTitle = $attribute->fieldLabel('unlimited');
+            } elseif (!empty ($attribute->DisplayConversionUnit)
+                   && $attribute->DisplayConversionFactor > 0
+            ) {
+                $locale    = i18n::get_locale();
+                $formatter = NumberFormatter::create($locale, NumberFormatter::DECIMAL);
+                $adTitle   = "{$formatter->format($adTitle / $attribute->DisplayConversionFactor)} {$attribute->DisplayConversionUnit}";
+            } else {
+                $locale    = i18n::get_locale();
+                $formatter = NumberFormatter::create($locale, NumberFormatter::DECIMAL);
+                $adTitle   = $formatter->format($adTitle);
+            }
+        }
+        return (string) $adTitle;
     }
     
     /**

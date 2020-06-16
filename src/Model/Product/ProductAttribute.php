@@ -8,6 +8,7 @@ use SilverCart\Forms\FormFields\TextField;
 use SilverCart\Model\Product\Product;
 use SilverCart\ORM\DataObjectExtension;
 use SilverStripe\Control\Controller;
+use SilverStripe\Forms\FieldList;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
@@ -23,6 +24,11 @@ use SilverStripe\ORM\Filters\PartialMatchFilter;
  * @copyright 2018 pixeltricks GmbH
  * @since 30.05.2018
  * @license see license file in modules root directory
+ * 
+ * @property string $AdTitle                 Advertisement Title
+ * @property string $DisplayConversionUnit   Display Conversion Unit
+ * @property float  $DisplayConversionFactor Display Conversion Factor
+ * @property bool   $DisplayZeroAsUnlimited  Display Zero As Unlimited
  */
 class ProductAttribute extends DataObject {
     
@@ -38,6 +44,9 @@ class ProductAttribute extends DataObject {
         'CanBeUsedForSingleVariants'   => 'Boolean(0)',
         'IsUserInputField'             => 'Boolean(0)',
         'UserInputFieldMustBeFilledIn' => 'Boolean(0)',
+        'DisplayConversionUnit'        => 'Varchar',
+        'DisplayConversionFactor'      => 'Float',
+        'DisplayZeroAsUnlimited'       => 'Boolean(0)',
     ];
 
     /**
@@ -68,6 +77,7 @@ class ProductAttribute extends DataObject {
     private static $casting = [
         'Title'                            => 'Text',
         'PluralTitle'                      => 'Text',
+        'AdTitle'                          => 'Text',
         'ProductAttributeSetsAsString'     => 'Text',
         'ProductAttributeValuesAsString'   => 'Text',
         'HasSelectedValues'                => 'Boolean',
@@ -183,6 +193,7 @@ class ProductAttribute extends DataObject {
                 'ImportSuffixDesc'                 => _t(static::class . '.ImportSuffixDesc', 'Text will be suffixed to every imported attribute.'),
                 'IsUserInputField'                 => _t(static::class . '.IsUserInputField', 'Is user input field'),
                 'IsUserInputFieldDesc'             => _t(static::class . '.IsUserInputFieldDesc', 'If you are using the user input field, the customer can enter a custom text before adding a product to cart (z.B. "engraving"/"t-shirt overprint").'),
+                'unlimited'                        => _t(static::class . '.unlimited', 'unlimited'),
                 'UserInputFieldMustBeFilledIn'     => _t(static::class . '.UserInputFieldMustBeFilledIn', 'User input is obligatory'),
                 'UserInputFieldMustBeFilledInDesc' => _t(static::class . '.UserInputFieldMustBeFilledInDesc', 'If this is active, the customer has to enter a custom text before he is able to add the related product to cart.'),
             ]
@@ -195,30 +206,32 @@ class ProductAttribute extends DataObject {
     /**
      * Customized CMS fields
      *
-     * @return FieldList the fields for the backend
+     * @return FieldList
      */
-    public function getCMSFields() {
-        $fields = DataObjectExtension::getCMSFields($this, 'CanBeUsedForFilterWidget', false);
-        
-        $fields->dataFieldByName('CanBeUsedForVariants')->setDescription($this->fieldLabel('CanBeUsedForVariantsDesc'));
-        $fields->dataFieldByName('CanBeUsedForSingleVariants')->setDescription($this->fieldLabel('CanBeUsedForSingleVariantsDesc'));
-        $fields->dataFieldByName('IsUserInputField')->setDescription($this->fieldLabel('IsUserInputFieldDesc'));
-        $fields->dataFieldByName('UserInputFieldMustBeFilledIn')->setDescription($this->fieldLabel('UserInputFieldMustBeFilledInDesc'));
-        
-        if ($this->exists()) {
-            $importListField = new TextareaField('ImportList', $this->fieldLabel('ImportList'));
-            $importListField->setDescription($this->fieldLabel('ImportListDesc'));
-            $importPrefixField = new TextField('ImportPrefix', $this->fieldLabel('ImportPrefix'));
-            $importPrefixField->setDescription($this->fieldLabel('ImportPrefixDesc'));
-            $importSuffixField = new TextField('ImportSuffix', $this->fieldLabel('ImportSuffix'));
-            $importSuffixField->setDescription($this->fieldLabel('ImportSuffixDesc'));
-            
-            $fields->addFieldToTab('Root.ProductAttributeValues', $importListField);
-            $fields->addFieldToTab('Root.ProductAttributeValues', $importPrefixField);
-            $fields->addFieldToTab('Root.ProductAttributeValues', $importSuffixField);
-        }
-        
-        return $fields;
+    public function getCMSFields() : FieldList
+    {
+        $this->beforeUpdateCMSFields(function(FieldList $fields) {
+            $fields->dataFieldByName('CanBeUsedForVariants')->setDescription($this->fieldLabel('CanBeUsedForVariantsDesc'));
+            $fields->dataFieldByName('CanBeUsedForSingleVariants')->setDescription($this->fieldLabel('CanBeUsedForSingleVariantsDesc'));
+            $fields->dataFieldByName('IsUserInputField')->setDescription($this->fieldLabel('IsUserInputFieldDesc'));
+            $fields->dataFieldByName('UserInputFieldMustBeFilledIn')->setDescription($this->fieldLabel('UserInputFieldMustBeFilledInDesc'));
+            $fields->dataFieldByName('AdTitle')
+                    ->setDescription($this->fieldLabel('AdTitleDesc'))
+                    ->setRightTitle($this->fieldLabel('AdTitleRightTitle'));
+            if ($this->exists()) {
+                $importListField = TextareaField::create('ImportList', $this->fieldLabel('ImportList'));
+                $importListField->setDescription($this->fieldLabel('ImportListDesc'));
+                $importPrefixField = TextField::create('ImportPrefix', $this->fieldLabel('ImportPrefix'));
+                $importPrefixField->setDescription($this->fieldLabel('ImportPrefixDesc'));
+                $importSuffixField = TextField::create('ImportSuffix', $this->fieldLabel('ImportSuffix'));
+                $importSuffixField->setDescription($this->fieldLabel('ImportSuffixDesc'));
+
+                $fields->addFieldToTab('Root.ProductAttributeValues', $importListField);
+                $fields->addFieldToTab('Root.ProductAttributeValues', $importPrefixField);
+                $fields->addFieldToTab('Root.ProductAttributeValues', $importSuffixField);
+            }
+        });
+        return DataObjectExtension::getCMSFields($this, 'CanBeUsedForFilterWidget', false);
     }
 
     /**
@@ -342,6 +355,24 @@ class ProductAttribute extends DataObject {
             $pluralTitle = $this->getTitle();
         }
         return $pluralTitle;
+    }
+    
+    /**
+     * Returns the translated ad title
+     *
+     * @return string
+     * 
+     * @author Sebastian Diel <sdiel@pixeltricks.de>
+     * @since 09.06.2020
+     */
+    public function getAdTitle() : string
+    {
+        $title = $this->getTranslationFieldValue('AdTitle');
+        if (empty($title)) {
+            // fall back to title
+            $title = $this->getTitle();
+        }
+        return $title;
     }
     
     /**

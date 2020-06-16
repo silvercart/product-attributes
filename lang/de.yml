@@ -1,5 +1,12 @@
 de:
     SilverCart\ProductAttributes\Model\Product\ProductAttribute:
+        AdTitle: Werbename
+        AdTitleDesc: |
+            Beispiele für Merkmal "HDD Speicherplatz" mit einem Wert von "500 GB":<br/>
+            • "Insgesamt {$Value} Speicherplatz" (Anzeige: "Insgesamt 500 GB Speicherplatz")<br/>
+            • "Speicherplatz: {$Value}!" (Anzeige: "Speicherplatz: 500 GB!")<br/>
+            • "Festplattenkapazität" (Anzeige: "500 GB Festplattenkapazität")<br/>
+        AdTitleRightTitle: 'Der Werbename wird an werbewirksamen Stellen wie z.B. einer CMS-Seite für eine Paket-Auswahl angezeigt.'
         CAN_BE_USED_FOR_DATASHEET: "Für das Datenblatt verwenden"
         CAN_BE_USED_FOR_FILTERWIDGET: "Für den Artikelfilter verwenden"
         CAN_BE_USED_FOR_VARIANTS: "Kann für Multi-Artikel basierte Varianten verwendet werden"
@@ -10,6 +17,11 @@ de:
         CanBeUsedForSingleVariantsDesc: 'Artikelmerkmale können für Varianten auf Einzel-Artikel-Basis verwendet werden. Das bedeutet, ein Artikel erhält mehrere Merkmale die vom Kunden auswählbar sind (z.B. ein Artikel erhält die Merkmale "Farbe" -> "Rot", "Gelb", "Grün").'
         CanBeUsedForSingleVariantsShort: "Einzel-Varianten"
         CanBeUsedForVariantsShort: "Multi-Varianten"
+        DisplaySettings: 'Anzeige-Einstellungen'
+        DisplayConversionUnit: 'Anzeige Einheit'
+        DisplayConversionUnitDesc: 'z.B. "GB", "MB", "cm", "€"'
+        DisplayConversionFactor: 'Umrechnungsfaktor'
+        DisplayZeroAsUnlimited: 'Null-Wert als "unbegrenzt" anzeigen'
         ImportList: "Merkmale importieren"
         ImportListDesc: "Fügen Sie hier eine Liste von Merkmalen ein, die Sie importieren möchten. Bitte beachten Sie, dass je Zeile ein Merkmal eingefügt wird."
         ImportPrefix: "Import Präfix"
@@ -23,6 +35,7 @@ de:
         SINGULARNAME: "Artikelmerkmal"
         TABNAME: "Merkmale"
         TITLE: "Name"
+        unlimited: 'unbegrenzt'
         UserInputFieldMustBeFilledIn: "Freitext muss eingegeben werden"
         UserInputFieldMustBeFilledInDesc: "Wird dieses Feld aktiviert, muss der Kunde einen Text eingeben, bevor er einen Verknüpften Artikel in den Warenkorb legen kann."
     SilverCart\ProductAttributes\Extensions\Forms\AddToCartFormExtension:

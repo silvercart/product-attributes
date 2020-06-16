@@ -76,16 +76,17 @@ class ShoppingCartPositionExtension extends DataExtension {
     /**
      * Returns the related variant attributes.
      * 
-     * @return DataList
+     * @return ArrayList
      */
-    public function getUserInputAttributes() {
+    public function getUserInputAttributes() : ArrayList
+    {
         $attributeValues      = null;
         $userInputValues      = ArrayList::create();
         $serializedAttributes = $this->owner->ProductAttributes;
         $attributesArray      = unserialize($serializedAttributes);
-        if (is_array($attributesArray) &&
-            count($attributesArray) > 0) {
-            
+        if (is_array($attributesArray)
+         && count($attributesArray) > 0
+        ) {
             $userInputAttributes = [];
             foreach ($attributesArray as $ID => $attribute) {
                 if (is_array($attribute)) {
@@ -94,6 +95,9 @@ class ShoppingCartPositionExtension extends DataExtension {
             }
             $attributesArray = [];
             foreach ($userInputAttributes as $ID => $data) {
+                if (!array_key_exists('Option', $data)) {
+                    continue;
+                }
                 $attributesArray[$ID] = $data['Option'];
             }
             if (count($attributesArray) > 0) {
@@ -101,22 +105,21 @@ class ShoppingCartPositionExtension extends DataExtension {
                 if (!empty($idString)) {
                     $attributeValues = ProductAttributeValue::get()
                         ->where('"' . ProductAttributeValue::config()->get('table_name') . '"."ID" IN (' . implode(',', $attributesArray) . ')');
-
                     foreach ($attributeValues as $value) {
                         if (!array_key_exists($value->ProductAttribute()->ID, $userInputAttributes)) {
                             continue;
                         }
                         $userInputValues->push(ArrayData::create([
                             'AttributeTitle' => $value->ProductAttribute()->Title,
-                            'Title'          => $value->Title . ' "' . $userInputAttributes[$value->ProductAttribute()->ID]['TextValue'] . '"',
+                            'Title'          => "{$value->Title} \"{$userInputAttributes[$value->ProductAttribute()->ID]['TextValue']}\"",
                             'ID'             => $value->ID,
                         ]));
                     }
                 }
             }
-            
-            if (!($attributeValues instanceof SS_List) ||
-                $attributeValues->count() < count($attributesArray)) {
+            if (!($attributeValues instanceof SS_List)
+             || $attributeValues->count() < count($attributesArray)
+            ) {
                 foreach ($userInputAttributes as $ID => $userInputAttribute) {
                     if (array_key_exists($ID, $userInputValues)) {
                         continue;
@@ -124,7 +127,7 @@ class ShoppingCartPositionExtension extends DataExtension {
                     $attribute = ProductAttribute::get()->byID($ID);
                     $userInputValues->push(ArrayData::create([
                         'AttributeTitle' => $attribute->Title,
-                        'Title'          => '"' . $userInputAttribute['TextValue'] . '"',
+                        'Title'          => "\"{$userInputAttribute['TextValue']}\"",
                         'ID'             => 0,
                     ]));
                 }
