@@ -1024,6 +1024,18 @@ class ProductExtension extends DataExtension
         ) {
             return $this->owner->addToCart($cartID, $quantity, true);
         }
+        $increment            = true;
+        $addToCartAllowed     = true;
+        $shoppingCartPosition = null;
+        $this->owner->extend('updateAddToCart', $cartID, $quantity, $increment, $addToCartAllowed, $shoppingCartPosition);
+        if ($this->owner->IsNotBuyable
+         || $quantity == 0
+         || $cartID == 0
+         || !$addToCartAllowed
+         || !$this->owner->isBuyableDueToStockManagementSettings()
+        ) {
+            return $shoppingCartPosition;
+        }
         $isNewPosition        = false;
         $serializedAttributes = serialize($attributes);
         $shoppingCartPosition = ShoppingCartPosition::get()
