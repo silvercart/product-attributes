@@ -140,31 +140,32 @@ class ShoppingCartPositionExtension extends DataExtension {
      * Overwrites the position price.
      *
      * @param DBMoney &$overwrittenPrice The price to set
-     * @param boolean $forSingleProduct  Indicates wether the price for the total
+     * @param bool    $forSingleProduct  Indicates wether the price for the total
      *                                   quantity of products should be returned
      *                                   or for one product only.
-     * @param boolean $priceType         'gross' or 'net'. If undefined it'll be automatically chosen.
+     * @param string  $priceType         'gross' or 'net'. If undefined it'll be automatically chosen.
      * 
-     * @return string
+     * @return void
      *
      * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
+     * @since 23.07.2020
      */
-    public function overwriteGetPrice(&$overwrittenPrice, $forSingleProduct, $priceType) {
+    public function overwriteGetPrice(DBMoney &$overwrittenPrice = null, bool $forSingleProduct, string $priceType = null) : void
+    {
         $product          = $this->owner->Product();
         $price            = $product->getPrice($priceType);
-        $finalPriceAmount = 0;
-
-        if ($product instanceof Product &&
-            $product->exists()) {
-            
+        $finalPriceAmount = $price->getAmount();
+        if ($product instanceof Product
+         && $product->exists()
+        ) {
             $variantAttributes = ArrayList::create($this->owner->getVariantAttributes()->toArray());
             $variantAttributes->merge($this->owner->getUserInputAttributes());
             foreach ($variantAttributes as $variantAttributeValue) {
                 $productAttribute = $product->ProductAttributeValues()->byID($variantAttributeValue->ID);
                 $priceAmount      = 0;
-                if (!($productAttribute instanceof ProductAttributeValue) ||
-                    !$productAttribute->exists()) {
+                if (!($productAttribute instanceof ProductAttributeValue)
+                 || !$productAttribute->exists()
+                ) {
                     continue;
                 }
                 if (!empty($productAttribute->FinalModifyPriceValue)) {
@@ -172,10 +173,10 @@ class ShoppingCartPositionExtension extends DataExtension {
                 }
                 switch ($productAttribute->FinalModifyPriceAction) {
                     case 'add':
-                        $finalPriceAmount = $price->getAmount() + $priceAmount;
+                        $finalPriceAmount += $priceAmount;
                         break;
                     case 'subtract':
-                        $finalPriceAmount = $price->getAmount() - $priceAmount;
+                        $finalPriceAmount -= $priceAmount;
                         break;
                     case 'setTo':
                         $finalPriceAmount = $priceAmount;
@@ -185,7 +186,6 @@ class ShoppingCartPositionExtension extends DataExtension {
                 }
             }
         }
-        
         if ($finalPriceAmount > 0) {
             if (!$forSingleProduct) {
                 $finalPriceAmount = $finalPriceAmount * $this->owner->Quantity;
