@@ -53,25 +53,26 @@ class SilvercartProductAttributeShoppingCartPositionPlugin extends DataExtension
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 07.11.2016
      */
-    public function pluginOverwriteGetPrice(&$arguments, &$callingObject) {
+    public function pluginOverwriteGetPrice(&$arguments, &$callingObject)
+    {
         $product          = $callingObject->SilvercartProduct();
         $price            = $product->getPrice();
-        $finalPriceAmount = 0;
+        $finalPriceAmount = $price->getAmount();
         $priceObj         = null;
-
-        if ($product instanceof SilvercartProduct &&
-            $product->exists()) {
-            
+        if ($product instanceof SilvercartProduct
+         && $product->exists()
+        ) {
             $variantAttributes = ArrayList::create($callingObject->getVariantAttributes()->toArray());
             $variantAttributes->merge($callingObject->getUserInputAttributes());
-            if (!is_null($variantAttributes) &&
-                $variantAttributes->exists()) {
-                
+            if (!is_null($variantAttributes)
+             && $variantAttributes->exists()
+            ) {
                 foreach ($variantAttributes as $variantAttributeValue) {
                     $productAttribute = $product->SilvercartProductAttributeValues()->byID($variantAttributeValue->ID);
                     $priceAmount      = 0;
-                    if (!($productAttribute instanceof SilvercartProductAttributeValue) ||
-                        !$productAttribute->exists()) {
+                    if (!($productAttribute instanceof SilvercartProductAttributeValue)
+                     || !$productAttribute->exists()
+                    ) {
                         continue;
                     }
                     if (!empty($productAttribute->FinalModifyPriceValue)) {
@@ -79,10 +80,10 @@ class SilvercartProductAttributeShoppingCartPositionPlugin extends DataExtension
                     }
                     switch ($productAttribute->FinalModifyPriceAction) {
                         case 'add':
-                            $finalPriceAmount = $price->getAmount() + $priceAmount;
+                            $finalPriceAmount += $priceAmount;
                             break;
                         case 'subtract':
-                            $finalPriceAmount = $price->getAmount() - $priceAmount;
+                            $finalPriceAmount -= $priceAmount;
                             break;
                         case 'setTo':
                             $finalPriceAmount = $priceAmount;
@@ -93,16 +94,14 @@ class SilvercartProductAttributeShoppingCartPositionPlugin extends DataExtension
                 }
             }
         }
-        
         if ($finalPriceAmount > 0) {
             if (!$arguments[0]) {
                 $finalPriceAmount = $finalPriceAmount * $callingObject->Quantity;
             }
-            $priceObj = new Money();
+            $priceObj = Money::create();
             $priceObj->setCurrency($price->getCurrency());
             $priceObj->setAmount($finalPriceAmount);
         }
-
         return $priceObj;
     }
 
