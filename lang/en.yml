@@ -25,6 +25,15 @@ en:
         TITLE: Title
         UserInputFieldMustBeFilledIn: 'User input is obligatory'
         UserInputFieldMustBeFilledInDesc: 'If this is active, the customer has to enter a custom text before he is able to add the related product to cart.'
+        AdTitle: 'Advertising name'
+        AdTitleDesc: "Examples for feature \"HDD storage space\" with a value of \"500 GB\":<br/>\n- \"Total {$Value} Storage Space\" (Display: \"Total 500 GB Storage Space\")<br/>\n- \"Storage: {$Value}!\" (Display: \"Disk space: 500 GB!\")<br/>\n- \"Hard disk capacity\" (display: \"500 GB hard disk capacity\")<br/>\n"
+        AdTitleRightTitle: 'The advertising name is displayed in places that are effective in advertising, such as a CMS page for a package selection.'
+        DisplaySettings: 'Display Settings'
+        DisplayConversionUnit: 'Display Unit'
+        DisplayConversionUnitDesc: 'e.g. "GB", "MB", "cm", "€"'
+        DisplayConversionFactor: 'Conversion factor'
+        DisplayZeroAsUnlimited: 'Display zero value as "unlimited'
+        unlimited: unlimited
     SilverCart\ProductAttributes\Extensions\Forms\AddToCartFormExtension:
         HEADLINE: Variants
     SilverCart\ProductAttributes\Admin\Controllers\ProductAttributeAdmin:
