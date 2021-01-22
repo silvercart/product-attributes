@@ -22,9 +22,11 @@ use SilverStripe\View\ArrayData;
  * @since 30.05.2018
  * @license see license file in modules root directory
  * @copyright 2018 pixeltricks GmbH
+ * 
+ * @property \SilverCart\Model\Order\ShoppingCartPosition $owner Owner
  */
-class ShoppingCartPositionExtension extends DataExtension {
-    
+class ShoppingCartPositionExtension extends DataExtension
+{
     /**
      * DB attributes.
      *
@@ -40,26 +42,25 @@ class ShoppingCartPositionExtension extends DataExtension {
      * @param FieldList $fields Fields
      * 
      * @return void
-     *
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 07.11.2016
      */
-    public function updateCMSFields(FieldList $fields) {
+    public function updateCMSFields(FieldList $fields) : void
+    {
         $fields->removeByName('ProductAttributes');
     }
     
     /**
      * Returns the related variant attributes.
      * 
-     * @return \SilverStripe\ORM\DataList
+     * @return SS_List
      */
-    public function getVariantAttributes() {
+    public function getVariantAttributes() : SS_List
+    {
         $attributeValues      = ArrayList::create();
         $serializedAttributes = $this->owner->ProductAttributes;
         $attributesArray      = unserialize($serializedAttributes);
-        if (is_array($attributesArray) &&
-            count($attributesArray) > 0) {
-            
+        if (is_array($attributesArray)
+         && count($attributesArray) > 0
+        ) {
             foreach ($attributesArray as $ID => $attribute) {
                 if (is_array($attribute)) {
                     unset($attributesArray[$ID]);
@@ -146,15 +147,12 @@ class ShoppingCartPositionExtension extends DataExtension {
      * @param string  $priceType         'gross' or 'net'. If undefined it'll be automatically chosen.
      * 
      * @return void
-     *
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 23.07.2020
      */
     public function overwriteGetPrice(DBMoney &$overwrittenPrice = null, bool $forSingleProduct, string $priceType = null) : void
     {
         $product          = $this->owner->Product();
         $price            = $product->getPrice($priceType);
-        $finalPriceAmount = $price->getAmount();
+        $finalPriceAmount = $priceAmount = $price->getAmount();
         if ($product instanceof Product
          && $product->exists()
         ) {
@@ -186,7 +184,7 @@ class ShoppingCartPositionExtension extends DataExtension {
                 }
             }
         }
-        if ($finalPriceAmount > 0) {
+        if ($finalPriceAmount != $priceAmount) {
             if (!$forSingleProduct) {
                 $finalPriceAmount = $finalPriceAmount * $this->owner->Quantity;
             }
@@ -201,17 +199,14 @@ class ShoppingCartPositionExtension extends DataExtension {
      *
      * @param string &$productNumber The original product number
      * 
-     * @return string
-     *
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
+     * @return void
      */
-    public function overwriteGetProductNumberShop(&$productNumber) {
+    public function overwriteGetProductNumberShop(string &$productNumber) : void
+    {
         $product = $this->owner->Product();
-
-        if ($product instanceof Product &&
-            $product->exists()) {
-            
+        if ($product instanceof Product
+         && $product->exists()
+        ) {
             $variantAttributes = $this->owner->getVariantAttributes();
             foreach ($variantAttributes as $variantAttributeValue) {
                 $productAttribute = $product->ProductAttributeValues()->byID($variantAttributeValue->ID);
@@ -235,16 +230,13 @@ class ShoppingCartPositionExtension extends DataExtension {
      * @param string &$title The title to update
      * 
      * @return string
-     *
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
      */
-    public function updateTitle(&$title) {
+    public function updateTitle(string &$title) : void
+    {
         $product = $this->owner->Product();
-
-        if ($product instanceof Product &&
-            $product->exists()) {
-            
+        if ($product instanceof Product
+         && $product->exists()
+        ) {
             $variantAttributes = $this->owner->getVariantAttributes();
             foreach ($variantAttributes as $variantAttributeValue) {
                 $productAttribute = $product->ProductAttributeValues()->byID($variantAttributeValue->ID);
@@ -267,12 +259,13 @@ class ShoppingCartPositionExtension extends DataExtension {
      *
      * @param string &$addToTitle String to add to title
      * 
-     * @return string
+     * @return void
      * 
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
-    public function addToTitle(&$addToTitle) {
+    public function addToTitle(string &$addToTitle) : void
+    {
         $addToTitle .= (string) $this->owner->renderWith(static::class . '_AddToTitle');
     }
     
@@ -281,13 +274,10 @@ class ShoppingCartPositionExtension extends DataExtension {
      *
      * @param string &$addToTitleForWidget String to add to title
      * 
-     * @return string
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
+     * @return void
      */
-    public function addToTitleForWidget(&$addToTitleForWidget) {
+    public function addToTitleForWidget(string &$addToTitleForWidget) : void
+    {
         $addToTitleForWidget .= (string) $this->owner->renderWith(static::class . '_AddToTitleForWidget');
     }
-    
 }
