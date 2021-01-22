@@ -1,0 +1,111 @@
+nl:
+    SilverCart\ProductAttributes\Model\Product\ProductAttribute:
+        CAN_BE_USED_FOR_DATASHEET: 'Gebruik voor het gegevensblad'
+        CAN_BE_USED_FOR_FILTERWIDGET: 'Gebruik voor het artikelfilter'
+        CAN_BE_USED_FOR_VARIANTS: 'Kan worden gebruikt voor varianten op basis van meerdere artikelen'
+        CAN_BE_USED_FOR_VARIANTS_DESC: 'Als de variantfunctie op multi-artikelbasis is geactiveerd, is het mogelijk om meerdere artikelen aan elkaar te koppelen en deze onderling selecteerbaar te maken (bijv. een artikel krijgt de eigenschap "Kleur" -> "Rood", een tweede ontvangt de eigenschap "Kleur" -> "Geel", een derde ontvangt de eigenschap "Kleur" -> "Groen").'
+        CanBeUsedForDataSheetShort: Gegevensblad
+        CanBeUsedForFilterWidgetShort: 'Artikel filter'
+        CanBeUsedForSingleVariants: 'Kan worden gebruikt voor varianten op basis van één artikel'
+        CanBeUsedForSingleVariantsDesc: 'Artikelkenmerken kunnen worden gebruikt voor varianten op basis van één artikel. Dit betekent dat een artikel verschillende kenmerken heeft die door de klant kunnen worden geselecteerd (bijv. een artikel heeft de kenmerken "Kleur" -> "Rood", "Geel", "Groen").'
+        CanBeUsedForSingleVariantsShort: 'Enkele varianten'
+        CanBeUsedForVariantsShort: Multi-varianten
+        ImportList: Invoereigenschappen
+        ImportListDesc: 'Voeg hier een lijst met functies in die u wilt importeren. Houd er rekening mee dat per regel een functie wordt ingevoegd.'
+        ImportPrefix: 'Voorvoegsel importeren'
+        ImportPrefixDesc: 'Tekst die voorafgaat aan elk kenmerk dat moet worden geïmporteerd.'
+        ImportSuffix: 'Importeer achtervoegsel'
+        ImportSuffixDesc: 'Tekst die aan elk in te voeren kenmerk wordt toegevoegd.'
+        IsUserInputField: 'Vrije tekstinvoer geactiveerd'
+        IsUserInputFieldDesc: 'Als de vrije tekstinvoer wordt geactiveerd, zal het artikel een tekst kunnen ingaan die door de klant kan worden geselecteerd (e.B. "Gravure"/"T-overdruk van het T-shirt")'
+        PLURALNAME: 'Artikel kenmerken'
+        PLURALTITLE: 'Meervoudige naam'
+        SINGULARNAME: 'Kenmerk van het artikel'
+        TABNAME: Kenmerken
+        TITLE: Naam
+        UserInputFieldMustBeFilledIn: 'Er moet vrije tekst worden ingevoerd'
+        UserInputFieldMustBeFilledInDesc: 'Als dit veld is geactiveerd, moet de klant een tekst invoeren voordat hij een gekoppeld artikel in de winkelwagen kan plaatsen.'
+        AdTitle: Advertentienaam
+        AdTitleDesc: "Voorbeelden voor de functie \"HDD-ruimte\" met een waarde van \"500 GB\":<br/>\n- \"Totale {$Value} schijfruimte\" (display: \"Totale 500 GB schijfruimte\").<br/>\n- \"Schijfruimte: {$Value}\"! (display: \"Schijfruimte: 500 GB!\")<br/>\n- \"Harde schijfcapaciteit\" (beeldscherm: \"500 GB hardeschijfcapaciteit\")<br/>\n"
+        AdTitleRightTitle: 'Het Font Awesome-pictogram wordt weergegeven op plaatsen die effectief zijn in advertenties, zoals een CMS-pagina voor een pakketselectie.'
+        DisplaySettings: Beeldscherminstellingen
+        DisplayConversionUnit: Weergave-eenheid
+        DisplayConversionUnitDesc: 'bijv. "GB", "MB", "cm", "€".'
+        DisplayConversionFactor: Omrekeningsfactor
+        DisplayZeroAsUnlimited: 'Nulwaarde weergeven als "onbeperkt'
+        unlimited: onbeperkt
+    SilverCart\ProductAttributes\Extensions\Forms\AddToCartFormExtension:
+        HEADLINE: Keuzes
+    SilverCart\ProductAttributes\Admin\Controllers\ProductAttributeAdmin:
+        MENUTITLE: Artikelkenmerken
+    SilverCart\ProductAttributes\Model\Widgets\ProductAttributeFilterWidget:
+        CMSTITLE: Artikelnummerfilter
+        DESCRIPTION: 'Geeft een gegroepeerde selectie van filters die zijn gemaakt op basis van de toegewezen artikelkenmerken van de huidige goederencategorie.'
+        DISABLE_FILTER_FOR: 'Alle filters voor " {title} " annuleren'
+        FB_HINT: 'Het veld Filtergedrag bepaalt hoe het filter reageert.<br/> selectie <b> meerdere:</b> De klant kan meerdere waarden van een kenmerk tegelijkertijd selecteren. Alle items met een kleur rood OF zwart kunnen worden weergegeven voor de kleding. Alle filterkenmerkende waarden van een productgroep kunnen altijd worden geselecteerd.<br/> selectie <b>Single:</b> De klant kan slechts één waarde van een kenmerk selecteren. De beschikbare filterkenmerkwaarden zijn altijd gebaseerd op de lijst met gefilterde items.'
+        FB_MULTIPLECHOICE: 'Meervoudige selectie'
+        FB_SINGLECHOICE: 'Enkele selectie'
+        FILTERBEHAVIOUR: Filtergedrag
+        REMEMBERFILTER: 'Binden aan productgroep(s)'
+        TITLE: Artikelnummerfilter
+    SilverCart\ProductAttributes\Model\Product\ProductAttributeTranslation:
+        PLURALNAME: Vertalingen
+        SINGULARNAME: Vertaling
+    SilverCart\ProductAttributes\Extensions\Order\OrderPositionExtension:
+        VARIANTDEFINITION: 'Beschrijving van de varianten'
+    SilverCart\ProductAttributes\Model\Widgets\PriceFilterWidget:
+        CMSTITLE: Prijsfilter
+        DESCRIPTION: 'Geeft een widget waarmee u een prijsklasse kunt invoeren waarmee artikelen worden gefilterd.'
+        DISABLE_FILTER: Annuleringsfilter
+        FILTER: Filter
+        FRONTTITLE: 'Filter op prijs'
+        MAX_PRICE: naar
+        MIN_PRICE: Van
+        OffersAbove: 'over {min} {valuta}'
+        ShowOffersAbove: 'Aanbiedingen weergeven voor {min} {currency}'
+        ShowOffersFromTo: 'Toon aanbiedingen tussen {min} en {max} {currency}'
+        TITLE: Prijsfilter
+    SilverCart\ProductAttributes\Extensions\Product\ProductExtension:
+        MASTER_PRODUCT: 'Dit artikel is een variant op het artikel met het artikelnummer'
+        NoUserInput: Zonder
+        PRODUCT_ATTRIBUTE: Functie
+        PRODUCT_ATTRIBUTES: Kenmerken
+        PRODUCT_ATTRIBUTE_VALUE: Waarde
+        PRODUCT_ATTRIBUTE_VALUES: Waarde
+        SLAVE_PRODUCTS: 'Dit artikel heeft de volgende varianten:'
+    SilverCart\ProductAttributes\Model\Product\ProductAttributeSet:
+        PLURALNAME: 'Item karakteristieke sets'
+        SINGULARNAME: 'Artikel kenmerken set'
+        TABNAME: Functiesets
+        TITLE: Naam
+    SilverCart\ProductAttributes\Model\Product\ProductAttributeSetTranslation:
+        PLURALNAME: Vertalingen
+        SINGULARNAME: Vertaling
+    SilverCart\ProductAttributes\Model\Product\ProductAttributeValue:
+        PLURALNAME: 'Artikel kenmerkende waarden'
+        SINGULARNAME: 'Item kenmerkwaarde'
+        TABNAME: waarden
+        TITLE: Naam
+        Default: Standaard
+        DefaultModifyDesc: 'Gebruikt als de standaardwaarde voor gekoppelde items. Kan individueel worden overschreven op elk afzonderlijk item.'
+        DefaultModifyAction: Actie
+        DefaultModifyActionNone: '- zonder -'
+        DefaultModifyActionAdd: 'Toevoegen / toevoegen'
+        DefaultModifyActionSetTo: Overschrijven
+        DefaultModifyActionSubtract: 'Verwijderen / afpellen'
+        DefaultModifyValue: Waarde
+        DefaultModifyPrice: 'Aanpassing van artikelprijs'
+        DefaultModifyPriceAction: 'Aanpassing van artikelprijs'
+        DefaultModifyPriceValue: 'Prijswaarde van item aanpassen'
+        DefaultModifyProductNumber: 'Standaard aanpassing artikelnummer'
+        DefaultModifyProductNumberAction: 'Aanpassing van artikelnummer'
+        DefaultModifyProductNumberValue: 'Waarde van het artikelnummer aanpassen'
+        DefaultModifyTitle: 'Titel van standaard artikel voor aanpassing'
+        DefaultModifyTitleAction: 'Aanpassing van de titel van het artikel Actie'
+        DefaultModifyTitleValue: 'Aanpassing artikeltitelwaarde'
+        ModifyPrice: 'Aanpassing van artikelprijs'
+        ModifyProductNumber: 'Aanpassing van artikelnummer'
+        ModifyTitle: 'Aanpassing artikeltitel'
+    SilverCart\ProductAttributes\Model\Product\ProductAttributeValueTranslation:
+        PLURALNAME: Vertalingen
+        SINGULARNAME: Vertaling
