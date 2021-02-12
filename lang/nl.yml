@@ -18,11 +18,11 @@ nl:
         ImportSuffixDesc: 'Tekst die aan elk in te voeren kenmerk wordt toegevoegd.'
         IsUserInputField: 'Vrije tekstinvoer geactiveerd'
         IsUserInputFieldDesc: 'Als de vrije tekstinvoer wordt geactiveerd, zal het artikel een tekst kunnen ingaan die door de klant kan worden geselecteerd (e.B. "Gravure"/"T-overdruk van het T-shirt")'
-        PLURALNAME: 'Artikel kenmerken'
+        PLURALNAME: Productkenmerken
         PLURALTITLE: 'Meervoudige naam'
-        SINGULARNAME: 'Kenmerk van het artikel'
+        SINGULARNAME: Productkenmerk
         TABNAME: Kenmerken
-        TITLE: Naam
+        TITLE: Titel
         UserInputFieldMustBeFilledIn: 'Er moet vrije tekst worden ingevoerd'
         UserInputFieldMustBeFilledInDesc: 'Als dit veld is geactiveerd, moet de klant een tekst invoeren voordat hij een gekoppeld artikel in de winkelwagen kan plaatsen.'
         AdTitle: Advertentienaam
@@ -41,13 +41,13 @@ nl:
     SilverCart\ProductAttributes\Model\Widgets\ProductAttributeFilterWidget:
         CMSTITLE: Artikelnummerfilter
         DESCRIPTION: 'Geeft een gegroepeerde selectie van filters die zijn gemaakt op basis van de toegewezen artikelkenmerken van de huidige goederencategorie.'
-        DISABLE_FILTER_FOR: 'Alle filters voor " {title} " annuleren'
-        FB_HINT: 'Het veld Filtergedrag bepaalt hoe het filter reageert.<br/> selectie <b> meerdere:</b> De klant kan meerdere waarden van een kenmerk tegelijkertijd selecteren. Alle items met een kleur rood OF zwart kunnen worden weergegeven voor de kleding. Alle filterkenmerkende waarden van een productgroep kunnen altijd worden geselecteerd.<br/> selectie <b>Single:</b> De klant kan slechts één waarde van een kenmerk selecteren. De beschikbare filterkenmerkwaarden zijn altijd gebaseerd op de lijst met gefilterde items.'
+        DISABLE_FILTER_FOR: 'Alle filters voor "{title}" annuleren'
+        FB_HINT: 'Het veld Filtergedrag bepaalt hoe het filter reageert.<br/> selectie <b> Meervoudige selectie:</b> De klant kan meerdere waarden van een kenmerk tegelijkertijd selecteren. Alle items met een kleur rood OF zwart kunnen worden weergegeven. Alle filterkenmerkende waarden van een productgroep kunnen altijd worden geselecteerd.<br/> selectie <b>Enkele selectie:</b> De klant kan slechts ÉÉN waarde van een kenmerk selecteren. De beschikbare filterkenmerkwaarden zijn altijd gebaseerd op de lijst met gefilterde items.'
         FB_MULTIPLECHOICE: 'Meervoudige selectie'
         FB_SINGLECHOICE: 'Enkele selectie'
         FILTERBEHAVIOUR: Filtergedrag
         REMEMBERFILTER: 'Binden aan productgroep(s)'
-        TITLE: Artikelnummerfilter
+        TITLE: Productkenmerkfilter
     SilverCart\ProductAttributes\Model\Product\ProductAttributeTranslation:
         PLURALNAME: Vertalingen
         SINGULARNAME: Vertaling
@@ -74,25 +74,25 @@ nl:
         PRODUCT_ATTRIBUTE_VALUES: Waarde
         SLAVE_PRODUCTS: 'Dit artikel heeft de volgende varianten:'
     SilverCart\ProductAttributes\Model\Product\ProductAttributeSet:
-        PLURALNAME: 'Item karakteristieke sets'
-        SINGULARNAME: 'Artikel kenmerken set'
+        PLURALNAME: Productkenmerkensets
+        SINGULARNAME: Productkenmerkenset
         TABNAME: Functiesets
-        TITLE: Naam
+        TITLE: Titel
     SilverCart\ProductAttributes\Model\Product\ProductAttributeSetTranslation:
         PLURALNAME: Vertalingen
         SINGULARNAME: Vertaling
     SilverCart\ProductAttributes\Model\Product\ProductAttributeValue:
-        PLURALNAME: 'Artikel kenmerkende waarden'
-        SINGULARNAME: 'Item kenmerkwaarde'
+        PLURALNAME: Productkenmerkwaarden
+        SINGULARNAME: Productkenmerkwaarde
         TABNAME: waarden
-        TITLE: Naam
-        Default: Standaard
+        TITLE: Titel
+        Default: standaard
         DefaultModifyDesc: 'Gebruikt als de standaardwaarde voor gekoppelde items. Kan individueel worden overschreven op elk afzonderlijk item.'
         DefaultModifyAction: Actie
         DefaultModifyActionNone: '- zonder -'
-        DefaultModifyActionAdd: 'Toevoegen / toevoegen'
+        DefaultModifyActionAdd: Toevoegen
         DefaultModifyActionSetTo: Overschrijven
-        DefaultModifyActionSubtract: 'Verwijderen / afpellen'
+        DefaultModifyActionSubtract: Aftrekken
         DefaultModifyValue: Waarde
         DefaultModifyPrice: 'Aanpassing van artikelprijs'
         DefaultModifyPriceAction: 'Aanpassing van artikelprijs'
