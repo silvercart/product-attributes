@@ -67,7 +67,7 @@ class ProductAttributeDropdownField extends DropdownField
      * 
      * @return ArrayData Field option
      */
-    protected function getFieldOption($value, string $title) : ArrayData
+    protected function getFieldOption($value, $title) : ArrayData
     {
         $option = parent::getFieldOption($value, $title);
         $this->addPricesToOption($option, $value);
