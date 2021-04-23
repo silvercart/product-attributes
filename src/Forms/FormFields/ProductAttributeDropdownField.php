@@ -4,6 +4,7 @@ namespace SilverCart\ProductAttributes\Forms\FormFields;
 
 use SilverCart\Dev\Tools;
 use SilverStripe\Forms\DropdownField;
+use SilverStripe\View\ArrayData;
 
 /**
  * A dropdown field to choose a product attribute as a product variation.
@@ -15,8 +16,8 @@ use SilverStripe\Forms\DropdownField;
  * @license see license file in modules root directory
  * @copyright 2018 pixeltricks GmbH
  */
-class ProductAttributeDropdownField extends DropdownField {
-    
+class ProductAttributeDropdownField extends DropdownField
+{
     use ProductAttributeFormField;
     
     const VARIANT_TYPE_SINGLE = 'single-variant';
@@ -28,7 +29,6 @@ class ProductAttributeDropdownField extends DropdownField {
      * @var string
      */
     private static $load_variant_action = 'LoadVariant';
-
     /**
      * Show the first <option> element as empty (not having a value),
      * with an optional label defined through {@link $emptyString}.
@@ -37,7 +37,7 @@ class ProductAttributeDropdownField extends DropdownField {
      *
      * @var bool
      */
-    protected $hasEmptyDefault = true;
+    protected $hasEmptyDefault = false;
 
     /**
      * Allows customization through an 'updateAttributes' hook on the base class.
@@ -48,13 +48,12 @@ class ProductAttributeDropdownField extends DropdownField {
      *
      * @return array
      */
-    public function getAttributes() {
-        $attributes = array_merge(
+    public function getAttributes() : array
+    {
+        return array_merge(
                 parent::getAttributes(),
                 $this->getProductAttributeAttributes()
         );
-        
-        return $attributes;
     }
     
     /**
@@ -68,22 +67,10 @@ class ProductAttributeDropdownField extends DropdownField {
      * 
      * @return ArrayData Field option
      */
-    protected function getFieldOption($value, $title) {
+    protected function getFieldOption($value, string $title) : ArrayData
+    {
         $option = parent::getFieldOption($value, $title);
         $this->addPricesToOption($option, $value);
         return $option;
     }
-
-    /**
-     * Returns the empty string to use as default dropdown option.
-     * 
-     * @return string
-     */
-    public function getEmptyString() {
-        if (empty($this->emptyString)) {
-            $this->setEmptyString(Tools::field_label('PleaseChoose'));
-        }
-        return $this->emptyString;
-    }
-    
 }

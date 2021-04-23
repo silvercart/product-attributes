@@ -11,6 +11,7 @@ use SilverCart\Model\Product\Product;
 use SilverCart\ORM\DataObjectExtension;
 use SilverStripe\Assets\Image;
 use SilverStripe\Control\Controller;
+use SilverStripe\Forms\FieldList;
 use SilverStripe\i18n\i18n;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBHTMLText;
@@ -29,8 +30,8 @@ use SilverStripe\ORM\Filters\PartialMatchFilter;
  * 
  * @method ProductAttribute ProductAttribute() Returns the related ProductAttribute
  */
-class ProductAttributeValue extends DataObject {
-    
+class ProductAttributeValue extends DataObject
+{
     /**
      * DB attributes
      *
@@ -43,8 +44,8 @@ class ProductAttributeValue extends DataObject {
         'DefaultModifyPriceValue'          => 'Varchar(10)',
         'DefaultModifyProductNumberAction' => 'Enum(",add,setTo",null)',
         'DefaultModifyProductNumberValue'  => 'Varchar(50)',
+        'Sort'                             => 'Int',
     ];
-    
     /**
      * has-one relations
      *
@@ -54,7 +55,6 @@ class ProductAttributeValue extends DataObject {
         'ProductAttribute' => ProductAttribute::class,
         'Image'            => Image::class,
     ];
-
     /**
      * has-many relations
      *
@@ -63,7 +63,6 @@ class ProductAttributeValue extends DataObject {
     private static $has_many = [
         'ProductAttributeValueTranslations' => ProductAttributeValueTranslation::class,
     ];
-
     /**
      * belongs-many-many relations
      *
@@ -72,7 +71,6 @@ class ProductAttributeValue extends DataObject {
     private static $belongs_many_many = [
         'Products' => Product::class,
     ];
-
     /**
      * Casted attributes
      *
@@ -87,14 +85,12 @@ class ProductAttributeValue extends DataObject {
         'FinalModifyProductNumberAction' => 'Text',
         'FinalModifyProductNumberValue'  => 'Text',
     ];
-
     /**
      * default sort
      *
      * @var string
      */
-    private static $default_sort = '"SilvercartProductAttributeValueTranslation"."Title"';
-    
+    private static $default_sort = 'Sort, "SilvercartProductAttributeValueTranslation"."Title"';
     /**
      * DB table name
      *
@@ -106,13 +102,11 @@ class ProductAttributeValue extends DataObject {
      * Returns the translated singular name of the object. If no translation exists
      * the class name will be returned.
      * 
-     * @return string The objects singular name 
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
+     * @return string
      */
-    public function singular_name() {
-        return Tools::singular_name_for($this);
+    public function singular_name() : string
+    {
+        return (string) Tools::singular_name_for($this);
     }
 
 
@@ -120,13 +114,11 @@ class ProductAttributeValue extends DataObject {
      * Returns the translated plural name of the object. If no translation exists
      * the class name will be returned.
      * 
-     * @return string the objects plural name
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
+     * @return string
      */
-    public function plural_name() {
-        return Tools::plural_name_for($this);
+    public function plural_name() : string
+    {
+        return (string) Tools::plural_name_for($this);
     }
 
     /**
@@ -135,11 +127,9 @@ class ProductAttributeValue extends DataObject {
      * @param boolean $includerelations A boolean value to indicate if the labels returned include relation fields
      *
      * @return array
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
      */
-    public function fieldLabels($includerelations = true) {
+    public function fieldLabels($includerelations = true) : array
+    {
         $fieldLabels = array_merge(
             parent::fieldLabels($includerelations),
             Tools::field_labels_for(static::class),
@@ -175,7 +165,6 @@ class ProductAttributeValue extends DataObject {
                 'ModifyTitle'                           => _t(static::class . '.ModifyTitle', "Modify product title"),
             ]
         );
-
         $this->extend('updateFieldLabels', $fieldLabels);
         return $fieldLabels;
     }
@@ -185,7 +174,8 @@ class ProductAttributeValue extends DataObject {
      *
      * @return FieldList the fields for the backend
      */
-    public function getCMSFields() {
+    public function getCMSFields() : FieldList
+    {
         $fields = DataObjectExtension::getCMSFields($this);
         if ($this->ProductAttribute()->CanBeUsedForSingleVariants) {
             $fields->dataFieldByName('DefaultModifyPriceValue')->setRightTitle($this->fieldLabel('DefaultModifyDesc'));
@@ -235,11 +225,9 @@ class ProductAttributeValue extends DataObject {
      * Searchable fields
      *
      * @return array
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
      */
-    public function searchableFields() {
+    public function searchableFields() : array
+    {
         $searchableFields = [
             'ProductAttributeValueTranslations.Title' => [
                 'title'  => $this->fieldLabel('Title'),
@@ -258,16 +246,13 @@ class ProductAttributeValue extends DataObject {
      * Summaryfields for display in tables.
      *
      * @return array
-     *
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
      */
-    public function summaryFields() {
+    public function summaryFields() : array
+    {
         $summaryFields = [
             'Title'                  => $this->fieldLabel('Title'),
             'ProductAttribute.Title' => $this->fieldLabel('ProductAttribute'),
         ];
-        
         $this->extend('updateSummaryFields', $summaryFields);
         return $summaryFields;
     }
@@ -276,12 +261,10 @@ class ProductAttributeValue extends DataObject {
      * Returns the translated title
      *
      * @return string
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
      */
-    public function getTitle() {
-        return $this->getTranslationFieldValue('Title');
+    public function getTitle() : string
+    {
+        return (string) $this->getTranslationFieldValue('Title');
     }
     
     /**
@@ -357,11 +340,9 @@ class ProductAttributeValue extends DataObject {
      * Checks wheter the value is used by the current context filter
      *
      * @return bool
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 16.03.2012
      */
-    public function IsFilterValue() {
+    public function IsFilterValue() : bool
+    {
         $isFilterValue = false;
         if (Controller::curr()->hasMethod('isFilterValue')) {
             $isFilterValue = Controller::curr()->isFilterValue($this);
@@ -373,12 +354,10 @@ class ProductAttributeValue extends DataObject {
      * Returns true to use buttons to toggle IsActive state of a product related
      * attribute value used as variant.
      * 
-     * @return boolean
-     *
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 21.09.2016
+     * @return bool
      */
-    public function SubObjectHasIsActive() {
+    public function SubObjectHasIsActive() : bool
+    {
         return true;
     }
     
@@ -403,7 +382,8 @@ class ProductAttributeValue extends DataObject {
      * 
      * @return string
      */
-    public function getActionAbbreviation($action) {
+    public function getActionAbbreviation(string $action) : string
+    {
         $abbr = '';
         switch ($action) {
             case 'add':
@@ -424,97 +404,89 @@ class ProductAttributeValue extends DataObject {
     /**
      * Returns the default modification text.
      * 
+     * @param string $text   Text
      * @param string $action Action
      * 
      * @return string
      */
-    public function getDefaultModificationText($text, $action) {
-        $defaultText = '(' . $this->fieldLabel('Default') . ': ' . $this->getActionAbbreviation($action) . $text . ')';
-        return $defaultText;
+    public function getDefaultModificationText(string $text, string $action) : string
+    {
+        return "({$this->fieldLabel('Default')}: {$this->getActionAbbreviation($action)}{$text})";
     }
     
     /**
      * Returns whether the title has a default modification or not.
      * 
      * @return bool
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 14.06.2018
      */
-    public function DefaultModifyTitle() {
-        return !empty($this->DefaultModifyTitleAction) && !empty($this->DefaultModifyTitleValue);
+    public function DefaultModifyTitle() : bool
+    {
+        return !empty($this->DefaultModifyTitleAction)
+            && !empty($this->DefaultModifyTitleValue);
     }
     
     /**
      * Returns the default title modification.
      * 
      * @return string
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 14.06.2018
      */
-    public function DefaultModifyTitleText() {
+    public function DefaultModifyTitleText() : string
+    {
         $text = '';
         if ($this->DefaultModifyTitle()) {
             $text = $this->getDefaultModificationText($this->DefaultModifyTitleValue, $this->DefaultModifyTitleAction);
         }
-        return $text;
+        return (string) $text;
     }
     
     /**
      * Returns whether the price has a default modification or not.
      * 
      * @return bool
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 14.06.2018
      */
-    public function DefaultModifyPrice() {
-        return !empty($this->DefaultModifyPriceAction) && !empty($this->DefaultModifyPriceValue);
+    public function DefaultModifyPrice() : bool
+    {
+        return !empty($this->DefaultModifyPriceAction)
+            && !empty($this->DefaultModifyPriceValue);
     }
     
     /**
      * Returns the default price modification.
      * 
      * @return string
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 14.06.2018
      */
-    public function DefaultModifyPriceText() {
+    public function DefaultModifyPriceText() : string
+    {
         $text = '';
         if ($this->DefaultModifyPrice()) {
             $text = $this->getDefaultModificationText($this->DefaultModifyPriceValue, $this->DefaultModifyPriceAction);
         }
-        return $text;
+        return (string) $text;
     }
     
     /**
      * Returns whether the product number has a default modification or not.
      * 
      * @return bool
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 14.06.2018
      */
-    public function DefaultModifyProductNumber() {
-        return !empty($this->DefaultModifyProductNumberAction) && !empty($this->DefaultModifyProductNumberValue);
+    public function DefaultModifyProductNumber() : bool
+    {
+        return !empty($this->DefaultModifyProductNumberAction)
+            && !empty($this->DefaultModifyProductNumberValue);
     }
     
     /**
      * Returns the default product number modification.
      * 
      * @return string
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 14.06.2018
      */
-    public function DefaultModifyProductNumberText() {
+    public function DefaultModifyProductNumberText() : string
+    {
         $text = '';
         if ($this->DefaultModifyProductNumber()) {
             $text = $this->getDefaultModificationText($this->DefaultModifyProductNumberValue, $this->DefaultModifyProductNumberAction);
         }
-        return $text;
+        return (string) $text;
     }
     
     /**
@@ -522,11 +494,12 @@ class ProductAttributeValue extends DataObject {
      * 
      * @return string
      */
-    public function getFinalModifyPriceAction() {
+    public function getFinalModifyPriceAction() : string
+    {
         if (!empty($this->ModifyPriceAction)) {
-            return $this->ModifyPriceAction;
+            return (string) $this->ModifyPriceAction;
         }
-        return $this->DefaultModifyPriceAction;
+        return (string) $this->DefaultModifyPriceAction;
     }
     
     /**
@@ -534,12 +507,14 @@ class ProductAttributeValue extends DataObject {
      * 
      * @return string
      */
-    public function getFinalModifyPriceValue() {
-        if (!empty($this->ModifyPriceValue) &&
-            !empty($this->ModifyPriceAction)) {
-            return $this->ModifyPriceValue;
+    public function getFinalModifyPriceValue() : string
+    {
+        if (!empty($this->ModifyPriceValue)
+         && !empty($this->ModifyPriceAction)
+        ) {
+            return (string) $this->ModifyPriceValue;
         }
-        return $this->DefaultModifyPriceValue;
+        return (string) $this->DefaultModifyPriceValue;
     }
     
     /**
@@ -547,11 +522,12 @@ class ProductAttributeValue extends DataObject {
      * 
      * @return string
      */
-    public function getFinalModifyProductNumberAction() {
+    public function getFinalModifyProductNumberAction() : string
+    {
         if (!empty($this->ModifyProductNumberAction)) {
-            return $this->ModifyProductNumberAction;
+            return (string) $this->ModifyProductNumberAction;
         }
-        return $this->DefaultModifyProductNumberAction;
+        return (string) $this->DefaultModifyProductNumberAction;
     }
     
     /**
@@ -559,12 +535,14 @@ class ProductAttributeValue extends DataObject {
      * 
      * @return string
      */
-    public function getFinalModifyProductNumberValue() {
-        if (!empty($this->ModifyProductNumberValue) &&
-            !empty($this->ModifyProductNumberAction)) {
-            return $this->ModifyProductNumberValue;
+    public function getFinalModifyProductNumberValue() : string
+    {
+        if (!empty($this->ModifyProductNumberValue)
+         && !empty($this->ModifyProductNumberAction)
+        ) {
+            return (string) $this->ModifyProductNumberValue;
         }
-        return $this->DefaultModifyProductNumberValue;
+        return (string) $this->DefaultModifyProductNumberValue;
     }
     
     /**
@@ -572,11 +550,12 @@ class ProductAttributeValue extends DataObject {
      * 
      * @return string
      */
-    public function getFinalModifyTitleAction() {
+    public function getFinalModifyTitleAction() : string
+    {
         if (!empty($this->ModifyTitleAction)) {
-            return $this->ModifyTitleAction;
+            return (string) $this->ModifyTitleAction;
         }
-        return $this->DefaultModifyTitleAction;
+        return (string) $this->DefaultModifyTitleAction;
     }
     
     /**
@@ -584,12 +563,13 @@ class ProductAttributeValue extends DataObject {
      * 
      * @return string
      */
-    public function getFinalModifyTitleValue() {
-        if (!empty($this->ModifyTitleValue) &&
-            !empty($this->ModifyTitleAction)) {
-            return $this->ModifyTitleValue;
+    public function getFinalModifyTitleValue() : string
+    {
+        if (!empty($this->ModifyTitleValue)
+         && !empty($this->ModifyTitleAction)
+        ) {
+            return (string) $this->ModifyTitleValue;
         }
-        return $this->DefaultModifyTitleValue;
+        return (string) $this->DefaultModifyTitleValue;
     }
-    
 }

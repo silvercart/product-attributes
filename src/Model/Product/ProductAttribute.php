@@ -230,6 +230,12 @@ class ProductAttribute extends DataObject {
                 $fields->addFieldToTab('Root.ProductAttributeValues', $importPrefixField);
                 $fields->addFieldToTab('Root.ProductAttributeValues', $importSuffixField);
             }
+            $valueGridField = $fields->dataFieldByName('ProductAttributeValues');
+            if (class_exists('\Symbiote\GridFieldExtensions\GridFieldOrderableRows')) {
+                $valueGridField->getConfig()->addComponent(new \Symbiote\GridFieldExtensions\GridFieldOrderableRows('Sort'));
+            } elseif (class_exists('\UndefinedOffset\SortableGridField\Forms\GridFieldSortableRows')) {
+                $valueGridField->getConfig()->addComponent(new \UndefinedOffset\SortableGridField\Forms\GridFieldSortableRows('Sort'));
+            }
         });
         return DataObjectExtension::getCMSFields($this, 'CanBeUsedForFilterWidget', false);
     }
