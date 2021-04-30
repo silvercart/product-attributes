@@ -25,8 +25,10 @@ $(function() {
             var textField = $('.hidden-textfield', $(this).closest('.chooseengraving'));
             if ($(this).val() === '') {
                 textField.hide();
+                $('input', textField).removeAttr('required');
             } else {
                 textField.show();
+                $('input', textField).attr('required', 'required');
             }
         });
         $('.chooseengraving .hidden-textfield').hide();
