@@ -160,24 +160,24 @@ class ShoppingCartPositionExtension extends DataExtension
             $variantAttributes->merge($this->owner->getUserInputAttributes());
             foreach ($variantAttributes as $variantAttributeValue) {
                 $productAttribute = $product->ProductAttributeValues()->byID($variantAttributeValue->ID);
-                $priceAmount      = 0;
+                $modifyAmount     = 0;
                 if (!($productAttribute instanceof ProductAttributeValue)
                  || !$productAttribute->exists()
                 ) {
                     continue;
                 }
                 if (!empty($productAttribute->FinalModifyPriceValue)) {
-                    $priceAmount = MoneyField::create('tmp')->prepareAmount($productAttribute->FinalModifyPriceValue);
+                    $modifyAmount = MoneyField::create('tmp')->prepareAmount($productAttribute->FinalModifyPriceValue);
                 }
                 switch ($productAttribute->FinalModifyPriceAction) {
                     case 'add':
-                        $finalPriceAmount += $priceAmount;
+                        $finalPriceAmount += $modifyAmount;
                         break;
                     case 'subtract':
-                        $finalPriceAmount -= $priceAmount;
+                        $finalPriceAmount -= $modifyAmount;
                         break;
                     case 'setTo':
-                        $finalPriceAmount = $priceAmount;
+                        $finalPriceAmount = $modifyAmount;
                         break;
                     default:
                         break;
