@@ -29,6 +29,7 @@ use SilverStripe\ORM\Filters\PartialMatchFilter;
  * @property string $DisplayConversionUnit   Display Conversion Unit
  * @property float  $DisplayConversionFactor Display Conversion Factor
  * @property bool   $DisplayZeroAsUnlimited  Display Zero As Unlimited
+ * @property int    $Sort                    Sort
  */
 class ProductAttribute extends DataObject {
     
@@ -47,6 +48,7 @@ class ProductAttribute extends DataObject {
         'DisplayConversionUnit'        => 'Varchar',
         'DisplayConversionFactor'      => 'Float',
         'DisplayZeroAsUnlimited'       => 'Boolean(0)',
+        'Sort'                         => 'Int',
     ];
 
     /**
@@ -104,7 +106,7 @@ class ProductAttribute extends DataObject {
      *
      * @var string
      */
-    private static $default_sort = '"SilvercartProductAttribute"."CanBeUsedForVariants" DESC, "SilvercartProductAttributeTranslation"."Title"';
+    private static $default_sort = 'Sort, "SilvercartProductAttribute"."CanBeUsedForVariants" DESC, "SilvercartProductAttributeTranslation"."Title"';
     
     /**
      * DB table name
