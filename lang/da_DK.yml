@@ -1,0 +1,111 @@
+da_DK:
+    SilverCart\ProductAttributes\Model\Product\ProductAttribute:
+        CAN_BE_USED_FOR_DATASHEET: 'Anvendelse til databladet'
+        CAN_BE_USED_FOR_FILTERWIDGET: 'Anvendes til produktfilter'
+        CAN_BE_USED_FOR_VARIANTS: 'Kan anvendes til varianter, der er baseret på flere partikler'
+        CAN_BE_USED_FOR_VARIANTS_DESC: 'Hvis dette er aktivt, kan du kombinere flere produkter til brug som varianter (f.eks. Et produkt får attributten "farve" - > "rød", den anden "farve" - > "gul", den tredje en "farve" - > "grøn").'
+        CanBeUsedForDataSheetShort: Databladet
+        CanBeUsedForFilterWidgetShort: Produktfilter
+        CanBeUsedForSingleVariants: 'Kan bruges til varianter baseret på enkelte artikler'
+        CanBeUsedForSingleVariantsDesc: 'Hvis dette er aktivt, kan du bruge et enkelt produkt med varianter (f.eks. Et produkt får attributterne "farve" - > "rød", "gul", "grøn").'
+        CanBeUsedForSingleVariantsShort: 'Enkelte varianter'
+        CanBeUsedForVariantsShort: Multi-variant
+        ImportList: Importkarakteristika
+        ImportListDesc: 'Indsæt en liste over de funktioner, du ønsker at importere, her. Bemærk, at der indsættes ét element pr. linje.'
+        ImportPrefix: Importpræfiks
+        ImportPrefixDesc: 'Tekst, der går forud for hver egenskab, der skal importeres.'
+        ImportSuffix: Importsuffiks
+        ImportSuffixDesc: 'Tekst vil blive suffikset til hver importerede attribut.'
+        IsUserInputField: 'Er brugerens inputfelt'
+        IsUserInputFieldDesc: 'Hvis du bruger brugerindtastningsfeltet, kan kunden indtaste en brugerdefineret tekst, før et produkt lægges i indkøbsvognen (zB "gravering"/"t-shirt overprint").'
+        PLURALNAME: Produktattributter
+        PLURALTITLE: Flertalstitel
+        SINGULARNAME: Produktattribut
+        TABNAME: Egenskaber
+        TITLE: Titel
+        UserInputFieldMustBeFilledIn: 'Brugerinput er obligatorisk'
+        UserInputFieldMustBeFilledInDesc: 'Hvis dette felt er aktiveret, skal kunden indtaste en tekst, før han kan lægge en linket artikel i indkøbskurven.'
+        AdTitle: 'Reklame navn'
+        AdTitleDesc: "Eksempler på det karakteristiske \"HDD-lagerplads\" med en værdi på \"500 GB\": <br/>\n • \"Samlet {$Value} lagerplads\" (display: \"I alt 500 GB lagerplads\") <br/>\n • \"Lagringsplads: {$Value} !\" (Display: \"Lagringsplads: 500 GB!\") <br/>\n <br/> \" (display: \"500 GB harddiskkapacitet\") <br/>\n"
+        AdTitleRightTitle: 'Reklamenavnet vises på reklameeffektive steder, f.eks. på en CMS-side for et pakkevalg.'
+        DisplaySettings: 'Indstillinger for visning'
+        DisplayConversionUnit: Visningsenhed
+        DisplayConversionUnitDesc: 'f.eks. "GB", "MB", "cm", "€"'
+        DisplayConversionFactor: Omregningsfaktor
+        DisplayZeroAsUnlimited: 'Vis nul værdi som "ubegrænset"'
+        unlimited: ubegrænset
+    SilverCart\ProductAttributes\Extensions\Forms\AddToCartFormExtension:
+        HEADLINE: Varianter
+    SilverCart\ProductAttributes\Admin\Controllers\ProductAttributeAdmin:
+        MENUTITLE: Produktattributter
+    SilverCart\ProductAttributes\Model\Widgets\ProductAttributeFilterWidget:
+        CMSTITLE: 'Filter til artikelfunktioner'
+        DESCRIPTION: 'Giver et grupperet udvalg af filtre, skabt af de produktattributter, der er tildelt produkterne i den aktuelle produktgruppe.'
+        DISABLE_FILTER_FOR: 'Ryd alle filtre for "{title}".'
+        FB_HINT: 'Feltet Filteradfærd bestemmer, hvordan filteret reagerer. <br/><b>Flere valg</b>: Kunden kan vælge flere værdier af en egenskab på samme tid. F.eks. kan alle artikler, hvis farve er rød ELLER sort, blive vist. Alle filterkarakteristiske værdier for en varegruppe kan altid vælges. <br/><b>Enkelt valg</b>: Kunden kan kun vælge én værdi for en egenskab. De tilgængelige værdier for filterkarakteristika er altid baseret på den filtrerede artikelliste.'
+        FB_MULTIPLECHOICE: 'Flere valg'
+        FB_SINGLECHOICE: 'Enkelt valg'
+        FILTERBEHAVIOUR: Filteradfærd
+        REMEMBERFILTER: 'Husk filtre pr. varekategori'
+        TITLE: 'Filter til produktattributter'
+    SilverCart\ProductAttributes\Model\Product\ProductAttributeTranslation:
+        PLURALNAME: Oversættelser
+        SINGULARNAME: Oversættelse
+    SilverCart\ProductAttributes\Extensions\Order\OrderPositionExtension:
+        VARIANTDEFINITION: 'Beskrivelse af varianter'
+    SilverCart\ProductAttributes\Model\Widgets\PriceFilterWidget:
+        CMSTITLE: Prisfilter
+        DESCRIPTION: 'Returnerer en widget, der giver dig mulighed for at indtaste et prisinterval, som varer filtreres efter.'
+        DISABLE_FILTER: 'Nulstil filter'
+        FILTER: Filter
+        FRONTTITLE: 'Filtrer efter pris'
+        MAX_PRICE: til
+        MIN_PRICE: Fra
+        OffersAbove: 'over {min} {currency}'
+        ShowOffersAbove: 'Vis tilbud om {min} {valuta}'
+        ShowOffersFromTo: 'Vis tilbud mellem {min} og {max} {valuta}'
+        TITLE: Prisfilter
+    SilverCart\ProductAttributes\Extensions\Product\ProductExtension:
+        MASTER_PRODUCT: 'Denne artikel er en variant af artiklen med artikelnummer'
+        NoUserInput: Ingen
+        PRODUCT_ATTRIBUTE: Attribut
+        PRODUCT_ATTRIBUTES: Attribut
+        PRODUCT_ATTRIBUTE_VALUE: Værdi
+        PRODUCT_ATTRIBUTE_VALUES: Værdi
+        SLAVE_PRODUCTS: 'Dette produkt har følgende varianter:'
+    SilverCart\ProductAttributes\Model\Product\ProductAttributeSet:
+        PLURALNAME: 'Sæt med produktattributter'
+        SINGULARNAME: 'Sæt af produktattributter'
+        TABNAME: Attribut-sæt
+        TITLE: Titel
+    SilverCart\ProductAttributes\Model\Product\ProductAttributeSetTranslation:
+        PLURALNAME: Oversættelser
+        SINGULARNAME: Oversættelse
+    SilverCart\ProductAttributes\Model\Product\ProductAttributeValue:
+        PLURALNAME: 'Værdier for produktattributter'
+        SINGULARNAME: 'Produktattribut Værdi'
+        TABNAME: Værdier
+        TITLE: Titel
+        Default: Standard
+        DefaultModifyDesc: 'Vil blive brugt som standard for relaterede produkter. Kan overskrives individuelt for hvert produkt.'
+        DefaultModifyAction: Handling
+        DefaultModifyActionNone: '- Ingen -'
+        DefaultModifyActionAdd: 'Tilføj / Tilføj'
+        DefaultModifyActionSetTo: 'Indstillet til'
+        DefaultModifyActionSubtract: 'Fjern / træk af'
+        DefaultModifyValue: Værdi
+        DefaultModifyPrice: 'Standardændring af produktpriser'
+        DefaultModifyPriceAction: 'Standardhandlingsændring af produktpris'
+        DefaultModifyPriceValue: 'Standardværdi for ændring af produktpris'
+        DefaultModifyProductNumber: 'Standard ændring af produktnummer'
+        DefaultModifyProductNumberAction: 'Standardhandlingsændring af produktnummer'
+        DefaultModifyProductNumberValue: 'Standardværdi for ændring af produktnummer'
+        DefaultModifyTitle: 'Standard produkttitel ændring'
+        DefaultModifyTitleAction: 'Standardhandlens ændring af produkttitel'
+        DefaultModifyTitleValue: 'Standardværdi for ændring af produkttitel'
+        ModifyPrice: 'Ændre produktets pris'
+        ModifyProductNumber: 'Rediger produktnummer'
+        ModifyTitle: 'Rediger produkttitel'
+    SilverCart\ProductAttributes\Model\Product\ProductAttributeValueTranslation:
+        PLURALNAME: Oversættelser
+        SINGULARNAME: Oversættelse
