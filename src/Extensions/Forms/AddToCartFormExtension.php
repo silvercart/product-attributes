@@ -14,25 +14,24 @@ use SilverStripe\Core\Extension;
  * @since 30.05.2018
  * @license see license file in modules root directory
  * @copyright 2018 pixeltricks GmbH
+ * 
+ * @property \SilverCart\Forms\AddToCartForm $owner Owner
  */
-class AddToCartFormExtension extends Extension {
-    
+class AddToCartFormExtension extends Extension
+{
     /**
      * Updates the default form fields.
      * 
      * @param array &$fields Form fields to update
      * 
-     * @return bool
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
+     * @return void
      */
-    public function updateCustomFields(&$fields) {
+    public function updateCustomFields(array &$fields) : void
+    {
         $product = $this->owner->getProduct();
-
-        if ($product instanceof Product &&
-            $product->exists()) {
-
+        if ($product instanceof Product
+         && $product->exists()
+        ) {
             if ($product->hasVariants()) {
                 $fields = array_merge(
                         $fields,
@@ -58,16 +57,15 @@ class AddToCartFormExtension extends Extension {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
-    public function renderUpdatedCustomFields(&$rendered) {
+    public function renderUpdatedCustomFields(&$rendered) : void
+    {
         $product = $this->owner->getProduct();
-        
-        if (($product instanceof Product &&
-             $product->exists()) &&
-            ($product->hasVariants() ||
-             $product->hasSingleProductVariants())) {
-
-            $rendered .= $this->owner->renderWith(static::class . '_' . $this->owner->getViewContext());
+        if (($product instanceof Product
+          && $product->exists())
+         && ($product->hasVariants()
+          || $product->hasSingleProductVariants())
+        ) {
+            $rendered .= $this->owner->renderWith(static::class . "_{$this->owner->getViewContext()}");
         }
     }
-    
 }

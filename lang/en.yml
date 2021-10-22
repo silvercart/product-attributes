@@ -1,4 +1,6 @@
 en:
+    SilverCart\ProductAttributes:
+        PleaseChooseVariantFor: 'Please choose a variant for {title}'
     SilverCart\ProductAttributes\Model\Product\ProductAttribute:
         CAN_BE_USED_FOR_DATASHEET: 'Use for data sheet'
         CAN_BE_USED_FOR_FILTERWIDGET: 'Use for product filter'

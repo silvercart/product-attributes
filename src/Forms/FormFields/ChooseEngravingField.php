@@ -16,23 +16,21 @@ use SilverStripe\Forms\OptionsetField;
  * @license see license file in modules root directory
  * @copyright 2018 pixeltricks GmbH
  */
-class ChooseEngravingField extends FormField {
-    
+class ChooseEngravingField extends FormField
+{
     use ProductAttributeFormField;
-    
     /**
      * Text Field
      *
-     * @var TextField
+     * @var TextField|null
      */
-    protected $textField;
-    
+    protected $textField = null;
     /**
      * Optionset Field
      *
-     * @var OptionsetField
+     * @var OptionsetField|null
      */
-    protected $optionsetField;
+    protected $optionsetField = null;
     
     /**
      * Constructor.
@@ -50,7 +48,8 @@ class ChooseEngravingField extends FormField {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 13.06.2018
      */
-    public function __construct($name, $title = null, $source = array(), $value = '', $form = null, $emptyString = null) {
+    public function __construct($name, $title = null, $source = array(), $value = '', $form = null, $emptyString = null)
+    {
         parent::__construct($name, $title, $value);
         $this->setTextField(TextField::create("{$name}[TextValue]", $title));
         $this->getTextField()->setPlaceholder($title);
@@ -62,7 +61,11 @@ class ChooseEngravingField extends FormField {
      * 
      * @return TextField
      */
-    public function getTextField() {
+    public function getTextField() : TextField
+    {
+        if ($this->getRequiredForced()) {
+            $this->textField->setRequiredForced(true);
+        }
         return $this->textField;
     }
     
@@ -73,7 +76,8 @@ class ChooseEngravingField extends FormField {
      * 
      * @return $this
      */
-    public function setTextField($textField) {
+    public function setTextField(TextField $textField) : ChooseEngravingField
+    {
         $this->textField = $textField;
         return $this;
     }
@@ -83,7 +87,11 @@ class ChooseEngravingField extends FormField {
      * 
      * @return OptionsetField
      */
-    public function getOptionsetField() {
+    public function getOptionsetField() : OptionsetField
+    {
+        if ($this->getRequiredForced()) {
+            $this->optionsetField->setRequiredForced(true);
+        }
         return $this->optionsetField;
     }
     
@@ -94,7 +102,8 @@ class ChooseEngravingField extends FormField {
      * 
      * @return $this
      */
-    public function setOptionsetField($optionsetField) {
+    public function setOptionsetField($optionsetField) : ChooseEngravingField
+    {
         $this->optionsetField = $optionsetField;
         return $this;
     }
@@ -102,13 +111,11 @@ class ChooseEngravingField extends FormField {
     /**
      * Returns whether the optionset field is selected.
      * 
-     * @return boolean
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 13.06.2018
+     * @return bool
      */
-    public function isSelected() {
-        return $this->getOptionsetField()->isSelected();
+    public function isSelected() : bool
+    {
+        return (bool) $this->getOptionsetField()->isSelected();
     }
 
     /**
@@ -116,7 +123,8 @@ class ChooseEngravingField extends FormField {
      *
      * @return array|ArrayAccess
      */
-    public function getSource() {
+    public function getSource()
+    {
         return $this->getOptionsetField()->getSource();
     }
 
@@ -127,32 +135,33 @@ class ChooseEngravingField extends FormField {
      * 
      * @return $this
      */
-    public function setSource($source) {
+    public function setSource($source) : ChooseEngravingField
+    {
         $this->getOptionsetField()->setSource($source);
-
         return $this;
     }
 
     /**
      * Sets the optionset field has an empty default.
      * 
-     * @param boolean $bool Optionset field has empty default?
+     * @param bool $bool Optionset field has empty default?
      * 
      * @return $this
      */
-    public function setHasEmptyDefault($bool) {
+    public function setHasEmptyDefault(bool $bool) : ChooseEngravingField
+    {
         $this->getOptionsetField()->setHasEmptyDefault($bool);
-
         return $this;
     }
 
     /**
      * Returns whether the optionset field has an empty default.
      * 
-     * @return boolean
+     * @return bool
      */
-    public function getHasEmptyDefault() {
-        return $this->getOptionsetField()->getHasEmptyDefault();
+    public function getHasEmptyDefault() : bool
+    {
+        return (bool) $this->getOptionsetField()->getHasEmptyDefault();
     }
 
     /**
@@ -165,9 +174,9 @@ class ChooseEngravingField extends FormField {
      * 
      * @return $this
      */
-    public function setEmptyString($str) {
+    public function setEmptyString(string $str) : ChooseEngravingField
+    {
         $this->getOptionsetField()->setEmptyString($str);
-
         return $this;
     }
 
@@ -176,20 +185,18 @@ class ChooseEngravingField extends FormField {
      * 
      * @return string
      */
-    public function getEmptyString() {
-        return $this->getOptionsetField()->getEmptyString();
+    public function getEmptyString() : string
+    {
+        return (string) $this->getOptionsetField()->getEmptyString();
     }
     
     /**
      * Returns whether the optionset field has options.
      * 
      * @return bool
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 13.06.2018
      */
-    public function hasOptions() {
-        return count($this->getOptionsetField()->getSource()) > 0;
+    public function hasOptions() : bool
+    {
+        return count($this->getOptionsetField()->getSource()) > 1;
     }
-
 }

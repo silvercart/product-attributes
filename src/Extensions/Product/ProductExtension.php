@@ -14,6 +14,7 @@ use SilverCart\ProductAttributes\Forms\FormFields\ChooseEngravingField;
 use SilverCart\ProductAttributes\Forms\FormFields\ProductAttributeDropdownField;
 use SilverCart\ProductAttributes\Model\Product\ProductAttribute;
 use SilverCart\ProductAttributes\Model\Product\ProductAttributeValue;
+use SilverStripe\Control\Controller;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\ORM\ArrayList;
@@ -33,6 +34,8 @@ use SilverStripe\View\ArrayData;
  * @since 30.05.2018
  * @license see license file in modules root directory
  * @copyright 2018 pixeltricks GmbH
+ * 
+ * @property Product $owner Owner
  */
 class ProductExtension extends DataExtension
 {
@@ -100,6 +103,30 @@ class ProductExtension extends DataExtension
      * @var bool
      */
     protected $updateCMSFieldsIsCalled = false;
+    /**
+     * Stores the hasSingleProductVariants options.
+     * 
+     * @var bool[]
+     */
+    protected $hasSingleProductVariants = [];
+    /**
+     * Stores the hasVariants options.
+     * 
+     * @var bool[]
+     */
+    protected $hasVariants = [];
+    /**
+     * Variant form fields.
+     * 
+     * @var array
+     */
+    protected $variantFormFields = [];
+    /**
+     * Single variant form fields.
+     * 
+     * @var array
+     */
+    protected $singleProductVariantFormFields = [];
     
     /**
      * Updates the CMS fields
@@ -395,38 +422,38 @@ class ProductExtension extends DataExtension
      * Returns whether this product has variants or not
      * 
      * @return bool
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 12.09.2012
      */
     public function hasVariants() : bool
     {
-        $hasVariants = false;
-        $variants    = $this->getVariants();
-        if (!is_null($variants)
-         && $variants->count() > 0
-        ) {
-            $hasVariants = true;
+        if (!array_key_exists($this->owner->ID, $this->hasVariants)) {
+            $hasVariants = false;
+            $variants    = $this->getVariants();
+            if (!is_null($variants)
+             && $variants->count() > 0
+            ) {
+                $hasVariants = true;
+            }
+            $this->hasVariants[$this->owner->ID] = $hasVariants;
         }
-        return $hasVariants;
+        return $this->hasVariants[$this->owner->ID];
     }
 
     /**
      * Returns whether this product has single product variants or not
      * 
      * @return bool
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 12.09.2012
      */
     public function hasSingleProductVariants() : bool
     {
-        $hasVariants       = false;
-        $variantAttributes = $this->getSingleProductVariantAttributes();
-        if ($variantAttributes->exists()) {
-            $hasVariants = true;
+        if (!array_key_exists($this->owner->ID, $this->hasSingleProductVariants)) {
+            $hasVariants       = false;
+            $variantAttributes = $this->getSingleProductVariantAttributes();
+            if ($variantAttributes->exists()) {
+                $hasVariants = true;
+            }
+            $this->hasSingleProductVariants[$this->owner->ID] = $hasVariants;
         }
-        return $hasVariants;
+        return $this->hasSingleProductVariants[$this->owner->ID];
     }
     
     /**
@@ -741,6 +768,9 @@ class ProductExtension extends DataExtension
      */
     public function getVariantFormFields() : array
     {
+        if (array_key_exists($this->owner->ID, $this->variantFormFields)) {
+            return $this->variantFormFields[$this->owner->ID];
+        }
         $product = $this->getVariantAttributeContext();
         $fields  = [];
         if ($product->hasVariants()) {
@@ -783,7 +813,8 @@ class ProductExtension extends DataExtension
                 }
             }
         }
-        return $fields;
+        $this->variantFormFields[$product->ID] = $fields;
+        return $this->variantFormFields[$product->ID];
     }
     
     /**
@@ -841,7 +872,7 @@ class ProductExtension extends DataExtension
         }
         return $attributeNames;
     }
-    
+
     /**
      * Returns the form fields for the choice of a products single variant to 
      * use.
@@ -850,6 +881,9 @@ class ProductExtension extends DataExtension
      */
     public function getSingleProductVariantFormFields() : array
     {
+        if (array_key_exists($this->owner->ID, $this->singleProductVariantFormFields)) {
+            return $this->singleProductVariantFormFields[$this->owner->ID];
+        }
         $product = $this->owner;
         $fields  = [];
         if ($product->hasSingleProductVariants()) {
@@ -863,18 +897,19 @@ class ProductExtension extends DataExtension
                     $selectedAttributeValue = $attributedValues->filter('IsDefault', true)->first();
                     if ($selectedAttributeValue instanceof ProductAttributeValue) {
                         $selectedValue = $selectedAttributeValue->ID;
+                    } else {
+                        $selectedValue = $attributedValues->first()->ID;
+                    }
+                    $attributedValues->sort('Title');
+                    foreach ($attributedValues as $attributedValue) {
+                        if (!$attributedValue->IsActive) {
+                            continue;
+                        }
+                        $attributeName  = $attributedValue->Title;
+                        $attributeName .= $this->getVariantPriceStringIfDifferent($attributedValue, $prices, true);
+                        $values[$attributedValue->ID] = $attributeName;
                     }
                 }
-                $attributedValues->sort('Title');
-                foreach ($attributedValues as $attributedValue) {
-                    if (!$attributedValue->IsActive) {
-                        continue;
-                    }
-                    $attributeName  = $attributedValue->Title;
-                    $attributeName .= $this->getVariantPriceStringIfDifferent($attributedValue, $prices, true);
-                    $values[$attributedValue->ID] = $attributeName;
-                }
-
                 if (count($values) > 0) {
                     if (!empty($attribute->useCustomFormField)
                      && $this->owner->hasMethod('get' . ucfirst($attribute->useCustomFormField))
@@ -892,6 +927,7 @@ class ProductExtension extends DataExtension
                                 $values,
                                 $selectedValue
                         );
+                        $field->setRequiredForced(true);
                     }
                     $field->setProductID($product->ID)
                             ->setProductPrices(json_encode($prices))
@@ -900,7 +936,8 @@ class ProductExtension extends DataExtension
                 }
             }
         }
-        return array_merge($fields, $this->getVariantUserInputFields());
+        $this->singleProductVariantFormFields[$product->ID] = array_merge($fields, $this->getVariantUserInputFields());
+        return $this->singleProductVariantFormFields[$product->ID];
     }
     
     /**
@@ -918,18 +955,15 @@ class ProductExtension extends DataExtension
         $userInputAttributes = $this->owner->getSingleProductVariantAttributes()->filter('IsUserInputField', true);
         if ($userInputAttributes->exists()) {
             foreach ($userInputAttributes as $userInputAttribute) {
-                $options = [];
-                $requirements = [];
-                if (!$userInputAttribute->UserInputFieldMustBeFilledIn) {
-                    $options[''] = $this->owner->fieldLabel('NoUserInput');
-                } else {
-                    $requirements = [
-                        'isFilledIn' => true,
-                    ];
-                }
+                $options         = [];
                 $prices          = [];
                 $userInputValues = $this->owner->ProductAttributeValues()->filter('ProductAttributeID', $userInputAttribute->ID);
                 if ($userInputValues->exists()) {
+                    if ($userInputValues->count() > 1
+                     && !$userInputAttribute->UserInputFieldMustBeFilledIn
+                    ) {
+                        $options[''] = $this->owner->fieldLabel('NoUserInput');
+                    }
                     foreach ($userInputValues as $value) {
                         $options[$value->ID] = $value->Title . $this->getVariantPriceStringIfDifferent($value, $prices, true);
                     }
@@ -946,6 +980,9 @@ class ProductExtension extends DataExtension
                 $field->setProductID($this->owner->ID)
                         ->setProductPrices(json_encode($prices))
                         ->setProductVariantType(ProductAttributeDropdownField::VARIANT_TYPE_SINGLE);
+                if ($userInputAttribute->UserInputFieldMustBeFilledIn) {
+                    $field->setRequiredForced(true);
+                }
                 $fields[] = $field;
             }
         }
@@ -1001,6 +1038,42 @@ class ProductExtension extends DataExtension
         }
         $prices[$attributeValue->ID] = $totalPrice->Nice();
         return $priceString;
+    }
+    
+    /**
+     * Updates the original addToCart() method.
+     * 
+     * @param int                  $cartID               Cart ID
+     * @param int                  $quantity             Quantity to add
+     * @param bool                 $increment            Increment instead of adding an absolute quantity?
+     * @param bool                 $addToCartAllowed     Add to cart action is allowed?
+     * @param ShoppingCartPosition $shoppingCartPosition Cart position
+     * 
+     * @return void
+     */
+    public function updateAddToCart(int $cartID, int $quantity, bool $increment, bool &$addToCartAllowed, ShoppingCartPosition $shoppingCartPosition = null) : void
+    {
+        $product = $this->owner;
+        if ($product->hasSingleProductVariants()) {
+            $formData = $_POST;
+            foreach ($this->getSingleProductVariantAttributes() as $attribute) {
+                $formFieldName = "ProductAttribute{$attribute->ID}";
+                if ((!$attribute->IsUserInputField
+                  || ($attribute->IsUserInputField
+                   && $attribute->UserInputFieldMustBeFilledIn))
+                 && (!array_key_exists($formFieldName, $formData)
+                  || empty($formData[$formFieldName]))
+                ) {
+                    $addToCartAllowed = false;
+                    if (Controller::has_curr()
+                     && !Controller::curr()->redirectedTo()
+                    ) {
+                        Controller::curr()->redirect($this->owner->Link());
+                        return;
+                    }
+                }
+            }
+        }
     }
     
     /**

@@ -14,27 +14,27 @@ use SilverStripe\View\ArrayData;
  * @since 13.06.2018
  * @license see license file in modules root directory
  * @copyright 2018 pixeltricks GmbH
+ * 
+ * @property ProductAttributeDropdownField|ChooseEngravingField $this This
  */
-trait ProductAttributeFormField {
-    
+trait ProductAttributeFormField
+{
     /**
      * Product ID
      *
-     * @var int
+     * @var int|null
      */
     protected $productID = null;
-    
     /**
      * JSON encoded list of prices.
      *
-     * @var string
+     * @var string|null
      */
     protected $productPrices = null;
-    
     /**
      * Type of product variation (single or multiple products)
      *
-     * @var string 
+     * @var string|null
      */
     protected $productVariantType = null;
     
@@ -43,9 +43,10 @@ trait ProductAttributeFormField {
      * 
      * @return array
      */
-    public function getProductAttributeAttributes() {
+    public function getProductAttributeAttributes() : array
+    {
         return [
-            'data-action'     => Controller::curr()->data()->Link() . '/' . ProductAttributeDropdownField::config()->get('load_variant_action'),
+            'data-action'     => Controller::curr()->data()->Link() . '/' . ProductAttributeDropdownField::config()->load_variant_action,
             'data-prices'     => $this->getProductPrices(),
             'data-type'       => $this->getProductVariantType(),
             'data-product-id' => $this->getProductID(),
@@ -63,7 +64,8 @@ trait ProductAttributeFormField {
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 13.06.2018
      */
-    public function addPricesToOption(ArrayData &$option, $value) {
+    public function addPricesToOption(ArrayData &$option, $value) : void
+    {
         $jsonPrices = $this->getAttribute('data-prices');
         $prices     = json_decode($jsonPrices, true);
         if (is_array($prices)) {
@@ -80,8 +82,9 @@ trait ProductAttributeFormField {
      * 
      * @return int
      */
-    public function getProductID() {
-        return $this->productID;
+    public function getProductID() : int
+    {
+        return (int) $this->productID;
     }
 
     /**
@@ -89,8 +92,9 @@ trait ProductAttributeFormField {
      * 
      * @return string
      */
-    public function getProductPrices() {
-        return $this->productPrices;
+    public function getProductPrices() : string
+    {
+        return (string) $this->productPrices;
     }
 
     /**
@@ -98,11 +102,12 @@ trait ProductAttributeFormField {
      * 
      * @return string
      */
-    public function getProductVariantType() {
+    public function getProductVariantType() : string
+    {
         if (empty($this->productVariantType)) {
             $this->setProductVariantType(self::VARIANT_TYPE_MULTIPLE);
         }
-        return $this->productVariantType;
+        return (string) $this->productVariantType;
     }
 
     /**
@@ -112,7 +117,8 @@ trait ProductAttributeFormField {
      * 
      * @return $this
      */
-    public function setProductID($productID) {
+    public function setProductID(int $productID) : object
+    {
         $this->productID = $productID;
         return $this;
     }
@@ -133,7 +139,8 @@ trait ProductAttributeFormField {
      * 
      * @return $this
      */
-    public function setProductPrices($productPrices) {
+    public function setProductPrices(string $productPrices) : object
+    {
         $this->productPrices = $productPrices;
         return $this;
     }
@@ -148,9 +155,9 @@ trait ProductAttributeFormField {
      * @see self::VARIANT_TYPE_SINGLE
      * @see self::VARIANT_TYPE_MULTIPLE
      */
-    public function setProductVariantType($productVariantType) {
+    public function setProductVariantType(string $productVariantType) : object
+    {
         $this->productVariantType = $productVariantType;
         return $this;
     }
-    
 }

@@ -1,4 +1,6 @@
 de:
+    SilverCart\ProductAttributes:
+        PleaseChooseVariantFor: 'Bitte wählen Sie eine Variante für den Artikel {title}'
     SilverCart\ProductAttributes\Model\Product\ProductAttribute:
         AdTitle: Werbename
         AdTitleDesc: |

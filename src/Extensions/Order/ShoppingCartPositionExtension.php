@@ -105,7 +105,7 @@ class ShoppingCartPositionExtension extends DataExtension
                 $idString = implode(',', $attributesArray);
                 if (!empty($idString)) {
                     $attributeValues = ProductAttributeValue::get()
-                        ->where('"' . ProductAttributeValue::config()->get('table_name') . '"."ID" IN (' . implode(',', $attributesArray) . ')');
+                        ->where('"' . ProductAttributeValue::config()->get('table_name') . '"."ID" IN (' . implode(',', array_keys($attributesArray)) . ')');
                     foreach ($attributeValues as $value) {
                         if (!array_key_exists($value->ProductAttribute()->ID, $userInputAttributes)) {
                             continue;
