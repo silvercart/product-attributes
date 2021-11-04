@@ -1,17 +1,17 @@
 ru:
-    SilverCart\ProductAttributes\Model\Product\ProductAttribute:
-        PLURALNAME: 'Описания товара'
-        SINGULARNAME: 'Описание товара'
-        TABNAME: Детали
-        TITLE: Имя
-    SilverCart\ProductAttributes\Model\Widgets\ProductAttributeFilterWidget:
-        FB_MULTIPLECHOICE: 'многократный выбор'
-        FB_SINGLECHOICE: 'простой выбор'
-    SilverCart\ProductAttributes\Extensions\Product\ProductExtension:
-        PRODUCT_ATTRIBUTES: Детали
-        PRODUCT_ATTRIBUTE_VALUES: Стоимость
-    SilverCart\ProductAttributes\Model\Product\ProductAttributeSet:
-        TITLE: Имя
-    SilverCart\ProductAttributes\Model\Product\ProductAttributeValue:
-        TABNAME: Стоимости
-        TITLE: Имя
+  SilverCart\ProductAttributes\Extensions\Product\ProductExtension:
+    PRODUCT_ATTRIBUTES: Детали
+    PRODUCT_ATTRIBUTE_VALUES: Стоимость
+  SilverCart\ProductAttributes\Model\Product\ProductAttribute:
+    PLURALNAME: 'Описания товара'
+    SINGULARNAME: 'Описание товара'
+    TABNAME: Детали
+    TITLE: Имя
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeSet:
+    TITLE: Имя
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeValue:
+    TABNAME: Стоимости
+    TITLE: Имя
+  SilverCart\ProductAttributes\Model\Widgets\ProductAttributeFilterWidget:
+    FB_MULTIPLECHOICE: 'многократный выбор'
+    FB_SINGLECHOICE: 'простой выбор'

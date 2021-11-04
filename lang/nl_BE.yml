@@ -1,4 +1,6 @@
 nl_BE:
+  SilverCart\ProductAttributes:
+    PleaseChooseVariantFor: 'Kies een variant voor {title}'
   SilverCart\ProductAttributes\Admin\Controllers\ProductAttributeAdmin:
     MENUTITLE: Artikelkenmerken
   SilverCart\ProductAttributes\Extensions\Forms\AddToCartFormExtension:

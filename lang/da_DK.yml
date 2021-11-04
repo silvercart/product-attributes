@@ -1,4 +1,6 @@
 da_DK:
+  SilverCart\ProductAttributes:
+    PleaseChooseVariantFor: 'Vælg venligst en variant for varen {title}'
   SilverCart\ProductAttributes\Admin\Controllers\ProductAttributeAdmin:
     MENUTITLE: Produktattributter
   SilverCart\ProductAttributes\Extensions\Forms\AddToCartFormExtension:

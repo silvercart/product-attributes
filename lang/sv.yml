@@ -1,0 +1,3 @@
+sv:
+  SilverCart\ProductAttributes:
+    PleaseChooseVariantFor: 'Välj en variant för artikeln {title}'
