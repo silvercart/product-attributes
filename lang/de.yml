@@ -1,117 +1,113 @@
 de:
-    SilverCart\ProductAttributes:
-        PleaseChooseVariantFor: 'Bitte wählen Sie eine Variante für den Artikel {title}'
-    SilverCart\ProductAttributes\Model\Product\ProductAttribute:
-        AdTitle: Werbename
-        AdTitleDesc: |
-            Beispiele für Merkmal "HDD Speicherplatz" mit einem Wert von "500 GB":<br/>
-            • "Insgesamt {$Value} Speicherplatz" (Anzeige: "Insgesamt 500 GB Speicherplatz")<br/>
-            • "Speicherplatz: {$Value}!" (Anzeige: "Speicherplatz: 500 GB!")<br/>
-            • "Festplattenkapazität" (Anzeige: "500 GB Festplattenkapazität")<br/>
-        AdTitleRightTitle: 'Der Werbename wird an werbewirksamen Stellen wie z.B. einer CMS-Seite für eine Paket-Auswahl angezeigt.'
-        CAN_BE_USED_FOR_DATASHEET: 'Für das Datenblatt verwenden'
-        CAN_BE_USED_FOR_FILTERWIDGET: 'Für den Artikelfilter verwenden'
-        CAN_BE_USED_FOR_VARIANTS: 'Kann für Multi-Artikel basierte Varianten verwendet werden'
-        CAN_BE_USED_FOR_VARIANTS_DESC: 'Wird die Varianten-Funktion auf Multi-Artikel-Basis aktiviert, so ist es möglich, mehrere Artikel miteinander zu verknüpfen und gegenseitig auswählbar zu machen (z.B. ein Artikel erhält das Merkmal "Farbe" -> "Rot", ein zweiter erhält das Merkmal "Farbe" -> "Gelb", ein dritter erhält das Merkmal "Farbe" -> "Grün").'
-        CanBeUsedForDataSheetShort: Datenblatt
-        CanBeUsedForFilterWidgetShort: Artikelfilter
-        CanBeUsedForSingleVariants: 'Kann für Einzel-Artikel basierte Varianten verwendet werden'
-        CanBeUsedForSingleVariantsDesc: 'Artikelmerkmale können für Varianten auf Einzel-Artikel-Basis verwendet werden. Das bedeutet, ein Artikel erhält mehrere Merkmale die vom Kunden auswählbar sind (z.B. ein Artikel erhält die Merkmale "Farbe" -> "Rot", "Gelb", "Grün").'
-        CanBeUsedForSingleVariantsShort: Einzel-Varianten
-        CanBeUsedForVariantsShort: Multi-Varianten
-        DisplaySettings: Anzeige-Einstellungen
-        DisplayConversionUnit: 'Anzeige Einheit'
-        DisplayConversionUnitDesc: 'z.B. "GB", "MB", "cm", "€"'
-        DisplayConversionFactor: Umrechnungsfaktor
-        DisplayZeroAsUnlimited: 'Null-Wert als "unbegrenzt" anzeigen'
-        ImportList: 'Merkmale importieren'
-        ImportListDesc: 'Fügen Sie hier eine Liste von Merkmalen ein, die Sie importieren möchten. Bitte beachten Sie, dass je Zeile ein Merkmal eingefügt wird.'
-        ImportPrefix: 'Import Präfix'
-        ImportPrefixDesc: 'Text, der jedem zu importierenden Merkmal vorangestellt wird.'
-        ImportSuffix: 'Import Suffix'
-        ImportSuffixDesc: 'Text, der jedem zu importierenden Merkmal angehängt wird.'
-        IsUserInputField: 'Freitexteingabe aktivierten'
-        IsUserInputFieldDesc: 'Wird die Freitexteingabe aktiviert, erscheint am Artikel die Möglichkeit, einen vom Kunden beliebig wählbaren Text einzugeben (z.B. "Gravur"/"T-Shirt-Aufdruck")'
-        PLURALNAME: Artikelmerkmale
-        PLURALTITLE: Pluralname
-        SINGULARNAME: Artikelmerkmal
-        TABNAME: Merkmale
-        TITLE: Name
-        unlimited: unbegrenzt
-        UserInputFieldMustBeFilledIn: 'Freitext muss eingegeben werden'
-        UserInputFieldMustBeFilledInDesc: 'Wird dieses Feld aktiviert, muss der Kunde einen Text eingeben, bevor er einen Verknüpften Artikel in den Warenkorb legen kann.'
-    SilverCart\ProductAttributes\Extensions\Forms\AddToCartFormExtension:
-        HEADLINE: Auswahlmöglichkeiten
-    SilverCart\ProductAttributes\Admin\Controllers\ProductAttributeAdmin:
-        MENUTITLE: Artikelmerkmale
-    SilverCart\ProductAttributes\Model\Widgets\ProductAttributeFilterWidget:
-        CMSTITLE: Artikelmerkmal-Filter
-        DESCRIPTION: 'Liefert eine gruppierte Auswahl von Filtern, die anhand der zugewiesenen Artikelmerkmale der aktuellen Warengruppe erstellt wird.'
-        DISABLE_FILTER_FOR: 'Alle Filter für &quot;{title}&quot; aufheben'
-        FB_HINT: 'Das Feld "Filter-Verhalten" legt fest, wie der Filter reagiert.<br/><b>Mehrfachauswahl:</b> Der Kunde kann mehrere Werte eines Merkmals gleichzeitig auswählen. Zum Beipiel können alle Artikel, deren Farbe rot ODER schwarz ist, angezeigt werden. Es sind immer alle Filter-Merkmal-Werte einer Warengruppe auswählbar.<br/><b>Einfachauswahl:</b> Der Kunde kann nur einen Wert eines Merkmals auswählen. Die verfügbaren Filter-Merkmal-Werte orientieren sich immer an der gefilterten Artikelliste.'
-        FB_MULTIPLECHOICE: Mehrfachauswahl
-        FB_SINGLECHOICE: Einfachauswahl
-        FILTERBEHAVIOUR: Filter-Verhalten
-        REMEMBERFILTER: 'Filter pro Warengruppe merken'
-        TITLE: Artikelmerkmal-Filter
-    SilverCart\ProductAttributes\Model\Product\ProductAttributeTranslation:
-        PLURALNAME: Übersetzungen
-        SINGULARNAME: Übersetzung
-    SilverCart\ProductAttributes\Extensions\Order\OrderPositionExtension:
-        VARIANTDEFINITION: Variantenbeschreibung
-    SilverCart\ProductAttributes\Model\Widgets\PriceFilterWidget:
-        CMSTITLE: Preis-Filter
-        DESCRIPTION: 'Liefert ein Widget, welches die Eingabe einer Preisspanne erlaubt, nach der Artikel gefiltert werden.'
-        DISABLE_FILTER: 'Filter aufheben'
-        FILTER: Filtern
-        FRONTTITLE: 'Nach Preis filtern'
-        MAX_PRICE: bis
-        MIN_PRICE: von
-        OffersAbove: 'über {min} {currency}'
-        ShowOffersAbove: 'Angebote über {min} {currency} anzeigen'
-        ShowOffersFromTo: 'Angebote zwischen {min} und {max} {currency} anzeigen'
-        TITLE: Preis-Filter
-    SilverCart\ProductAttributes\Extensions\Product\ProductExtension:
-        MASTER_PRODUCT: 'Dieser Artikel ist eine Variante des Artikels mit der Artikelnummer'
-        NoUserInput: Ohne
-        PRODUCT_ATTRIBUTE: Merkmal
-        PRODUCT_ATTRIBUTES: Merkmale
-        PRODUCT_ATTRIBUTE_VALUE: Wert
-        PRODUCT_ATTRIBUTE_VALUES: Wert
-        SLAVE_PRODUCTS: 'Dieser Artikel hat folgende Varianten:'
-    SilverCart\ProductAttributes\Model\Product\ProductAttributeSet:
-        PLURALNAME: Artikelmerkmal-Sets
-        SINGULARNAME: Artikelmerkmal-Set
-        TABNAME: Merkmal-Sets
-        TITLE: Name
-    SilverCart\ProductAttributes\Model\Product\ProductAttributeSetTranslation:
-        PLURALNAME: Übersetzungen
-        SINGULARNAME: Übersetzung
-    SilverCart\ProductAttributes\Model\Product\ProductAttributeValue:
-        PLURALNAME: Artikelmerkmal-Werte
-        SINGULARNAME: Artikelmerkmal-Wert
-        TABNAME: Werte
-        TITLE: Name
-        Default: Standard
-        DefaultModifyDesc: 'Wird als Standard-Wert für verknüpfte Artikel verwendet. Kann an jedem einzelnen Artikel individuell überschrieben werden.'
-        DefaultModifyAction: Aktion
-        DefaultModifyActionNone: '- ohne -'
-        DefaultModifyActionAdd: 'Hinzufügen / Addieren'
-        DefaultModifyActionSetTo: Überschreiben
-        DefaultModifyActionSubtract: 'Entfernen / Abziehen'
-        DefaultModifyValue: Wert
-        DefaultModifyPrice: 'Standard-Anpassung Artikelpreis'
-        DefaultModifyPriceAction: 'Anpassung Artikelpreis Aktion'
-        DefaultModifyPriceValue: 'Anpassung Artikelpreis Wert'
-        DefaultModifyProductNumber: 'Standard-Anpassung Artikelnummer'
-        DefaultModifyProductNumberAction: 'Anpassung Artikelnummer Aktion'
-        DefaultModifyProductNumberValue: 'Anpassung Artikelnummer Wert'
-        DefaultModifyTitle: 'Standard-Anpassung Artikeltitel'
-        DefaultModifyTitleAction: 'Anpassung Artikeltitel Aktion'
-        DefaultModifyTitleValue: 'Anpassung Artikeltitel Wert'
-        ModifyPrice: 'Anpassung Artikelpreis'
-        ModifyProductNumber: 'Anpassung Artikelnummer'
-        ModifyTitle: 'Anpassung Artikeltitel'
-    SilverCart\ProductAttributes\Model\Product\ProductAttributeValueTranslation:
-        PLURALNAME: Übersetzungen
-        SINGULARNAME: Übersetzung
+  SilverCart\ProductAttributes:
+    PleaseChooseVariantFor: 'Bitte wählen Sie eine Variante für den Artikel {title}'
+  SilverCart\ProductAttributes\Admin\Controllers\ProductAttributeAdmin:
+    MENUTITLE: Artikelmerkmale
+  SilverCart\ProductAttributes\Extensions\Forms\AddToCartFormExtension:
+    HEADLINE: Auswahlmöglichkeiten
+  SilverCart\ProductAttributes\Extensions\Order\OrderPositionExtension:
+    VARIANTDEFINITION: Variantenbeschreibung
+  SilverCart\ProductAttributes\Extensions\Product\ProductExtension:
+    MASTER_PRODUCT: 'Dieser Artikel ist eine Variante des Artikels mit der Artikelnummer'
+    NoUserInput: Ohne
+    PRODUCT_ATTRIBUTE: Merkmal
+    PRODUCT_ATTRIBUTES: Merkmale
+    PRODUCT_ATTRIBUTE_VALUE: Wert
+    PRODUCT_ATTRIBUTE_VALUES: Wert
+    SLAVE_PRODUCTS: 'Dieser Artikel hat folgende Varianten:'
+  SilverCart\ProductAttributes\Model\Product\ProductAttribute:
+    AdTitle: Werbename
+    AdTitleDesc: "Beispiele für Merkmal \"HDD Speicherplatz\" mit einem Wert von \"500 GB\":<br/>\n• \"Insgesamt {$Value} Speicherplatz\" (Anzeige: \"Insgesamt 500 GB Speicherplatz\")<br/>\n• \"Speicherplatz: {$Value}!\" (Anzeige: \"Speicherplatz: 500 GB!\")<br/>\n• \"Festplattenkapazität\" (Anzeige: \"500 GB Festplattenkapazität\")<br/>\n"
+    AdTitleRightTitle: 'Der Werbename wird an werbewirksamen Stellen wie z.B. einer CMS-Seite für eine Paket-Auswahl angezeigt.'
+    CAN_BE_USED_FOR_DATASHEET: 'Für das Datenblatt verwenden'
+    CAN_BE_USED_FOR_FILTERWIDGET: 'Für den Artikelfilter verwenden'
+    CAN_BE_USED_FOR_VARIANTS: 'Kann für Multi-Artikel basierte Varianten verwendet werden'
+    CAN_BE_USED_FOR_VARIANTS_DESC: 'Wird die Varianten-Funktion auf Multi-Artikel-Basis aktiviert, so ist es möglich, mehrere Artikel miteinander zu verknüpfen und gegenseitig auswählbar zu machen (z.B. ein Artikel erhält das Merkmal "Farbe" -> "Rot", ein zweiter erhält das Merkmal "Farbe" -> "Gelb", ein dritter erhält das Merkmal "Farbe" -> "Grün").'
+    CanBeUsedForDataSheetShort: Datenblatt
+    CanBeUsedForFilterWidgetShort: Artikelfilter
+    CanBeUsedForSingleVariants: 'Kann für Einzel-Artikel basierte Varianten verwendet werden'
+    CanBeUsedForSingleVariantsDesc: 'Artikelmerkmale können für Varianten auf Einzel-Artikel-Basis verwendet werden. Das bedeutet, ein Artikel erhält mehrere Merkmale die vom Kunden auswählbar sind (z.B. ein Artikel erhält die Merkmale "Farbe" -> "Rot", "Gelb", "Grün").'
+    CanBeUsedForSingleVariantsShort: Einzel-Varianten
+    CanBeUsedForVariantsShort: Multi-Varianten
+    DisplayConversionFactor: Umrechnungsfaktor
+    DisplayConversionUnit: 'Anzeige Einheit'
+    DisplayConversionUnitDesc: 'z.B. "GB", "MB", "cm", "€"'
+    DisplaySettings: Anzeige-Einstellungen
+    DisplayZeroAsUnlimited: 'Null-Wert als "unbegrenzt" anzeigen'
+    ImportList: 'Merkmale importieren'
+    ImportListDesc: 'Fügen Sie hier eine Liste von Merkmalen ein, die Sie importieren möchten. Bitte beachten Sie, dass je Zeile ein Merkmal eingefügt wird.'
+    ImportPrefix: 'Import Präfix'
+    ImportPrefixDesc: 'Text, der jedem zu importierenden Merkmal vorangestellt wird.'
+    ImportSuffix: 'Import Suffix'
+    ImportSuffixDesc: 'Text, der jedem zu importierenden Merkmal angehängt wird.'
+    IsUserInputField: 'Freitexteingabe aktivierten'
+    IsUserInputFieldDesc: 'Wird die Freitexteingabe aktiviert, erscheint am Artikel die Möglichkeit, einen vom Kunden beliebig wählbaren Text einzugeben (z.B. "Gravur"/"T-Shirt-Aufdruck")'
+    PLURALNAME: Artikelmerkmale
+    PLURALTITLE: Pluralname
+    SINGULARNAME: Artikelmerkmal
+    TABNAME: Merkmale
+    TITLE: Name
+    UserInputFieldMustBeFilledIn: 'Freitext muss eingegeben werden'
+    UserInputFieldMustBeFilledInDesc: 'Wird dieses Feld aktiviert, muss der Kunde einen Text eingeben, bevor er einen Verknüpften Artikel in den Warenkorb legen kann.'
+    unlimited: unbegrenzt
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeSet:
+    PLURALNAME: Artikelmerkmal-Sets
+    SINGULARNAME: Artikelmerkmal-Set
+    TABNAME: Merkmal-Sets
+    TITLE: Name
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeSetTranslation:
+    PLURALNAME: Übersetzungen
+    SINGULARNAME: Übersetzung
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeTranslation:
+    PLURALNAME: Übersetzungen
+    SINGULARNAME: Übersetzung
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeValue:
+    Default: Standard
+    DefaultModifyAction: Aktion
+    DefaultModifyActionAdd: 'Hinzufügen / Addieren'
+    DefaultModifyActionNone: '- ohne -'
+    DefaultModifyActionSetTo: Überschreiben
+    DefaultModifyActionSubtract: 'Entfernen / Abziehen'
+    DefaultModifyDesc: 'Wird als Standard-Wert für verknüpfte Artikel verwendet. Kann an jedem einzelnen Artikel individuell überschrieben werden.'
+    DefaultModifyPrice: 'Standard-Anpassung Artikelpreis'
+    DefaultModifyPriceAction: 'Anpassung Artikelpreis Aktion'
+    DefaultModifyPriceValue: 'Anpassung Artikelpreis Wert'
+    DefaultModifyProductNumber: 'Standard-Anpassung Artikelnummer'
+    DefaultModifyProductNumberAction: 'Anpassung Artikelnummer Aktion'
+    DefaultModifyProductNumberValue: 'Anpassung Artikelnummer Wert'
+    DefaultModifyTitle: 'Standard-Anpassung Artikeltitel'
+    DefaultModifyTitleAction: 'Anpassung Artikeltitel Aktion'
+    DefaultModifyTitleValue: 'Anpassung Artikeltitel Wert'
+    DefaultModifyValue: Wert
+    ModifyPrice: 'Anpassung Artikelpreis'
+    ModifyProductNumber: 'Anpassung Artikelnummer'
+    ModifyTitle: 'Anpassung Artikeltitel'
+    PLURALNAME: Artikelmerkmal-Werte
+    SINGULARNAME: Artikelmerkmal-Wert
+    TABNAME: Werte
+    TITLE: Name
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeValueTranslation:
+    PLURALNAME: Übersetzungen
+    SINGULARNAME: Übersetzung
+  SilverCart\ProductAttributes\Model\Widgets\PriceFilterWidget:
+    CMSTITLE: Preis-Filter
+    DESCRIPTION: 'Liefert ein Widget, welches die Eingabe einer Preisspanne erlaubt, nach der Artikel gefiltert werden.'
+    DISABLE_FILTER: 'Filter aufheben'
+    FILTER: Filtern
+    FRONTTITLE: 'Nach Preis filtern'
+    MAX_PRICE: bis
+    MIN_PRICE: von
+    OffersAbove: 'über {min} {currency}'
+    ShowOffersAbove: 'Angebote über {min} {currency} anzeigen'
+    ShowOffersFromTo: 'Angebote zwischen {min} und {max} {currency} anzeigen'
+    TITLE: Preis-Filter
+  SilverCart\ProductAttributes\Model\Widgets\ProductAttributeFilterWidget:
+    CMSTITLE: Artikelmerkmal-Filter
+    DESCRIPTION: 'Liefert eine gruppierte Auswahl von Filtern, die anhand der zugewiesenen Artikelmerkmale der aktuellen Warengruppe erstellt wird.'
+    DISABLE_FILTER_FOR: 'Alle Filter für &quot;{title}&quot; aufheben'
+    FB_HINT: 'Das Feld "Filter-Verhalten" legt fest, wie der Filter reagiert.<br/><b>Mehrfachauswahl:</b> Der Kunde kann mehrere Werte eines Merkmals gleichzeitig auswählen. Zum Beipiel können alle Artikel, deren Farbe rot ODER schwarz ist, angezeigt werden. Es sind immer alle Filter-Merkmal-Werte einer Warengruppe auswählbar.<br/><b>Einfachauswahl:</b> Der Kunde kann nur einen Wert eines Merkmals auswählen. Die verfügbaren Filter-Merkmal-Werte orientieren sich immer an der gefilterten Artikelliste.'
+    FB_MULTIPLECHOICE: Mehrfachauswahl
+    FB_SINGLECHOICE: Einfachauswahl
+    FILTERBEHAVIOUR: Filter-Verhalten
+    REMEMBERFILTER: 'Filter pro Warengruppe merken'
+    TITLE: Artikelmerkmal-Filter

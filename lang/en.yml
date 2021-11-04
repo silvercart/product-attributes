@@ -1,113 +1,113 @@
 en:
-    SilverCart\ProductAttributes:
-        PleaseChooseVariantFor: 'Please choose a variant for {title}'
-    SilverCart\ProductAttributes\Model\Product\ProductAttribute:
-        CAN_BE_USED_FOR_DATASHEET: 'Use for data sheet'
-        CAN_BE_USED_FOR_FILTERWIDGET: 'Use for product filter'
-        CAN_BE_USED_FOR_VARIANTS: 'Can be used for multi-product-variants'
-        CAN_BE_USED_FOR_VARIANTS_DESC: 'If this is active, you are able to combine multiple products to use as variants (e.g. one product gets the attribute "color" -> "red", a second one "color" -> "yellow", a third one "color" -> "green").'
-        CanBeUsedForDataSheetShort: 'Data sheet'
-        CanBeUsedForFilterWidgetShort: 'Product filter'
-        CanBeUsedForSingleVariants: 'Can be used for single-product-variants'
-        CanBeUsedForSingleVariantsDesc: 'If this is active, you are able to use a single product with variants (e.g. one product gets the attributes "color" -> "red", "yellow", "green").'
-        CanBeUsedForSingleVariantsShort: Single-Variants
-        CanBeUsedForVariantsShort: Multi-Variants
-        ImportList: 'Import attributes'
-        ImportListDesc: 'Add one attribute per line into this field to import many attributes at once.'
-        ImportPrefix: 'Import Prefix'
-        ImportPrefixDesc: 'Text will be prefixed to every imported attribute.'
-        ImportSuffix: 'Import Suffix'
-        ImportSuffixDesc: 'Text will be suffixed to every imported attribute.'
-        IsUserInputField: 'Is user input field'
-        IsUserInputFieldDesc: 'If you are using the user input field, the customer can enter a custom text before adding a product to cart (z.B. "engraving"/"t-shirt overprint").'
-        PLURALNAME: 'Product Attributes'
-        PLURALTITLE: 'Plural title'
-        SINGULARNAME: 'Product Attribute'
-        TABNAME: Attributes
-        TITLE: Title
-        UserInputFieldMustBeFilledIn: 'User input is obligatory'
-        UserInputFieldMustBeFilledInDesc: 'If this is active, the customer has to enter a custom text before he is able to add the related product to cart.'
-        AdTitle: 'Advertising name'
-        AdTitleDesc: "Examples for feature \"HDD storage space\" with a value of \"500 GB\":<br/>\n- \"Total {$Value} Storage Space\" (Display: \"Total 500 GB Storage Space\")<br/>\n- \"Storage: {$Value}!\" (Display: \"Disk space: 500 GB!\")<br/>\n- \"Hard disk capacity\" (display: \"500 GB hard disk capacity\")<br/>\n"
-        AdTitleRightTitle: 'The advertising name is displayed in places that are effective in advertising, such as a CMS page for a package selection.'
-        DisplaySettings: 'Display Settings'
-        DisplayConversionUnit: 'Display Unit'
-        DisplayConversionUnitDesc: 'e.g. "GB", "MB", "cm", "€"'
-        DisplayConversionFactor: 'Conversion factor'
-        DisplayZeroAsUnlimited: 'Display zero value as "unlimited'
-        unlimited: unlimited
-    SilverCart\ProductAttributes\Extensions\Forms\AddToCartFormExtension:
-        HEADLINE: Variants
-    SilverCart\ProductAttributes\Admin\Controllers\ProductAttributeAdmin:
-        MENUTITLE: 'Product Attributes'
-    SilverCart\ProductAttributes\Model\Widgets\ProductAttributeFilterWidget:
-        CMSTITLE: 'Product Attribute Filter'
-        DESCRIPTION: 'Provides a grouped selection of filters, created by the product attributes assigned onto the products of the current product group.'
-        DISABLE_FILTER_FOR: 'Reset all filters for &quot;{title}&quot;'
-        FB_HINT: 'The field &quot;Filter-Behaviour&quot; determines how the filter reacts on user input.<br/><b>Multiple Choice:</b> The customer can choose multiple values of one attribute at the same time. For example, the customer can display all products with the colors red OR black. All filter attribute values are selectable, independent of the currently set filter.<br/><b>Single Choice:</b> The customer can only choose ONE value of an attribute. The available filter attribute values will be constrained by the currently set filters.'
-        FB_MULTIPLECHOICE: 'Multiple Choice'
-        FB_SINGLECHOICE: 'Single Choice'
-        FILTERBEHAVIOUR: Filter-Behavior
-        REMEMBERFILTER: 'Remember filter by product group'
-        TITLE: 'Product Attribute Filter'
-    SilverCart\ProductAttributes\Model\Product\ProductAttributeTranslation:
-        PLURALNAME: Übersetzungen
-        SINGULARNAME: Übersetzung
-    SilverCart\ProductAttributes\Extensions\Order\OrderPositionExtension:
-        VARIANTDEFINITION: 'Variant Definition'
-    SilverCart\ProductAttributes\Model\Widgets\PriceFilterWidget:
-        CMSTITLE: Price-Filter
-        DESCRIPTION: 'Provides a widget which allows to enter a price range to filter a product list.'
-        DISABLE_FILTER: 'Reset filter'
-        FILTER: Filter
-        FRONTTITLE: 'Filter by price'
-        MAX_PRICE: to
-        MIN_PRICE: from
-        OffersAbove: 'above {min} {currency}'
-        ShowOffersAbove: 'Show offers above {min} {currency}'
-        ShowOffersFromTo: 'Show offers from {min} to {max} {currency}'
-        TITLE: Price-Filter
-    SilverCart\ProductAttributes\Extensions\Product\ProductExtension:
-        MASTER_PRODUCT: 'This product is a variant of the product with the following product number'
-        NoUserInput: None
-        PRODUCT_ATTRIBUTE: Attribute
-        PRODUCT_ATTRIBUTES: Attribute
-        PRODUCT_ATTRIBUTE_VALUE: Value
-        PRODUCT_ATTRIBUTE_VALUES: Value
-        SLAVE_PRODUCTS: 'This product has the following variants:'
-    SilverCart\ProductAttributes\Model\Product\ProductAttributeSet:
-        PLURALNAME: 'Product Attribute Sets'
-        SINGULARNAME: 'Product Attribute Set'
-        TABNAME: 'Attribute Sets'
-        TITLE: Title
-    SilverCart\ProductAttributes\Model\Product\ProductAttributeSetTranslation:
-        PLURALNAME: Translations
-        SINGULARNAME: Translation
-    SilverCart\ProductAttributes\Model\Product\ProductAttributeValue:
-        PLURALNAME: 'Product Attribute Values'
-        SINGULARNAME: 'Product Attribute Value'
-        TABNAME: Values
-        TITLE: Title
-        Default: default
-        DefaultModifyDesc: 'Will be used as default for related products. Can be overwritten individually for each product.'
-        DefaultModifyAction: Action
-        DefaultModifyActionNone: '- none -'
-        DefaultModifyActionAdd: Add
-        DefaultModifyActionSetTo: 'Set to'
-        DefaultModifyActionSubtract: Subtract
-        DefaultModifyValue: Value
-        DefaultModifyPrice: 'Default product price modification'
-        DefaultModifyPriceAction: 'Default product price modification action'
-        DefaultModifyPriceValue: 'Default product price modification value'
-        DefaultModifyProductNumber: 'Default product number modification'
-        DefaultModifyProductNumberAction: 'Default product number modification action'
-        DefaultModifyProductNumberValue: 'Default product number modification value'
-        DefaultModifyTitle: 'Default product title modification'
-        DefaultModifyTitleAction: 'Default product title modification action'
-        DefaultModifyTitleValue: 'Default product title modification value'
-        ModifyPrice: 'Modify product price'
-        ModifyProductNumber: 'Modify product number'
-        ModifyTitle: 'Modify product title'
-    SilverCart\ProductAttributes\Model\Product\ProductAttributeValueTranslation:
-        PLURALNAME: Translations
-        SINGULARNAME: Translation
+  SilverCart\ProductAttributes:
+    PleaseChooseVariantFor: 'Please choose a variant for {title}'
+  SilverCart\ProductAttributes\Admin\Controllers\ProductAttributeAdmin:
+    MENUTITLE: 'Product Attributes'
+  SilverCart\ProductAttributes\Extensions\Forms\AddToCartFormExtension:
+    HEADLINE: Variants
+  SilverCart\ProductAttributes\Extensions\Order\OrderPositionExtension:
+    VARIANTDEFINITION: 'Variant Definition'
+  SilverCart\ProductAttributes\Extensions\Product\ProductExtension:
+    MASTER_PRODUCT: 'This product is a variant of the product with the following product number'
+    NoUserInput: None
+    PRODUCT_ATTRIBUTE: Attribute
+    PRODUCT_ATTRIBUTES: Attribute
+    PRODUCT_ATTRIBUTE_VALUE: Value
+    PRODUCT_ATTRIBUTE_VALUES: Value
+    SLAVE_PRODUCTS: 'This product has the following variants:'
+  SilverCart\ProductAttributes\Model\Product\ProductAttribute:
+    AdTitle: 'Advertising name'
+    AdTitleDesc: "Examples for feature \"HDD storage space\" with a value of \"500 GB\":<br/>\n- \"Total {$Value} Storage Space\" (Display: \"Total 500 GB Storage Space\")<br/>\n- \"Storage: {$Value}!\" (Display: \"Disk space: 500 GB!\")<br/>\n- \"Hard disk capacity\" (display: \"500 GB hard disk capacity\")<br/>\n"
+    AdTitleRightTitle: 'The advertising name is displayed in places that are effective in advertising, such as a CMS page for a package selection.'
+    CAN_BE_USED_FOR_DATASHEET: 'Use for data sheet'
+    CAN_BE_USED_FOR_FILTERWIDGET: 'Use for product filter'
+    CAN_BE_USED_FOR_VARIANTS: 'Can be used for multi-product-variants'
+    CAN_BE_USED_FOR_VARIANTS_DESC: 'If this is active, you are able to combine multiple products to use as variants (e.g. one product gets the attribute "color" -> "red", a second one "color" -> "yellow", a third one "color" -> "green").'
+    CanBeUsedForDataSheetShort: 'Data sheet'
+    CanBeUsedForFilterWidgetShort: 'Product filter'
+    CanBeUsedForSingleVariants: 'Can be used for single-product-variants'
+    CanBeUsedForSingleVariantsDesc: 'If this is active, you are able to use a single product with variants (e.g. one product gets the attributes "color" -> "red", "yellow", "green").'
+    CanBeUsedForSingleVariantsShort: Single-Variants
+    CanBeUsedForVariantsShort: Multi-Variants
+    DisplayConversionFactor: 'Conversion factor'
+    DisplayConversionUnit: 'Display Unit'
+    DisplayConversionUnitDesc: 'e.g. "GB", "MB", "cm", "€"'
+    DisplaySettings: 'Display Settings'
+    DisplayZeroAsUnlimited: 'Display zero value as "unlimited'
+    ImportList: 'Import attributes'
+    ImportListDesc: 'Add one attribute per line into this field to import many attributes at once.'
+    ImportPrefix: 'Import Prefix'
+    ImportPrefixDesc: 'Text will be prefixed to every imported attribute.'
+    ImportSuffix: 'Import Suffix'
+    ImportSuffixDesc: 'Text will be suffixed to every imported attribute.'
+    IsUserInputField: 'Is user input field'
+    IsUserInputFieldDesc: 'If you are using the user input field, the customer can enter a custom text before adding a product to cart (z.B. "engraving"/"t-shirt overprint").'
+    PLURALNAME: 'Product Attributes'
+    PLURALTITLE: 'Plural title'
+    SINGULARNAME: 'Product Attribute'
+    TABNAME: Attributes
+    TITLE: Title
+    UserInputFieldMustBeFilledIn: 'User input is obligatory'
+    UserInputFieldMustBeFilledInDesc: 'If this is active, the customer has to enter a custom text before he is able to add the related product to cart.'
+    unlimited: unlimited
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeSet:
+    PLURALNAME: 'Product Attribute Sets'
+    SINGULARNAME: 'Product Attribute Set'
+    TABNAME: 'Attribute Sets'
+    TITLE: Title
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeSetTranslation:
+    PLURALNAME: Translations
+    SINGULARNAME: Translation
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeTranslation:
+    PLURALNAME: Übersetzungen
+    SINGULARNAME: Übersetzung
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeValue:
+    Default: default
+    DefaultModifyAction: Action
+    DefaultModifyActionAdd: Add
+    DefaultModifyActionNone: '- none -'
+    DefaultModifyActionSetTo: 'Set to'
+    DefaultModifyActionSubtract: Subtract
+    DefaultModifyDesc: 'Will be used as default for related products. Can be overwritten individually for each product.'
+    DefaultModifyPrice: 'Default product price modification'
+    DefaultModifyPriceAction: 'Default product price modification action'
+    DefaultModifyPriceValue: 'Default product price modification value'
+    DefaultModifyProductNumber: 'Default product number modification'
+    DefaultModifyProductNumberAction: 'Default product number modification action'
+    DefaultModifyProductNumberValue: 'Default product number modification value'
+    DefaultModifyTitle: 'Default product title modification'
+    DefaultModifyTitleAction: 'Default product title modification action'
+    DefaultModifyTitleValue: 'Default product title modification value'
+    DefaultModifyValue: Value
+    ModifyPrice: 'Modify product price'
+    ModifyProductNumber: 'Modify product number'
+    ModifyTitle: 'Modify product title'
+    PLURALNAME: 'Product Attribute Values'
+    SINGULARNAME: 'Product Attribute Value'
+    TABNAME: Values
+    TITLE: Title
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeValueTranslation:
+    PLURALNAME: Translations
+    SINGULARNAME: Translation
+  SilverCart\ProductAttributes\Model\Widgets\PriceFilterWidget:
+    CMSTITLE: Price-Filter
+    DESCRIPTION: 'Provides a widget which allows to enter a price range to filter a product list.'
+    DISABLE_FILTER: 'Reset filter'
+    FILTER: Filter
+    FRONTTITLE: 'Filter by price'
+    MAX_PRICE: to
+    MIN_PRICE: from
+    OffersAbove: 'above {min} {currency}'
+    ShowOffersAbove: 'Show offers above {min} {currency}'
+    ShowOffersFromTo: 'Show offers from {min} to {max} {currency}'
+    TITLE: Price-Filter
+  SilverCart\ProductAttributes\Model\Widgets\ProductAttributeFilterWidget:
+    CMSTITLE: 'Product Attribute Filter'
+    DESCRIPTION: 'Provides a grouped selection of filters, created by the product attributes assigned onto the products of the current product group.'
+    DISABLE_FILTER_FOR: 'Reset all filters for &quot;{title}&quot;'
+    FB_HINT: 'The field &quot;Filter-Behaviour&quot; determines how the filter reacts on user input.<br/><b>Multiple Choice:</b> The customer can choose multiple values of one attribute at the same time. For example, the customer can display all products with the colors red OR black. All filter attribute values are selectable, independent of the currently set filter.<br/><b>Single Choice:</b> The customer can only choose ONE value of an attribute. The available filter attribute values will be constrained by the currently set filters.'
+    FB_MULTIPLECHOICE: 'Multiple Choice'
+    FB_SINGLECHOICE: 'Single Choice'
+    FILTERBEHAVIOUR: Filter-Behavior
+    REMEMBERFILTER: 'Remember filter by product group'
+    TITLE: 'Product Attribute Filter'

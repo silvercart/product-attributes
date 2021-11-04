@@ -1,111 +1,111 @@
 fr_BE:
-    SilverCart\ProductAttributes\Model\Product\ProductAttribute:
-        CAN_BE_USED_FOR_DATASHEET: 'Utiliser pour la fiche technique'
-        CAN_BE_USED_FOR_FILTERWIDGET: 'Utiliser pour le filtre d''articles'
-        CAN_BE_USED_FOR_VARIANTS: 'Peut être utilisé pour les variantes basées sur plusieurs articles'
-        CAN_BE_USED_FOR_VARIANTS_DESC: 'Si la fonction de variante est activée sur une base multi-articles, il est possible de relier plusieurs articles et de les rendre mutuellement sélectionnables (par exemple, un article reçoit la caractéristique "couleur" -> "rouge", un deuxième reçoit la caractéristique "couleur" -> "jaune", un troisième reçoit la caractéristique "couleur" -> "vert").'
-        CanBeUsedForDataSheetShort: 'Fiche technique'
-        CanBeUsedForFilterWidgetShort: 'Filtre d''articles'
-        CanBeUsedForSingleVariants: 'Peut être utilisé pour des variantes basées sur un seul article'
-        CanBeUsedForSingleVariantsDesc: 'Les caractéristiques des articles peuvent être utilisées pour les variantes sur la base d''un seul article. Cela signifie qu''un article reçoit plusieurs caractéristiques qui peuvent être sélectionnées par le client (par exemple, un article reçoit les caractéristiques "couleur" -> "rouge", "jaune", "vert").'
-        CanBeUsedForSingleVariantsShort: 'Variantes simples'
-        CanBeUsedForVariantsShort: Multi-variantes
-        ImportList: 'Importation de caractéristiques'
-        ImportListDesc: 'Insérez ici une liste de caractéristiques que vous souhaitez importer. Veuillez noter qu''une caractéristique est insérée par ligne.'
-        ImportPrefix: 'Préfixe d’importation'
-        ImportPrefixDesc: 'Texte qui précède chaque caractéristique à importer.'
-        ImportSuffix: 'Suffixe d''importation'
-        ImportSuffixDesc: 'Texte qui est annexé à chaque caractéristique à importer.'
-        IsUserInputField: 'Activer la saisie de texte libre'
-        IsUserInputFieldDesc: 'Si la saisie de texte libre est activée, l''article présente la possibilité de saisir un texte au choix du client (par exemple "gravure"/"impression T-shirt")'
-        PLURALNAME: 'Caractéristiques de l''article'
-        PLURALTITLE: 'Nom pluriel'
-        SINGULARNAME: 'Caractéristique de l''article'
-        TABNAME: Caractéristiques
-        TITLE: Nom
-        UserInputFieldMustBeFilledIn: 'Un texte libre doit être saisi'
-        UserInputFieldMustBeFilledInDesc: 'Si ce champ est activé, le client doit saisir un texte avant de pouvoir placer un article lié dans le panier.'
-        AdTitle: 'Nom publicitaire'
-        AdTitleDesc: "Exemples de la fonctionnalité \"Espace de stockage sur le disque dur\" d'une valeur de \"500 Go\":<br/>\n- \"Espace de stockage total {$Value}\" (Affichage : \"Espace de stockage total 500 Go\")<br/>\n- \"Espace de stockage : {$Value}!\" (Affichage : \"Espace de stockage : 500 Go!\")<br/>\n- \"Capacité du disque dur\" (Affichage : \"500 Go de capacité du disque dur\")<br/>\n"
-        AdTitleRightTitle: 'Le nom de la publicité est affiché à des endroits efficaces pour la publicité, comme une page de CMS pour une sélection de package.'
-        DisplaySettings: 'Paramètres d''affichage'
-        DisplayConversionUnit: 'Unité d''affichage'
-        DisplayConversionUnitDesc: 'par exemple "Go", "Mo", "cm", "€".'
-        DisplayConversionFactor: 'Facteur de conversion'
-        DisplayZeroAsUnlimited: 'Afficher la valeur zéro comme "illimitée"'
-        unlimited: illimité
-    SilverCart\ProductAttributes\Extensions\Forms\AddToCartFormExtension:
-        HEADLINE: 'Possibilités de sélection'
-    SilverCart\ProductAttributes\Admin\Controllers\ProductAttributeAdmin:
-        MENUTITLE: 'Caractéristiques de l''article'
-    SilverCart\ProductAttributes\Model\Widgets\ProductAttributeFilterWidget:
-        CMSTITLE: 'Filtre de caractéristiques d''articles'
-        DESCRIPTION: 'Fournit une sélection groupée de filtres créés en fonction des caractéristiques d’articles attribuées du groupe de produits actuel.'
-        DISABLE_FILTER_FOR: 'Annuler tous les filtres pour &quot;{title}&quot;'
-        FB_HINT: 'Le champ "Comportement du filtre" détermine comment le filtre réagit.<br/><b>Sélection multiple :</b> Le client peut sélectionner plusieurs valeurs d''une caractéristique à la fois. Par exemple, tous les articles dont la couleur est rouge OU noire peuvent être affichés. Toutes les valeurs du filtre des caractéristiques d''un groupe de produits peuvent toujours être sélectionnées.<br/><b>Sélection unique :</b> Le client ne peut sélectionner qu''une seule valeur d''une caractéristique. Les valeurs du filtre des caractéristiques disponibles sont toujours basées sur la liste d''articles filtrés.'
-        FB_MULTIPLECHOICE: 'Sélection multiple'
-        FB_SINGLECHOICE: 'Sélection unique'
-        FILTERBEHAVIOUR: 'Comportement du filtre'
-        REMEMBERFILTER: 'Mémoriser le filtre par groupe de produits'
-        TITLE: 'Filtre des caractéristiques des articles'
-    SilverCart\ProductAttributes\Model\Product\ProductAttributeTranslation:
-        PLURALNAME: Traductions
-        SINGULARNAME: Traduction
-    SilverCart\ProductAttributes\Extensions\Order\OrderPositionExtension:
-        VARIANTDEFINITION: 'Description des variantes'
-    SilverCart\ProductAttributes\Model\Widgets\PriceFilterWidget:
-        CMSTITLE: 'Filtre de prix'
-        DESCRIPTION: 'Fournit un widget qui vous permet d’entrer une gamme de prix par laquelle les articles sont filtrés.'
-        DISABLE_FILTER: 'Annuler le filtre'
-        FILTER: Filtrer
-        FRONTTITLE: 'Filtrer par prix'
-        MAX_PRICE: 'jusqu''à'
-        MIN_PRICE: de
-        OffersAbove: 'dépassant {min} {currency}'
-        ShowOffersAbove: 'Afficher les offres dépassant {min} {currency}'
-        ShowOffersFromTo: 'Afficher les offres entre {min} et {max} {currency}'
-        TITLE: 'Filtre de prix'
-    SilverCart\ProductAttributes\Extensions\Product\ProductExtension:
-        MASTER_PRODUCT: 'Cet article est une variante de l''article portant le numéro d''article'
-        NoUserInput: Sans
-        PRODUCT_ATTRIBUTE: Caractéristique
-        PRODUCT_ATTRIBUTES: Caractéristiques
-        PRODUCT_ATTRIBUTE_VALUE: Valeur
-        PRODUCT_ATTRIBUTE_VALUES: Valeur
-        SLAVE_PRODUCTS: 'Cet article présente les variantes suivantes :'
-    SilverCart\ProductAttributes\Model\Product\ProductAttributeSet:
-        PLURALNAME: 'Ensembles de caractéristiques d''article'
-        SINGULARNAME: 'Ensemble de caractéristiques d''article'
-        TABNAME: 'Ensembles de caractéristiques'
-        TITLE: Nom
-    SilverCart\ProductAttributes\Model\Product\ProductAttributeSetTranslation:
-        PLURALNAME: Traductions
-        SINGULARNAME: Traduction
-    SilverCart\ProductAttributes\Model\Product\ProductAttributeValue:
-        PLURALNAME: 'Valeurs des caractéristiques d''articles'
-        SINGULARNAME: 'Valeur de la caractéristiques d''article'
-        TABNAME: Valeurs
-        TITLE: Nom
-        Default: Standard
-        DefaultModifyDesc: 'Utilisé comme valeur par défaut pour les articles liés. Peut être écrasé individuellement pour chaque article séparé.'
-        DefaultModifyAction: Action
-        DefaultModifyActionNone: '- sans -'
-        DefaultModifyActionAdd: Ajouter
-        DefaultModifyActionSetTo: Écraser
-        DefaultModifyActionSubtract: 'Enlever / retirer'
-        DefaultModifyValue: Valeur
-        DefaultModifyPrice: 'Ajustement standard Prix de l''article'
-        DefaultModifyPriceAction: 'Ajustement Prix de l''article Action'
-        DefaultModifyPriceValue: 'Ajustement Prix de l''article Valeur'
-        DefaultModifyProductNumber: 'Ajustement standard Numéro d''article'
-        DefaultModifyProductNumberAction: 'Ajustement Numéro d''article Action'
-        DefaultModifyProductNumberValue: 'Ajustement Numéro d''article Valeur'
-        DefaultModifyTitle: 'Ajustement standard Titre de l''article'
-        DefaultModifyTitleAction: 'Ajustement Titre de l''article Action'
-        DefaultModifyTitleValue: 'Ajustement Titre de l''article Valeur'
-        ModifyPrice: 'Ajustement Prix de l''article'
-        ModifyProductNumber: 'Ajustement Numéro d''article'
-        ModifyTitle: 'Ajustement Titre de l''article'
-    SilverCart\ProductAttributes\Model\Product\ProductAttributeValueTranslation:
-        PLURALNAME: Traductions
-        SINGULARNAME: Traduction
+  SilverCart\ProductAttributes\Admin\Controllers\ProductAttributeAdmin:
+    MENUTITLE: 'Caractéristiques de l''article'
+  SilverCart\ProductAttributes\Extensions\Forms\AddToCartFormExtension:
+    HEADLINE: 'Possibilités de sélection'
+  SilverCart\ProductAttributes\Extensions\Order\OrderPositionExtension:
+    VARIANTDEFINITION: 'Description des variantes'
+  SilverCart\ProductAttributes\Extensions\Product\ProductExtension:
+    MASTER_PRODUCT: 'Cet article est une variante de l''article portant le numéro d''article'
+    NoUserInput: Sans
+    PRODUCT_ATTRIBUTE: Caractéristique
+    PRODUCT_ATTRIBUTES: Caractéristiques
+    PRODUCT_ATTRIBUTE_VALUE: Valeur
+    PRODUCT_ATTRIBUTE_VALUES: Valeur
+    SLAVE_PRODUCTS: 'Cet article présente les variantes suivantes :'
+  SilverCart\ProductAttributes\Model\Product\ProductAttribute:
+    AdTitle: 'Nom publicitaire'
+    AdTitleDesc: "Exemples de la fonctionnalité \"Espace de stockage sur le disque dur\" d'une valeur de \"500 Go\":<br/>\n- \"Espace de stockage total {$Value}\" (Affichage : \"Espace de stockage total 500 Go\")<br/>\n- \"Espace de stockage : {$Value}!\" (Affichage : \"Espace de stockage : 500 Go!\")<br/>\n- \"Capacité du disque dur\" (Affichage : \"500 Go de capacité du disque dur\")<br/>\n"
+    AdTitleRightTitle: 'Le nom de la publicité est affiché à des endroits efficaces pour la publicité, comme une page de CMS pour une sélection de package.'
+    CAN_BE_USED_FOR_DATASHEET: 'Utiliser pour la fiche technique'
+    CAN_BE_USED_FOR_FILTERWIDGET: 'Utiliser pour le filtre d''articles'
+    CAN_BE_USED_FOR_VARIANTS: 'Peut être utilisé pour les variantes basées sur plusieurs articles'
+    CAN_BE_USED_FOR_VARIANTS_DESC: 'Si la fonction de variante est activée sur une base multi-articles, il est possible de relier plusieurs articles et de les rendre mutuellement sélectionnables (par exemple, un article reçoit la caractéristique "couleur" -> "rouge", un deuxième reçoit la caractéristique "couleur" -> "jaune", un troisième reçoit la caractéristique "couleur" -> "vert").'
+    CanBeUsedForDataSheetShort: 'Fiche technique'
+    CanBeUsedForFilterWidgetShort: 'Filtre d''articles'
+    CanBeUsedForSingleVariants: 'Peut être utilisé pour des variantes basées sur un seul article'
+    CanBeUsedForSingleVariantsDesc: 'Les caractéristiques des articles peuvent être utilisées pour les variantes sur la base d''un seul article. Cela signifie qu''un article reçoit plusieurs caractéristiques qui peuvent être sélectionnées par le client (par exemple, un article reçoit les caractéristiques "couleur" -> "rouge", "jaune", "vert").'
+    CanBeUsedForSingleVariantsShort: 'Variantes simples'
+    CanBeUsedForVariantsShort: Multi-variantes
+    DisplayConversionFactor: 'Facteur de conversion'
+    DisplayConversionUnit: 'Unité d''affichage'
+    DisplayConversionUnitDesc: 'par exemple "Go", "Mo", "cm", "€".'
+    DisplaySettings: 'Paramètres d''affichage'
+    DisplayZeroAsUnlimited: 'Afficher la valeur zéro comme "illimitée"'
+    ImportList: 'Importation de caractéristiques'
+    ImportListDesc: 'Insérez ici une liste de caractéristiques que vous souhaitez importer. Veuillez noter qu''une caractéristique est insérée par ligne.'
+    ImportPrefix: 'Préfixe d’importation'
+    ImportPrefixDesc: 'Texte qui précède chaque caractéristique à importer.'
+    ImportSuffix: 'Suffixe d''importation'
+    ImportSuffixDesc: 'Texte qui est annexé à chaque caractéristique à importer.'
+    IsUserInputField: 'Activer la saisie de texte libre'
+    IsUserInputFieldDesc: 'Si la saisie de texte libre est activée, l''article présente la possibilité de saisir un texte au choix du client (par exemple "gravure"/"impression T-shirt")'
+    PLURALNAME: 'Caractéristiques de l''article'
+    PLURALTITLE: 'Nom pluriel'
+    SINGULARNAME: 'Caractéristique de l''article'
+    TABNAME: Caractéristiques
+    TITLE: Nom
+    UserInputFieldMustBeFilledIn: 'Un texte libre doit être saisi'
+    UserInputFieldMustBeFilledInDesc: 'Si ce champ est activé, le client doit saisir un texte avant de pouvoir placer un article lié dans le panier.'
+    unlimited: illimité
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeSet:
+    PLURALNAME: 'Ensembles de caractéristiques d''article'
+    SINGULARNAME: 'Ensemble de caractéristiques d''article'
+    TABNAME: 'Ensembles de caractéristiques'
+    TITLE: Nom
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeSetTranslation:
+    PLURALNAME: Traductions
+    SINGULARNAME: Traduction
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeTranslation:
+    PLURALNAME: Traductions
+    SINGULARNAME: Traduction
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeValue:
+    Default: Standard
+    DefaultModifyAction: Action
+    DefaultModifyActionAdd: Ajouter
+    DefaultModifyActionNone: '- sans -'
+    DefaultModifyActionSetTo: Écraser
+    DefaultModifyActionSubtract: 'Enlever / retirer'
+    DefaultModifyDesc: 'Utilisé comme valeur par défaut pour les articles liés. Peut être écrasé individuellement pour chaque article séparé.'
+    DefaultModifyPrice: 'Ajustement standard Prix de l''article'
+    DefaultModifyPriceAction: 'Ajustement Prix de l''article Action'
+    DefaultModifyPriceValue: 'Ajustement Prix de l''article Valeur'
+    DefaultModifyProductNumber: 'Ajustement standard Numéro d''article'
+    DefaultModifyProductNumberAction: 'Ajustement Numéro d''article Action'
+    DefaultModifyProductNumberValue: 'Ajustement Numéro d''article Valeur'
+    DefaultModifyTitle: 'Ajustement standard Titre de l''article'
+    DefaultModifyTitleAction: 'Ajustement Titre de l''article Action'
+    DefaultModifyTitleValue: 'Ajustement Titre de l''article Valeur'
+    DefaultModifyValue: Valeur
+    ModifyPrice: 'Ajustement Prix de l''article'
+    ModifyProductNumber: 'Ajustement Numéro d''article'
+    ModifyTitle: 'Ajustement Titre de l''article'
+    PLURALNAME: 'Valeurs des caractéristiques d''articles'
+    SINGULARNAME: 'Valeur de la caractéristiques d''article'
+    TABNAME: Valeurs
+    TITLE: Nom
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeValueTranslation:
+    PLURALNAME: Traductions
+    SINGULARNAME: Traduction
+  SilverCart\ProductAttributes\Model\Widgets\PriceFilterWidget:
+    CMSTITLE: 'Filtre de prix'
+    DESCRIPTION: 'Fournit un widget qui vous permet d’entrer une gamme de prix par laquelle les articles sont filtrés.'
+    DISABLE_FILTER: 'Annuler le filtre'
+    FILTER: Filtrer
+    FRONTTITLE: 'Filtrer par prix'
+    MAX_PRICE: 'jusqu''à'
+    MIN_PRICE: de
+    OffersAbove: 'dépassant {min} {currency}'
+    ShowOffersAbove: 'Afficher les offres dépassant {min} {currency}'
+    ShowOffersFromTo: 'Afficher les offres entre {min} et {max} {currency}'
+    TITLE: 'Filtre de prix'
+  SilverCart\ProductAttributes\Model\Widgets\ProductAttributeFilterWidget:
+    CMSTITLE: 'Filtre de caractéristiques d''articles'
+    DESCRIPTION: 'Fournit une sélection groupée de filtres créés en fonction des caractéristiques d’articles attribuées du groupe de produits actuel.'
+    DISABLE_FILTER_FOR: 'Annuler tous les filtres pour &quot;{title}&quot;'
+    FB_HINT: 'Le champ "Comportement du filtre" détermine comment le filtre réagit.<br/><b>Sélection multiple :</b> Le client peut sélectionner plusieurs valeurs d''une caractéristique à la fois. Par exemple, tous les articles dont la couleur est rouge OU noire peuvent être affichés. Toutes les valeurs du filtre des caractéristiques d''un groupe de produits peuvent toujours être sélectionnées.<br/><b>Sélection unique :</b> Le client ne peut sélectionner qu''une seule valeur d''une caractéristique. Les valeurs du filtre des caractéristiques disponibles sont toujours basées sur la liste d''articles filtrés.'
+    FB_MULTIPLECHOICE: 'Sélection multiple'
+    FB_SINGLECHOICE: 'Sélection unique'
+    FILTERBEHAVIOUR: 'Comportement du filtre'
+    REMEMBERFILTER: 'Mémoriser le filtre par groupe de produits'
+    TITLE: 'Filtre des caractéristiques des articles'
