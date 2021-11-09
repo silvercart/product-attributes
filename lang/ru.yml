@@ -1,17 +1,113 @@
 ru:
+  SilverCart\ProductAttributes:
+    PleaseChooseVariantFor: 'Пожалуйста, выберите вариант для товара {title}'
+  SilverCart\ProductAttributes\Admin\Controllers\ProductAttributeAdmin:
+    MENUTITLE: 'Особенности статьи'
+  SilverCart\ProductAttributes\Extensions\Forms\AddToCartFormExtension:
+    HEADLINE: 'Варианты выбора'
+  SilverCart\ProductAttributes\Extensions\Order\OrderPositionExtension:
+    VARIANTDEFINITION: 'Описание вариантов'
   SilverCart\ProductAttributes\Extensions\Product\ProductExtension:
+    MASTER_PRODUCT: 'Данный товар является вариантом товара с номером товара'
+    NoUserInput: Без
+    PRODUCT_ATTRIBUTE: Характеристика
     PRODUCT_ATTRIBUTES: Детали
+    PRODUCT_ATTRIBUTE_VALUE: Значение
     PRODUCT_ATTRIBUTE_VALUES: Стоимость
+    SLAVE_PRODUCTS: 'Этот товар имеет следующие варианты:'
   SilverCart\ProductAttributes\Model\Product\ProductAttribute:
+    AdTitle: 'Рекламное название'
+    AdTitleDesc: "Примеры для характеристики \"Объем памяти HDD\" со значением \"500 ГБ\":<br/>\n- \"Total {$Value} storage space\" (отображение: \"Total 500 GB storage space\").<br/>\n- \"Место для хранения: {$Value}!\". (Отображение: \"Место для хранения: 500 ГБ!\")<br/>\n- \"Емкость жесткого диска\" (Отображение: \"Емкость жесткого диска 500 ГБ\")<br/>\n"
+    AdTitleRightTitle: 'Рекламное название отображается в эффективных для рекламы местах, например, на странице CMS для выбора пакета услуг.'
+    CAN_BE_USED_FOR_DATASHEET: 'Используйте для составления технического паспорта'
+    CAN_BE_USED_FOR_FILTERWIDGET: 'Используется для фильтра элементов'
+    CAN_BE_USED_FOR_VARIANTS: 'Может использоваться для вариантов на основе нескольких частиц'
+    CAN_BE_USED_FOR_VARIANTS_DESC: 'Если функция вариантов активирована на основе нескольких статей, можно связать несколько статей вместе и сделать их взаимно выбираемыми (например, одна статья получает характеристику "Цвет" -> "Красный", вторая получает характеристику "Цвет" -> "Желтый", третья получает характеристику "Цвет" -> "Зеленый").'
+    CanBeUsedForDataSheetShort: 'Технический паспорт'
+    CanBeUsedForFilterWidgetShort: 'Статейный фильтр'
+    CanBeUsedForSingleVariants: 'Может использоваться для вариантов на основе одной частицы'
+    CanBeUsedForSingleVariantsDesc: 'Характеристики статьи могут быть использованы для вариантов на основе одной статьи. Это означает, что товар имеет несколько характеристик, которые может выбрать покупатель (например, товар имеет характеристики "цвет" -> "красный", "желтый", "зеленый").'
+    CanBeUsedForSingleVariantsShort: 'Одиночные варианты'
+    CanBeUsedForVariantsShort: Многовариантный
+    DisplayConversionFactor: 'Коэффициент пересчета'
+    DisplayConversionUnit: 'Устройство отображения'
+    DisplayConversionUnitDesc: 'например, "GB", "MB", "cm", "€".'
+    DisplaySettings: 'Настройки дисплея'
+    DisplayZeroAsUnlimited: 'Отображение нулевого значения как "неограниченное'
+    ImportList: 'Особенности импорта'
+    ImportListDesc: 'Вставьте сюда список функций, которые вы хотите импортировать. Обратите внимание, что в каждую строку вставляется одна функция.'
+    ImportPrefix: 'Префикс импорта'
+    ImportPrefixDesc: 'Текст, который предшествует каждой импортируемой функции.'
+    ImportSuffix: 'Суффикс импорта'
+    ImportSuffixDesc: 'Текст, прикрепленный к каждой импортируемой функции.'
+    IsUserInputField: 'Активирован свободный ввод текста'
+    IsUserInputFieldDesc: 'Если активирована функция свободного ввода текста, на товаре появляется возможность ввести текст по выбору покупателя (например, "гравировка"/"отпечаток на футболке").'
     PLURALNAME: 'Описания товара'
+    PLURALTITLE: 'Имя множественного числа'
     SINGULARNAME: 'Описание товара'
     TABNAME: Детали
     TITLE: Имя
+    UserInputFieldMustBeFilledIn: 'Необходимо ввести свободный текст'
+    UserInputFieldMustBeFilledInDesc: 'Если это поле активировано, покупатель должен ввести текст, прежде чем он сможет добавить связанный товар в корзину.'
+    unlimited: неограниченный
   SilverCart\ProductAttributes\Model\Product\ProductAttributeSet:
+    PLURALNAME: 'Наборы функций статьи'
+    SINGULARNAME: 'Набор функций статьи'
+    TABNAME: 'Наборы функций'
     TITLE: Имя
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeSetTranslation:
+    PLURALNAME: Переводы
+    SINGULARNAME: Перевод
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeTranslation:
+    PLURALNAME: Переводы
+    SINGULARNAME: Перевод
   SilverCart\ProductAttributes\Model\Product\ProductAttributeValue:
+    Default: Стандарт
+    DefaultModifyAction: Действие
+    DefaultModifyActionAdd: 'Добавить / Add'
+    DefaultModifyActionNone: '- без...'
+    DefaultModifyActionSetTo: Перезаписать
+    DefaultModifyActionSubtract: 'Удалить / отслоить'
+    DefaultModifyDesc: 'Используется в качестве значения по умолчанию для связанных элементов. Может быть перезаписана отдельно для каждого элемента.'
+    DefaultModifyPrice: 'Цена элемента стандартной настройки'
+    DefaultModifyPriceAction: 'Действие цены предмета корректировки'
+    DefaultModifyPriceValue: 'Значение цены элемента корректировки'
+    DefaultModifyProductNumber: 'Стандартная регулировка Номер изделия'
+    DefaultModifyProductNumberAction: 'Регулировка Номер статьи Действие'
+    DefaultModifyProductNumberValue: 'Регулировка Номер статьи Значение'
+    DefaultModifyTitle: 'Стандартная корректировка Название статьи'
+    DefaultModifyTitleAction: 'Корректировка Название статьи Действие'
+    DefaultModifyTitleValue: 'Название элемента корректировка Значение'
+    DefaultModifyValue: Значение
+    ModifyPrice: 'Цена предмета корректировки'
+    ModifyProductNumber: 'Номер элемента корректировки'
+    ModifyTitle: 'Корректировка названия статьи'
+    PLURALNAME: 'Значения характеристик статьи'
+    SINGULARNAME: 'Значение характеристики изделия'
     TABNAME: Стоимости
     TITLE: Имя
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeValueTranslation:
+    PLURALNAME: Переводы
+    SINGULARNAME: Перевод
+  SilverCart\ProductAttributes\Model\Widgets\PriceFilterWidget:
+    CMSTITLE: 'Ценовой фильтр'
+    DESCRIPTION: 'Предоставляет виджет, позволяющий ввести диапазон цен, по которому фильтруются товары.'
+    DISABLE_FILTER: 'Отменить фильтр'
+    FILTER: Фильтр
+    FRONTTITLE: 'Фильтр по цене'
+    MAX_PRICE: на
+    MIN_PRICE: 'с сайта'
+    OffersAbove: 'около {мин} {валюта}'
+    ShowOffersAbove: 'Показать предложения через {мин} {валюта}'
+    ShowOffersFromTo: 'Показать предложения между {min} и {max} {валюта}'
+    TITLE: 'Ценовой фильтр'
   SilverCart\ProductAttributes\Model\Widgets\ProductAttributeFilterWidget:
+    CMSTITLE: 'Фильтр характеристик статьи'
+    DESCRIPTION: 'Возвращает сгруппированный выбор фильтров, созданных с использованием назначенных характеристик товара текущей группы товаров.'
+    DISABLE_FILTER_FOR: 'Отмените все фильтры для "{title}".'
+    FB_HINT: 'Поле "Поведение фильтра" определяет, как реагирует фильтр. <br/><b>Множественный выбор</b>: Клиент может выбрать несколько значений характеристики одновременно. Например, можно отобразить все элементы, цвет которых красный ИЛИ черный. Всегда можно выбрать все значения характеристик фильтра для группы продуктов. <br/><b>Одиночный выбор:</b> Клиент может выбрать только одно значение характеристики. Доступные значения характеристик фильтра всегда основаны на списке отфильтрованных элементов.'
     FB_MULTIPLECHOICE: 'многократный выбор'
     FB_SINGLECHOICE: 'простой выбор'
+    FILTERBEHAVIOUR: 'Поведение фильтра'
+    REMEMBERFILTER: 'Запомнить фильтры для каждой группы товаров'
+    TITLE: 'Фильтр характеристик статьи'

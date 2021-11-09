@@ -1,4 +1,6 @@
 fr_BE:
+  SilverCart\ProductAttributes:
+    PleaseChooseVariantFor: 'Veuillez sélectionner une variante pour l''article {titre}.'
   SilverCart\ProductAttributes\Admin\Controllers\ProductAttributeAdmin:
     MENUTITLE: 'Caractéristiques de l''article'
   SilverCart\ProductAttributes\Extensions\Forms\AddToCartFormExtension:

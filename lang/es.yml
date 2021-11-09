@@ -1,0 +1,113 @@
+es:
+  SilverCart\ProductAttributes:
+    PleaseChooseVariantFor: 'Por favor, seleccione una variante para el artículo {título}'
+  SilverCart\ProductAttributes\Admin\Controllers\ProductAttributeAdmin:
+    MENUTITLE: 'Características del artículo'
+  SilverCart\ProductAttributes\Extensions\Forms\AddToCartFormExtension:
+    HEADLINE: 'Opciones de selección'
+  SilverCart\ProductAttributes\Extensions\Order\OrderPositionExtension:
+    VARIANTDEFINITION: 'Descripción de las variantes'
+  SilverCart\ProductAttributes\Extensions\Product\ProductExtension:
+    MASTER_PRODUCT: 'Este artículo es una variante del artículo con el número de artículo'
+    NoUserInput: Sin
+    PRODUCT_ATTRIBUTE: Característica
+    PRODUCT_ATTRIBUTES: Características
+    PRODUCT_ATTRIBUTE_VALUE: Valor
+    PRODUCT_ATTRIBUTE_VALUES: Valor
+    SLAVE_PRODUCTS: 'Este artículo tiene las siguientes variantes:'
+  SilverCart\ProductAttributes\Model\Product\ProductAttribute:
+    AdTitle: 'Nombre de la publicidad'
+    AdTitleDesc: "Ejemplos para la característica \"Espacio de almacenamiento del disco duro\" con un valor de \"500 GB\":<br/>\n- \"Espacio de almacenamiento total {$Valor}\" (pantalla: \"Espacio de almacenamiento total de 500 GB\").<br/>\n- \"¡Espacio de almacenamiento: {$Valor}!\" (Pantalla: \"Espacio de almacenamiento: 500 GB\")<br/>\n- \"Capacidad del disco duro\" (Pantalla: \"Capacidad del disco duro de 500 GB\")<br/>\n"
+    AdTitleRightTitle: 'El nombre de la publicidad se muestra en lugares con efecto publicitario, como una página CMS para la selección de un paquete.'
+    CAN_BE_USED_FOR_DATASHEET: 'Uso para la ficha técnica'
+    CAN_BE_USED_FOR_FILTERWIDGET: 'Uso para el filtro de artículos'
+    CAN_BE_USED_FOR_VARIANTS: 'Se puede utilizar para variantes basadas en múltiples partículas'
+    CAN_BE_USED_FOR_VARIANTS_DESC: 'Si la función de variante está activada sobre una base de varios artículos, es posible enlazar varios artículos y hacerlos seleccionables mutuamente (por ejemplo, un artículo recibe la característica "Color" -> "Rojo", un segundo recibe la característica "Color" -> "Amarillo", un tercero recibe la característica "Color" -> "Verde").'
+    CanBeUsedForDataSheetShort: 'Ficha técnica'
+    CanBeUsedForFilterWidgetShort: 'Filtro de artículos'
+    CanBeUsedForSingleVariants: 'Puede utilizarse para variantes basadas en una sola partícula'
+    CanBeUsedForSingleVariantsDesc: 'Las características de los artículos pueden utilizarse para las variantes en un solo artículo. Esto significa que un artículo tiene varias características que pueden ser seleccionadas por el cliente (por ejemplo, un artículo tiene las características "color" -> "rojo", "amarillo", "verde").'
+    CanBeUsedForSingleVariantsShort: 'Variantes individuales'
+    CanBeUsedForVariantsShort: Multivariante
+    DisplayConversionFactor: 'Factor de conversión'
+    DisplayConversionUnit: 'Unidad de visualización'
+    DisplayConversionUnitDesc: 'por ejemplo, "GB", "MB", "cm", "€"'
+    DisplaySettings: 'Configuración de la pantalla'
+    DisplayZeroAsUnlimited: 'Mostrar el valor cero como "ilimitado'
+    ImportList: 'Características de la importación'
+    ImportListDesc: 'Introduzca aquí la lista de características que desea importar. Tenga en cuenta que se inserta una característica por línea.'
+    ImportPrefix: 'Prefijo de importación'
+    ImportPrefixDesc: 'Texto que precede a cada característica a importar.'
+    ImportSuffix: 'Sufijo de importación'
+    ImportSuffixDesc: 'Texto adjunto a cada característica que se va a importar.'
+    IsUserInputField: 'Entrada de texto libre activada'
+    IsUserInputFieldDesc: 'Si la entrada de texto libre está activada, la opción de introducir un texto a elección del cliente (por ejemplo, "grabado"/"impresión de camiseta") aparece en el artículo.'
+    PLURALNAME: 'Características del artículo'
+    PLURALTITLE: 'Nombre plural'
+    SINGULARNAME: 'Artículo principal'
+    TABNAME: Características
+    TITLE: Nombre
+    UserInputFieldMustBeFilledIn: 'Debe introducirse un texto libre'
+    UserInputFieldMustBeFilledInDesc: 'Si este campo está activado, el cliente debe introducir un texto antes de poder añadir un artículo vinculado a la cesta de la compra.'
+    unlimited: ilimitado
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeSet:
+    PLURALNAME: 'Conjunto de características del artículo'
+    SINGULARNAME: 'Conjunto de características del artículo'
+    TABNAME: 'Conjuntos de características'
+    TITLE: Nombre
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeSetTranslation:
+    PLURALNAME: Traducciones
+    SINGULARNAME: Traducción
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeTranslation:
+    PLURALNAME: Traducciones
+    SINGULARNAME: Traducción
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeValue:
+    Default: Estándar
+    DefaultModifyAction: Acción
+    DefaultModifyActionAdd: 'Añadir / Añadir'
+    DefaultModifyActionNone: '- sin -'
+    DefaultModifyActionSetTo: Sobrescribir
+    DefaultModifyActionSubtract: 'Retirar / Despegar'
+    DefaultModifyDesc: 'Se utiliza como valor por defecto para los elementos vinculados. Se puede sobrescribir individualmente en cada elemento.'
+    DefaultModifyPrice: 'Precio de la partida de ajuste estándar'
+    DefaultModifyPriceAction: 'Acción del precio del artículo de ajuste'
+    DefaultModifyPriceValue: 'Valor del precio del artículo de ajuste'
+    DefaultModifyProductNumber: 'Ajuste estándar Número de artículo'
+    DefaultModifyProductNumberAction: 'Ajuste Número de artículo Acción'
+    DefaultModifyProductNumberValue: 'Ajuste Número de artículo Valor'
+    DefaultModifyTitle: 'Ajuste estándar Título del artículo'
+    DefaultModifyTitleAction: 'Ajuste Título del artículo Acción'
+    DefaultModifyTitleValue: 'Título del artículo ajuste Valor'
+    DefaultModifyValue: Valor
+    ModifyPrice: 'Precio de la partida de ajuste'
+    ModifyProductNumber: 'Número de la partida de ajuste'
+    ModifyTitle: 'Ajuste del título del artículo'
+    PLURALNAME: 'Valores característicos del artículo'
+    SINGULARNAME: 'Valor característico del artículo'
+    TABNAME: Valores
+    TITLE: Nombre
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeValueTranslation:
+    PLURALNAME: Traducciones
+    SINGULARNAME: Traducción
+  SilverCart\ProductAttributes\Model\Widgets\PriceFilterWidget:
+    CMSTITLE: 'Filtro de precios'
+    DESCRIPTION: 'Proporciona un widget que permite introducir un rango de precios por el que se filtran los artículos.'
+    DISABLE_FILTER: 'Cancelar el filtro'
+    FILTER: Filtro
+    FRONTTITLE: 'Filtrar por precio'
+    MAX_PRICE: a
+    MIN_PRICE: de
+    OffersAbove: 'sobre {min} {divisa}'
+    ShowOffersAbove: 'Mostrar ofertas a través de {min} {divisa}'
+    ShowOffersFromTo: 'Mostrar ofertas entre {mín} y {máx} {divisa}'
+    TITLE: 'Filtro de precios'
+  SilverCart\ProductAttributes\Model\Widgets\ProductAttributeFilterWidget:
+    CMSTITLE: 'Filtro de características del artículo'
+    DESCRIPTION: 'Devuelve una selección agrupada de filtros creados utilizando las características de los artículos asignados del grupo de productos actual.'
+    DISABLE_FILTER_FOR: 'Cancelar todos los filtros para "{título}".'
+    FB_HINT: 'El campo "Comportamiento del filtro" determina cómo reacciona el filtro. <br/><b>Selección múltiple</b>: El cliente puede seleccionar varios valores de una característica al mismo tiempo. Por ejemplo, se pueden mostrar todos los artículos cuyo color sea rojo O negro. Siempre se pueden seleccionar todos los valores de las características de filtrado de un grupo de productos. <br/><b>Selección individual:</b> El cliente sólo puede seleccionar un valor de una característica. Los valores de las características de filtrado disponibles se basan siempre en la lista de elementos filtrados.'
+    FB_MULTIPLECHOICE: 'Selección múltiple'
+    FB_SINGLECHOICE: 'Selección individual'
+    FILTERBEHAVIOUR: 'Comportamiento del filtro'
+    REMEMBERFILTER: 'Recuerde los filtros por grupo de productos'
+    TITLE: 'Filtro de características del artículo'

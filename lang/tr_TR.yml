@@ -1,0 +1,113 @@
+tr_TR:
+  SilverCart\ProductAttributes:
+    PleaseChooseVariantFor: '{title} makalesi için bir varyant seçin'
+  SilverCart\ProductAttributes\Admin\Controllers\ProductAttributeAdmin:
+    MENUTITLE: 'Öğe özellikleri'
+  SilverCart\ProductAttributes\Extensions\Forms\AddToCartFormExtension:
+    HEADLINE: seçimler
+  SilverCart\ProductAttributes\Extensions\Order\OrderPositionExtension:
+    VARIANTDEFINITION: 'Varyant açıklaması'
+  SilverCart\ProductAttributes\Extensions\Product\ProductExtension:
+    MASTER_PRODUCT: 'Bu makale, makale numarasına sahip makalenin bir çeşididir.'
+    NoUserInput: Olmadan
+    PRODUCT_ATTRIBUTE: karakteristik
+    PRODUCT_ATTRIBUTES: özellikler
+    PRODUCT_ATTRIBUTE_VALUE: değer
+    PRODUCT_ATTRIBUTE_VALUES: değer
+    SLAVE_PRODUCTS: 'Bu makale aşağıdaki varyantlara sahiptir:'
+  SilverCart\ProductAttributes\Model\Product\ProductAttribute:
+    AdTitle: 'reklam adı'
+    AdTitleDesc: "\"500 GB\" değerinde \"HDD depolama alanı\" özelliği için örnekler: <br/>\n • \"Toplam {$Value} depolama alanı\" (ekran: \"Toplam 500 GB depolama alanı\") <br/>\n • \"Depolama alanı: {$Value} !\" (Ekran: \"Depolama alanı: 500 GB!\") <br/>\n <br/> \" (ekran: \"500 GB sabit disk kapasitesi\") <br/>\n"
+    AdTitleRightTitle: 'Paket seçimi için CMS sayfası gibi reklamda etkili olan yerlerde reklam adı görüntülenir.'
+    CAN_BE_USED_FOR_DATASHEET: 'Veri sayfası için kullanın'
+    CAN_BE_USED_FOR_FILTERWIDGET: 'Makale filtresi için kullanın'
+    CAN_BE_USED_FOR_VARIANTS: 'Çoklu öğe tabanlı varyantlar için kullanılabilir'
+    CAN_BE_USED_FOR_VARIANTS_DESC: '- varyant fonksiyonu çok makale olarak aktive edilir, (örneğin, bir madde karakteristik alır "renkli" birbirleriyle çeşitli makaleler bağlantı ve bunları karşılıklı seçilebilir yapmak mümkündür > ikinci bir karakteristiğini alır, "kırmızı" " Renk "- > " Sarı ", üçüncüsü "Renk "- > " Yeşil " özelliğini alır).'
+    CanBeUsedForDataSheetShort: 'veri Sayfası'
+    CanBeUsedForFilterWidgetShort: 'Makale filtresi'
+    CanBeUsedForSingleVariants: 'Tek öğeye dayalı varyantlar için kullanılabilir'
+    CanBeUsedForSingleVariantsDesc: 'Öğe özellikleri, tek bir öğe bazında varyantlar için kullanılabilir. Bu, bir ürünün müşteri tarafından seçilebilen çeşitli özellikleri aldığı anlamına gelir (örneğin, bir ürün "renk" - > "kırmızı", "sarı", "yeşil" özelliklerini alır).'
+    CanBeUsedForSingleVariantsShort: 'Tek varyantlar'
+    CanBeUsedForVariantsShort: 'Çoklu varyantlar'
+    DisplayConversionFactor: 'Dönüşüm faktörü'
+    DisplayConversionUnit: 'Ekran birimi'
+    DisplayConversionUnitDesc: 'ör. "GB", "MB", "cm", "€"'
+    DisplaySettings: 'Görüntü ayarları'
+    DisplayZeroAsUnlimited: 'Sıfır değerini "sınırsız" olarak göster'
+    ImportList: 'Özellikleri içe aktar'
+    ImportListDesc: 'İçe aktarmak istediğiniz özelliklerin listesini buraya yapıştırın. Her satıra bir özelliğin eklendiğini lütfen unutmayın.'
+    ImportPrefix: 'Ön eki içe aktar'
+    ImportPrefixDesc: 'İçe aktarılacak her özelliğin önüne yerleştirilen metin.'
+    ImportSuffix: 'Son eki içe aktar'
+    ImportSuffixDesc: 'İçe aktarılacak her bir özelliğe eklenen metin.'
+    IsUserInputField: 'Serbest metin girişini etkinleştir'
+    IsUserInputFieldDesc: 'Serbest metin girişi etkinleştirilirse, öğe müşterinin seçebileceği herhangi bir metni (örn. "gravür" / "T-shirt baskısı") girebilecek gibi görünür.'
+    PLURALNAME: 'Öğe özellikleri'
+    PLURALTITLE: 'çoğul isim'
+    SINGULARNAME: 'Öğe özelliği'
+    TABNAME: özellikler
+    TITLE: Soyadı
+    UserInputFieldMustBeFilledIn: 'Serbest metin girilmelidir'
+    UserInputFieldMustBeFilledInDesc: 'Bu alan etkinleştirilirse, müşterinin alışveriş sepetine bağlantılı bir makale eklemeden önce bir metin girmesi gerekir.'
+    unlimited: sınırsız
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeSet:
+    PLURALNAME: 'Öğe özellik kümeleri'
+    SINGULARNAME: 'Öğe özellik seti'
+    TABNAME: 'Özellik kümeleri'
+    TITLE: Soyadı
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeSetTranslation:
+    PLURALNAME: Çeviriler
+    SINGULARNAME: tercüme
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeTranslation:
+    PLURALNAME: Çeviriler
+    SINGULARNAME: tercüme
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeValue:
+    Default: varsayılan
+    DefaultModifyAction: eylem
+    DefaultModifyActionAdd: 'Ekle / ekle'
+    DefaultModifyActionNone: '- olmadan -'
+    DefaultModifyActionSetTo: 'üzerine yaz'
+    DefaultModifyActionSubtract: 'Çıkarın / soyun'
+    DefaultModifyDesc: 'Bağlantılı makaleler için varsayılan değer olarak kullanılır. Her bir makale için ayrı ayrı üzerine yazılabilir.'
+    DefaultModifyPrice: 'Standart özelleştirme ürün fiyatı'
+    DefaultModifyPriceAction: 'Ürün fiyatı promosyonunun ayarlanması'
+    DefaultModifyPriceValue: 'Düzenleme öğesi fiyat değeri'
+    DefaultModifyProductNumber: 'Standart uyarlama makale numarası'
+    DefaultModifyProductNumberAction: 'Düzenleme makale numarası eylemi'
+    DefaultModifyProductNumberValue: 'Ayar öğesi numarası değeri'
+    DefaultModifyTitle: 'Standart özelleştirme makale başlığı'
+    DefaultModifyTitleAction: 'Makale başlığı eyleminin ayarlanması'
+    DefaultModifyTitleValue: 'Makale başlığı değerinin ayarlanması'
+    DefaultModifyValue: değer
+    ModifyPrice: 'Ürün fiyatının ayarlanması'
+    ModifyProductNumber: 'Makale numarasının ayarlanması'
+    ModifyTitle: 'Makale başlığının ayarlanması'
+    PLURALNAME: 'Öğe karakteristik değerleri'
+    SINGULARNAME: 'Öğe özellik değeri'
+    TABNAME: değerler
+    TITLE: Soyadı
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeValueTranslation:
+    PLURALNAME: Çeviriler
+    SINGULARNAME: tercüme
+  SilverCart\ProductAttributes\Model\Widgets\PriceFilterWidget:
+    CMSTITLE: 'Fiyat filtresi'
+    DESCRIPTION: 'Hangi makalelerin filtrelendiğine göre bir fiyat aralığının girilmesine izin veren bir pencere öğesi sağlar.'
+    DISABLE_FILTER: 'Filtreyi iptal et'
+    FILTER: Filtre
+    FRONTTITLE: 'Fiyata göre filtrele'
+    MAX_PRICE: 'a kadar'
+    MIN_PRICE: itibaren
+    OffersAbove: 'yaklaşık {min} {currency}'
+    ShowOffersAbove: '{min} {currency} için teklifleri göster'
+    ShowOffersFromTo: '{min} ile {max} {currency} arasındaki teklifleri göster'
+    TITLE: 'Fiyat filtresi'
+  SilverCart\ProductAttributes\Model\Widgets\ProductAttributeFilterWidget:
+    CMSTITLE: 'Öğe karakteristik filtresi'
+    DESCRIPTION: 'Mevcut ürün grubunun atanan ürün özelliklerine göre oluşturulan gruplandırılmış bir filtre seçimi sağlar.'
+    DISABLE_FILTER_FOR: '" için tüm filtreler {title} " kaldırmak'
+    FB_HINT: '"Filtre davranışı" alanı, filtrenin nasıl tepki vereceğini belirler. <br/> <b> Çoklu </b> Müşteri aynı anda bir özelliğin birkaç değerini seçebilir. Örneğin, rengi kırmızı VEYA siyah olan tüm makaleler görüntülenebilir. Bir ürün grubunun tüm filtre karakteristik değerleri her zaman seçilebilir. <br/> <b> Tek seçim: </b> Müşteri bir özelliğin yalnızca bir değerini seçebilir. Mevcut filtre karakteristik değerleri her zaman filtrelenmiş ürün listesine dayanmaktadır.'
+    FB_MULTIPLECHOICE: 'Çoktan seçmeli'
+    FB_SINGLECHOICE: 'Tek seçim'
+    FILTERBEHAVIOUR: 'Filtre davranışı'
+    REMEMBERFILTER: 'Her ürün grubu için filtreyi not edin'
+    TITLE: 'Öğe karakteristik filtresi'

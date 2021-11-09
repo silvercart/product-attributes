@@ -1,0 +1,113 @@
+pl:
+  SilverCart\ProductAttributes:
+    PleaseChooseVariantFor: 'Proszę wybrać wariant dla pozycji {tytuł}.'
+  SilverCart\ProductAttributes\Admin\Controllers\ProductAttributeAdmin:
+    MENUTITLE: 'Cechy artykułu'
+  SilverCart\ProductAttributes\Extensions\Forms\AddToCartFormExtension:
+    HEADLINE: 'Opcje wyboru'
+  SilverCart\ProductAttributes\Extensions\Order\OrderPositionExtension:
+    VARIANTDEFINITION: 'Opis wariantów'
+  SilverCart\ProductAttributes\Extensions\Product\ProductExtension:
+    MASTER_PRODUCT: 'Ten artykuł jest wariantem artykułu o numerze artykułu'
+    NoUserInput: Bez
+    PRODUCT_ATTRIBUTE: Funkcja
+    PRODUCT_ATTRIBUTES: Cechy
+    PRODUCT_ATTRIBUTE_VALUE: Wartość
+    PRODUCT_ATTRIBUTE_VALUES: Wartość
+    SLAVE_PRODUCTS: 'Ta pozycja ma następujące warianty:'
+  SilverCart\ProductAttributes\Model\Product\ProductAttribute:
+    AdTitle: 'Nazwa reklamy'
+    AdTitleDesc: "Przykłady dla cechy \"Miejsce na dysku twardym\" z wartością \"500 GB\":<br/>\n- \"Total {$Value} storage space\" (wyświetlenie: \"Total 500 GB storage space\").<br/>\n- \"Miejsce do przechowywania: {$Value}!\" (Wyświetlacz: \"Miejsce na dysku: 500 GB!\")<br/>\n- \"Pojemność dysku twardego\" (wskazanie: \"Pojemność dysku twardego 500 GB\")<br/>\n"
+    AdTitleRightTitle: 'Nazwa reklamy jest wyświetlana w miejscach efektywnych reklamowo, takich jak strona CMS dla wyboru pakietu.'
+    CAN_BE_USED_FOR_DATASHEET: 'Zastosowanie dla arkusza danych'
+    CAN_BE_USED_FOR_FILTERWIDGET: 'Użyj dla filtra pozycji'
+    CAN_BE_USED_FOR_VARIANTS: 'Może być stosowany do wariantów opartych na wielu cząsteczkach'
+    CAN_BE_USED_FOR_VARIANTS_DESC: 'Jeżeli funkcja wariantu jest aktywowana w odniesieniu do wielu artykułów, można połączyć ze sobą kilka artykułów i sprawić, by były one wzajemnie wybieralne (np. jeden artykuł otrzymuje cechę "Kolor" -> "Czerwony", drugi otrzymuje cechę "Kolor" -> "Żółty", trzeci otrzymuje cechę "Kolor" -> "Zielony").'
+    CanBeUsedForDataSheetShort: 'Karta danych'
+    CanBeUsedForFilterWidgetShort: 'Filtr artykułów'
+    CanBeUsedForSingleVariants: 'Może być stosowany do wariantów opartych na pojedynczych cząstkach'
+    CanBeUsedForSingleVariantsDesc: 'Właściwości artykułu mogą być stosowane dla wariantów w odniesieniu do pojedynczego artykułu. Oznacza to, że artykuł ma kilka cech, które mogą być wybrane przez klienta (np. artykuł ma cechy "kolor" -> "czerwony", "żółty", "zielony").'
+    CanBeUsedForSingleVariantsShort: 'Pojedyncze warianty'
+    CanBeUsedForVariantsShort: Wielowariantowy
+    DisplayConversionFactor: 'Współczynnik konwersji'
+    DisplayConversionUnit: Wyświetlacz
+    DisplayConversionUnitDesc: 'np. "GB", "MB", "cm", "€".'
+    DisplaySettings: 'Ustawienia wyświetlacza'
+    DisplayZeroAsUnlimited: 'Wyświetlanie wartości zerowej jako "nieograniczonej".'
+    ImportList: 'Cechy importu'
+    ImportListDesc: 'Wstaw tutaj listę cech, które chcesz zaimportować. Należy pamiętać, że w każdym wierszu wstawiana jest jedna cecha.'
+    ImportPrefix: 'Prefiks importu'
+    ImportPrefixDesc: 'Tekst, który poprzedza każdy element do zaimportowania.'
+    ImportSuffix: 'Przyrostek importowy'
+    ImportSuffixDesc: 'Tekst dołączony do każdej cechy, która ma być importowana.'
+    IsUserInputField: 'Aktywacja swobodnego wprowadzania tekstu'
+    IsUserInputFieldDesc: 'Jeśli aktywna jest opcja swobodnego wpisywania tekstu, przy towarze pojawi się możliwość wpisania tekstu wybranego przez klienta (np. "grawer"/"nadruk na koszulce").'
+    PLURALNAME: 'Cechy artykułu'
+    PLURALTITLE: 'Nazwa w liczbie mnogiej'
+    SINGULARNAME: 'Funkcja artykułu'
+    TABNAME: Cechy
+    TITLE: Nazwa
+    UserInputFieldMustBeFilledIn: 'Należy wpisać dowolny tekst'
+    UserInputFieldMustBeFilledInDesc: 'Jeśli to pole jest aktywne, klient musi wprowadzić tekst, zanim będzie mógł dodać powiązany element do koszyka.'
+    unlimited: 'bez ograniczeń'
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeSet:
+    PLURALNAME: 'Zestawy funkcji artykułu'
+    SINGULARNAME: 'Zestaw funkcji artykułu'
+    TABNAME: 'Zestawy funkcji'
+    TITLE: Nazwa
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeSetTranslation:
+    PLURALNAME: Tłumaczenia
+    SINGULARNAME: Tłumaczenie
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeTranslation:
+    PLURALNAME: Tłumaczenia
+    SINGULARNAME: Tłumaczenie
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeValue:
+    Default: Standard
+    DefaultModifyAction: Działanie
+    DefaultModifyActionAdd: 'Dodaj / Add'
+    DefaultModifyActionNone: '- bez -.'
+    DefaultModifyActionSetTo: Nadpisz
+    DefaultModifyActionSubtract: 'Zdjąć / Odkleić'
+    DefaultModifyDesc: 'Używana jako wartość domyślna dla połączonych elementów. Może być nadpisany indywidualnie na każdym elemencie.'
+    DefaultModifyPrice: 'Cena standardowej pozycji dostosowawczej'
+    DefaultModifyPriceAction: 'Działanie związane z ceną pozycji dostosowawczej'
+    DefaultModifyPriceValue: 'Wartość cenowa pozycji korygującej'
+    DefaultModifyProductNumber: 'Standardowa regulacja Numer artykułu'
+    DefaultModifyProductNumberAction: 'Dostosowanie Numer artykułu Działanie'
+    DefaultModifyProductNumberValue: 'Dostosowanie Numer artykułu Wartość'
+    DefaultModifyTitle: 'Standardowe dostosowanie Tytuł artykułu'
+    DefaultModifyTitleAction: 'Dostosowanie Tytuł artykułu Działanie'
+    DefaultModifyTitleValue: 'Tytuł pozycji Dostosowanie Wartość'
+    DefaultModifyValue: Wartość
+    ModifyPrice: 'Cena pozycji korygującej'
+    ModifyProductNumber: 'Numer pozycji regulacji'
+    ModifyTitle: 'Dostosowanie tytułu artykułu'
+    PLURALNAME: 'Wartości charakterystyczne artykułu'
+    SINGULARNAME: 'Wartość charakterystyczna artykułu'
+    TABNAME: Wartości
+    TITLE: Nazwa
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeValueTranslation:
+    PLURALNAME: Tłumaczenia
+    SINGULARNAME: Tłumaczenie
+  SilverCart\ProductAttributes\Model\Widgets\PriceFilterWidget:
+    CMSTITLE: 'Filtr cenowy'
+    DESCRIPTION: 'Udostępnia widżet, który pozwala wprowadzić zakres cen, według którego będą filtrowane przedmioty.'
+    DISABLE_FILTER: 'Anuluj filtr'
+    FILTER: Filtr
+    FRONTTITLE: 'Filtrowanie według ceny'
+    MAX_PRICE: do
+    MIN_PRICE: z
+    OffersAbove: 'o {min} {waluta}'
+    ShowOffersAbove: 'Pokaż oferty za {min} {waluta}'
+    ShowOffersFromTo: 'Pokaż oferty pomiędzy {min} a {max} {waluta}.'
+    TITLE: 'Filtr cenowy'
+  SilverCart\ProductAttributes\Model\Widgets\ProductAttributeFilterWidget:
+    CMSTITLE: 'Filtr funkcji artykułu'
+    DESCRIPTION: 'Zwraca zgrupowany wybór filtrów utworzonych przy użyciu przypisanych cech elementu dla bieżącej grupy produktów.'
+    DISABLE_FILTER_FOR: 'Anuluj wszystkie filtry dla "{tytuł}".'
+    FB_HINT: 'W polu "Zachowanie filtra" określa się reakcję filtra. <br/><b>Wybór wielokrotny</b>: Klient może wybrać kilka wartości danej cechy jednocześnie. Na przykład, można wyświetlić wszystkie elementy, których kolor jest czerwony LUB czarny. Zawsze można wybrać wszystkie wartości charakterystyki filtra dla danej grupy produktów. <br/><b>Wybór pojedynczy</b>: Klient może wybrać tylko jedną wartość danej cechy. Dostępne wartości właściwości filtra są zawsze oparte na filtrowanej liście artykułów.'
+    FB_MULTIPLECHOICE: 'Wybór wielokrotny'
+    FB_SINGLECHOICE: 'Wybór pojedynczy'
+    FILTERBEHAVIOUR: 'Zachowanie filtra'
+    REMEMBERFILTER: 'Zapamiętaj filtry dla grupy produktów'
+    TITLE: 'Filtr funkcji artykułu'

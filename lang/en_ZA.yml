@@ -1,0 +1,113 @@
+en_ZA:
+  SilverCart\ProductAttributes:
+    PleaseChooseVariantFor: 'Please select a variant for the item {title}'
+  SilverCart\ProductAttributes\Admin\Controllers\ProductAttributeAdmin:
+    MENUTITLE: 'Article features'
+  SilverCart\ProductAttributes\Extensions\Forms\AddToCartFormExtension:
+    HEADLINE: 'Selection options'
+  SilverCart\ProductAttributes\Extensions\Order\OrderPositionExtension:
+    VARIANTDEFINITION: 'Description of variants'
+  SilverCart\ProductAttributes\Extensions\Product\ProductExtension:
+    MASTER_PRODUCT: 'This item is a variant of the item with the item number'
+    NoUserInput: Without
+    PRODUCT_ATTRIBUTE: Feature
+    PRODUCT_ATTRIBUTES: Features
+    PRODUCT_ATTRIBUTE_VALUE: Value
+    PRODUCT_ATTRIBUTE_VALUES: Value
+    SLAVE_PRODUCTS: 'This item has the following variants:'
+  SilverCart\ProductAttributes\Model\Product\ProductAttribute:
+    AdTitle: 'Advertising name'
+    AdTitleDesc: "Examples for feature \"HDD storage space\" with a value of \"500 GB\":<br/>\n- \"Total {$Value} storage space\" (display: \"Total 500 GB storage space\").<br/>\n- \"Storage space: {$Value}!\" (Display: \"Storage space: 500 GB!\")<br/>\n- \"Hard disk capacity\" (Display: \"500 GB hard disk capacity\")<br/>\n"
+    AdTitleRightTitle: 'The advertising name is displayed in advertising-effective places such as a CMS page for a package selection.'
+    CAN_BE_USED_FOR_DATASHEET: 'Use for the data sheet'
+    CAN_BE_USED_FOR_FILTERWIDGET: 'Use for the item filter'
+    CAN_BE_USED_FOR_VARIANTS: 'Can be used for multi-article based variants'
+    CAN_BE_USED_FOR_VARIANTS_DESC: 'If the variant function is activated on a multi-article basis, it is possible to link several articles together and make them mutually selectable (e.g. one article receives the characteristic "Colour" -> "Red", a second receives the characteristic "Colour" -> "Yellow", a third receives the characteristic "Colour" -> "Green").'
+    CanBeUsedForDataSheetShort: 'Data sheet'
+    CanBeUsedForFilterWidgetShort: 'Article filter'
+    CanBeUsedForSingleVariants: 'Can be used for single-article based variants'
+    CanBeUsedForSingleVariantsDesc: 'Article characteristics can be used for variants on a single-article basis. This means that an item has several characteristics that can be selected by the customer (e.g. an item has the characteristics "colour" -> "red", "yellow", "green").'
+    CanBeUsedForSingleVariantsShort: 'Single variants'
+    CanBeUsedForVariantsShort: Multi-variant
+    DisplayConversionFactor: 'Conversion factor'
+    DisplayConversionUnit: 'Display unit'
+    DisplayConversionUnitDesc: 'e.g. "GB", "MB", "cm", "€"'
+    DisplaySettings: 'Display settings'
+    DisplayZeroAsUnlimited: 'Display zero value as "unlimited'
+    ImportList: 'Import features'
+    ImportListDesc: 'Insert a list of features you want to import here. Please note that one feature is inserted per line.'
+    ImportPrefix: 'Import prefix'
+    ImportPrefixDesc: 'Text that precedes each feature to be imported.'
+    ImportSuffix: 'Import suffix'
+    ImportSuffixDesc: 'Text attached to each feature to be imported.'
+    IsUserInputField: 'Free text input activated'
+    IsUserInputFieldDesc: 'If the free text entry is activated, the option to enter a text of the customer''s choice (e.g. "engraving"/"T-shirt imprint") appears on the item.'
+    PLURALNAME: 'Article features'
+    PLURALTITLE: 'Plural name'
+    SINGULARNAME: 'Article feature'
+    TABNAME: Features
+    TITLE: Name
+    UserInputFieldMustBeFilledIn: 'Free text must be entered'
+    UserInputFieldMustBeFilledInDesc: 'If this field is activated, the customer must enter a text before they can add a linked item to the shopping basket.'
+    unlimited: unlimited
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeSet:
+    PLURALNAME: 'Article feature sets'
+    SINGULARNAME: 'Article feature set'
+    TABNAME: 'Feature sets'
+    TITLE: Name
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeSetTranslation:
+    PLURALNAME: Translations
+    SINGULARNAME: Translation
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeTranslation:
+    PLURALNAME: Translations
+    SINGULARNAME: Translation
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeValue:
+    Default: Standard
+    DefaultModifyAction: Action
+    DefaultModifyActionAdd: 'Add / Add'
+    DefaultModifyActionNone: '- without -'
+    DefaultModifyActionSetTo: Overwrite
+    DefaultModifyActionSubtract: 'Remove / Peel off'
+    DefaultModifyDesc: 'Used as the default value for linked items. Can be overwritten individually on each item.'
+    DefaultModifyPrice: 'Standard adjustment item price'
+    DefaultModifyPriceAction: 'Adjustment item price action'
+    DefaultModifyPriceValue: 'Adjustment item price value'
+    DefaultModifyProductNumber: 'Standard adjustment Article number'
+    DefaultModifyProductNumberAction: 'Adjustment Article number Action'
+    DefaultModifyProductNumberValue: 'Adjustment Article number Value'
+    DefaultModifyTitle: 'Standard Adjustment Article Title'
+    DefaultModifyTitleAction: 'Adjustment Article Title Action'
+    DefaultModifyTitleValue: 'Item title adjustment Value'
+    DefaultModifyValue: Value
+    ModifyPrice: 'Adjustment item price'
+    ModifyProductNumber: 'Adjustment item number'
+    ModifyTitle: 'Article title adjustment'
+    PLURALNAME: 'Article characteristic values'
+    SINGULARNAME: 'Article characteristic value'
+    TABNAME: Values
+    TITLE: Name
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeValueTranslation:
+    PLURALNAME: Translations
+    SINGULARNAME: Translation
+  SilverCart\ProductAttributes\Model\Widgets\PriceFilterWidget:
+    CMSTITLE: 'Price filter'
+    DESCRIPTION: 'Provides a widget that allows you to enter a price range by which items are filtered.'
+    DISABLE_FILTER: 'Cancel filter'
+    FILTER: Filter
+    FRONTTITLE: 'Filter by price'
+    MAX_PRICE: to
+    MIN_PRICE: from
+    OffersAbove: 'about {min} {currency}'
+    ShowOffersAbove: 'Show offers via {min} {currency}'
+    ShowOffersFromTo: 'Show offers between {min} and {max} {currency}'
+    TITLE: 'Price filter'
+  SilverCart\ProductAttributes\Model\Widgets\ProductAttributeFilterWidget:
+    CMSTITLE: 'Article feature filter'
+    DESCRIPTION: 'Returns a grouped selection of filters created using the assigned item characteristics of the current product group.'
+    DISABLE_FILTER_FOR: 'Cancel all filters for "{title}".'
+    FB_HINT: 'The "Filter behaviour" field determines how the filter reacts. <br/><b>Multiple selection</b>: The customer can select several values of a characteristic at the same time. For example, all items whose colour is red OR black can be displayed. All filter characteristic values of a product group can always be selected. <br/><b>Single selection:</b> The customer can only select one value of a characteristic. The available filter characteristic values are always based on the filtered item list.'
+    FB_MULTIPLECHOICE: 'Multiple selection'
+    FB_SINGLECHOICE: 'Single selection'
+    FILTERBEHAVIOUR: 'Filter behaviour'
+    REMEMBERFILTER: 'Remember filters per product group'
+    TITLE: 'Article feature filter'

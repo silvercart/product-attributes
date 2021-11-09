@@ -1,0 +1,113 @@
+fi:
+  SilverCart\ProductAttributes:
+    PleaseChooseVariantFor: 'Valitse vaihtoehto tuotteelle {nimike}'
+  SilverCart\ProductAttributes\Admin\Controllers\ProductAttributeAdmin:
+    MENUTITLE: 'Artikkelin ominaisuudet'
+  SilverCart\ProductAttributes\Extensions\Forms\AddToCartFormExtension:
+    HEADLINE: Valintavaihtoehdot
+  SilverCart\ProductAttributes\Extensions\Order\OrderPositionExtension:
+    VARIANTDEFINITION: 'Vaihtoehtojen kuvaus'
+  SilverCart\ProductAttributes\Extensions\Product\ProductExtension:
+    MASTER_PRODUCT: 'Tämä tuote on muunnelma tuotteesta, jonka tuotenumero on'
+    NoUserInput: Ilman
+    PRODUCT_ATTRIBUTE: Ominaisuus
+    PRODUCT_ATTRIBUTES: Ominaisuudet
+    PRODUCT_ATTRIBUTE_VALUE: Arvo
+    PRODUCT_ATTRIBUTE_VALUES: Arvo
+    SLAVE_PRODUCTS: 'Tällä tuotteella on seuraavat vaihtoehdot:'
+  SilverCart\ProductAttributes\Model\Product\ProductAttribute:
+    AdTitle: 'Mainonnan nimi'
+    AdTitleDesc: "Esimerkkejä ominaisuudesta \"HDD-tallennustila\", jonka arvo on \"500 GB\":<br/>\n- \"Yhteensä {$Value} tallennustilaa\" (näyttö: \"Yhteensä 500 GB tallennustilaa\").<br/>\n- \"Säilytystilaa: {$Value}!\" (Näyttö: \"Tallennustila: 500 Gt!\")<br/>\n- \"Kiintolevyn kapasiteetti\" (Näyttö: \"500 Gt kiintolevyn kapasiteetti\")<br/>\n"
+    AdTitleRightTitle: 'Mainosnimi näytetään mainonnan kannalta tehokkaissa paikoissa, kuten pakettivalikoiman CMS-sivulla.'
+    CAN_BE_USED_FOR_DATASHEET: 'Käyttö tietolomakkeessa'
+    CAN_BE_USED_FOR_FILTERWIDGET: 'Käytä kohteen suodatinta'
+    CAN_BE_USED_FOR_VARIANTS: 'Voidaan käyttää useisiin hiukkasiin perustuviin variantteihin.'
+    CAN_BE_USED_FOR_VARIANTS_DESC: 'Jos muunnostoiminto on aktivoitu usean artikkelin osalta, on mahdollista yhdistää useita artikkeleita toisiinsa ja tehdä niistä keskenään valittavissa olevia (esim. yksi artikkeli saa ominaisuuden "Väri" -> "Punainen", toinen saa ominaisuuden "Väri" -> "Keltainen", kolmas saa ominaisuuden "Väri" -> "Vihreä").'
+    CanBeUsedForDataSheetShort: Tietolehti
+    CanBeUsedForFilterWidgetShort: 'Artikkelin suodatin'
+    CanBeUsedForSingleVariants: 'Voidaan käyttää yksittäisiin hiukkasiin perustuviin variantteihin.'
+    CanBeUsedForSingleVariantsDesc: 'Artikkelin ominaisuuksia voidaan käyttää yksittäisen artikkelin variaatioihin. Tämä tarkoittaa, että tuotteella on useita ominaisuuksia, jotka asiakas voi valita (esim. tuotteella on ominaisuudet "väri" -> "punainen", "keltainen", "vihreä").'
+    CanBeUsedForSingleVariantsShort: 'Yksittäiset variantit'
+    CanBeUsedForVariantsShort: Monimuuttujainen
+    DisplayConversionFactor: Muuntokerroin
+    DisplayConversionUnit: Näyttöyksikkö
+    DisplayConversionUnitDesc: 'esim. "GB", "MB", "cm", "€".'
+    DisplaySettings: 'Näytön asetukset'
+    DisplayZeroAsUnlimited: 'Nolla-arvon näyttäminen "rajoittamattomana'
+    ImportList: Tuontiominaisuudet
+    ImportListDesc: 'Lisää tähän luettelo ominaisuuksista, jotka haluat tuoda. Huomaa, että yksi ominaisuus lisätään riviä kohti.'
+    ImportPrefix: 'Tuo etuliite'
+    ImportPrefixDesc: 'Teksti, joka edeltää jokaista tuotavaa ominaisuutta.'
+    ImportSuffix: Tuontisuffiksi
+    ImportSuffixDesc: 'Jokaiseen tuotavaan ominaisuuteen liitetty teksti.'
+    IsUserInputField: 'Vapaa tekstinsyöttö aktivoitu'
+    IsUserInputFieldDesc: 'Jos vapaa tekstinsyöttö on aktivoitu, tuotteeseen ilmestyy mahdollisuus syöttää asiakkaan valitsema teksti (esim. "kaiverrus"/"T-paitapainatus").'
+    PLURALNAME: 'Artikkelin ominaisuudet'
+    PLURALTITLE: 'Monikossa oleva nimi'
+    SINGULARNAME: 'Artikkelin ominaisuus'
+    TABNAME: Ominaisuudet
+    TITLE: Nimi
+    UserInputFieldMustBeFilledIn: 'Vapaa teksti on kirjoitettava'
+    UserInputFieldMustBeFilledInDesc: 'Jos tämä kenttä on aktivoitu, asiakkaan on syötettävä teksti, ennen kuin hän voi lisätä linkitetyn tuotteen ostoskoriin.'
+    unlimited: rajoittamaton
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeSet:
+    PLURALNAME: 'Artikkelin ominaisuussarjat'
+    SINGULARNAME: 'Artikkelin ominaisuussarja'
+    TABNAME: Ominaisuussarjat
+    TITLE: Nimi
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeSetTranslation:
+    PLURALNAME: Käännökset
+    SINGULARNAME: Käännös
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeTranslation:
+    PLURALNAME: Käännökset
+    SINGULARNAME: Käännös
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeValue:
+    Default: Standardi
+    DefaultModifyAction: Toiminta
+    DefaultModifyActionAdd: 'Lisää / Lisää'
+    DefaultModifyActionNone: '- ilman -'
+    DefaultModifyActionSetTo: Korvaa
+    DefaultModifyActionSubtract: 'Poista / kuori pois'
+    DefaultModifyDesc: 'Käytetään linkitettyjen kohteiden oletusarvona. Voidaan korvata yksitellen jokaisessa kohteessa.'
+    DefaultModifyPrice: 'Vakiomuutoserän hinta'
+    DefaultModifyPriceAction: 'Sopeutuserän hintatoimi'
+    DefaultModifyPriceValue: 'Oikaisuerän hinnan arvo'
+    DefaultModifyProductNumber: 'Vakiosäätö Tuotenumero'
+    DefaultModifyProductNumberAction: 'Säätäminen Artikkelin numero Toiminta'
+    DefaultModifyProductNumberValue: 'Säätäminen Artikkelin numero Arvo'
+    DefaultModifyTitle: 'Vakiosäätö Momentin otsikko'
+    DefaultModifyTitleAction: 'Sopeutus Momentin otsikko Toimenpide'
+    DefaultModifyTitleValue: 'Nimikkeen otsikko mukautus Arvo'
+    DefaultModifyValue: Arvo
+    ModifyPrice: 'Sopeutuserän hinta'
+    ModifyProductNumber: 'Säätökohteen numero'
+    ModifyTitle: 'Artikkelin otsikon säätö'
+    PLURALNAME: 'Artiklan ominaisarvot'
+    SINGULARNAME: 'Artikkelin ominaisarvo'
+    TABNAME: Arvot
+    TITLE: Nimi
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeValueTranslation:
+    PLURALNAME: Käännökset
+    SINGULARNAME: Käännös
+  SilverCart\ProductAttributes\Model\Widgets\PriceFilterWidget:
+    CMSTITLE: Hintasuodatin
+    DESCRIPTION: 'Tarjoaa widgetin, jonka avulla voit syöttää hinta-alueen, jonka mukaan kohteet suodatetaan.'
+    DISABLE_FILTER: 'Peruuta suodatin'
+    FILTER: Suodatin
+    FRONTTITLE: 'Suodata hinnan mukaan'
+    MAX_PRICE: osoitteeseen
+    MIN_PRICE: osoitteesta
+    OffersAbove: 'noin {min} {valuutta}'
+    ShowOffersAbove: 'Näytä tarjoukset {min} {valuutan} kautta'
+    ShowOffersFromTo: 'Näytä tarjoukset välillä {min} ja {max} {valuutta}'
+    TITLE: Hintasuodatin
+  SilverCart\ProductAttributes\Model\Widgets\ProductAttributeFilterWidget:
+    CMSTITLE: 'Artikkelin ominaisuuksien suodatin'
+    DESCRIPTION: 'Palauttaa suodattimien ryhmitellyn valinnan, joka on luotu käyttämällä nykyisen tuoteryhmän määritettyjä tuoteominaisuuksia.'
+    DISABLE_FILTER_FOR: 'Peruuta kaikki suodattimet kohteelle "{title}".'
+    FB_HINT: 'Suodattimen käyttäytyminen -kenttä määrittää, miten suodatin reagoi. <br/><b>Monivalinta</b>: Asiakas voi valita useita ominaisuuden arvoja samanaikaisesti. Esimerkiksi kaikki kohteet, joiden väri on punainen TAI musta, voidaan näyttää. Tuoteryhmän kaikki suodattimen ominaisarvot voidaan aina valita. <br/><b>Yksittäinen valinta:</b> Asiakas voi valita vain yhden ominaisuuden arvon. Käytettävissä olevat suodattimen ominaisarvot perustuvat aina suodatettuun kohdeluetteloon.'
+    FB_MULTIPLECHOICE: Monivalinta
+    FB_SINGLECHOICE: 'Yksittäinen valinta'
+    FILTERBEHAVIOUR: 'Suodattimen käyttäytyminen'
+    REMEMBERFILTER: 'Muista suodattimet tuoteryhmittäin'
+    TITLE: 'Artikkelin ominaisuuksien suodatin'

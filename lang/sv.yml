@@ -1,3 +1,113 @@
 sv:
   SilverCart\ProductAttributes:
     PleaseChooseVariantFor: 'Välj en variant för artikeln {title}'
+  SilverCart\ProductAttributes\Admin\Controllers\ProductAttributeAdmin:
+    MENUTITLE: Artikelfunktioner
+  SilverCart\ProductAttributes\Extensions\Forms\AddToCartFormExtension:
+    HEADLINE: Valmöjligheter
+  SilverCart\ProductAttributes\Extensions\Order\OrderPositionExtension:
+    VARIANTDEFINITION: 'Beskrivning av varianter'
+  SilverCart\ProductAttributes\Extensions\Product\ProductExtension:
+    MASTER_PRODUCT: 'Denna artikel är en variant av artikeln med artikelnumret'
+    NoUserInput: Utan
+    PRODUCT_ATTRIBUTE: Funktion
+    PRODUCT_ATTRIBUTES: Funktioner
+    PRODUCT_ATTRIBUTE_VALUE: Värde
+    PRODUCT_ATTRIBUTE_VALUES: Värde
+    SLAVE_PRODUCTS: 'Denna artikel har följande varianter:'
+  SilverCart\ProductAttributes\Model\Product\ProductAttribute:
+    AdTitle: Reklamnamn
+    AdTitleDesc: "Exempel för funktionen \"HDD storage space\" med värdet \"500 GB\":<br/>\n- \"Totalt {$Value} lagringsutrymme\" (visning: \"Totalt 500 GB lagringsutrymme\").<br/>\n- \"Lagringsutrymme: {$Value}!\" (Display: \"Lagringsutrymme: 500 GB!\")<br/>\n- \"Hårddiskkapacitet\" (Display: \"500 GB hårddiskkapacitet\")<br/>\n"
+    AdTitleRightTitle: 'Reklamnamnet visas på reklameeffektiva platser, t.ex. på en CMS-sida för ett paketval.'
+    CAN_BE_USED_FOR_DATASHEET: 'Användning för databladet'
+    CAN_BE_USED_FOR_FILTERWIDGET: 'Används för artikelfiltret'
+    CAN_BE_USED_FOR_VARIANTS: 'Kan användas för varianter baserade på flera partiklar.'
+    CAN_BE_USED_FOR_VARIANTS_DESC: 'Om variantfunktionen är aktiverad för flera artiklar är det möjligt att länka samman flera artiklar och göra dem ömsesidigt valbara (t.ex. en artikel får egenskapen "Färg" -> "Röd", en andra får egenskapen "Färg" -> "Gul", en tredje får egenskapen "Färg" -> "Grön").'
+    CanBeUsedForDataSheetShort: Datablad
+    CanBeUsedForFilterWidgetShort: Artikelfilter
+    CanBeUsedForSingleVariants: 'Kan användas för varianter baserade på enstaka partiklar.'
+    CanBeUsedForSingleVariantsDesc: 'Artikelegenskaper kan användas för varianter på basis av en enskild artikel. Detta innebär att en vara har flera egenskaper som kan väljas av kunden (t.ex. en vara har egenskaperna "färg" -> "röd", "gul", "grön").'
+    CanBeUsedForSingleVariantsShort: 'Enstaka varianter'
+    CanBeUsedForVariantsShort: Multivariant
+    DisplayConversionFactor: Omräkningsfaktor
+    DisplayConversionUnit: Display-enhet
+    DisplayConversionUnitDesc: 't.ex. "GB", "MB", "cm", "€".'
+    DisplaySettings: 'Inställningar för displayen'
+    DisplayZeroAsUnlimited: 'Visa nollvärdet som "obegränsat".'
+    ImportList: 'Funktioner för import'
+    ImportListDesc: 'Lägg in en lista över de funktioner som du vill importera här. Observera att en funktion läggs in per rad.'
+    ImportPrefix: Importprefix
+    ImportPrefixDesc: 'Text som föregår varje funktion som ska importeras.'
+    ImportSuffix: 'Suffix för import'
+    ImportSuffixDesc: 'Text som är knuten till varje funktion som ska importeras.'
+    IsUserInputField: 'Inmatning av fritext aktiverad'
+    IsUserInputFieldDesc: 'Om fri textinmatning är aktiverad visas alternativet att skriva in en text som kunden själv väljer (t.ex. "gravyr"/"T-shirt-tryck") på artikeln.'
+    PLURALNAME: Artikelfunktioner
+    PLURALTITLE: Pluralnamn
+    SINGULARNAME: Artikelfunktion
+    TABNAME: Funktioner
+    TITLE: Namn
+    UserInputFieldMustBeFilledIn: 'Fri text måste anges.'
+    UserInputFieldMustBeFilledInDesc: 'Om det här fältet är aktiverat måste kunden ange en text innan den kan lägga till en länkad vara i varukorgen.'
+    unlimited: obegränsad
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeSet:
+    PLURALNAME: Artikelfunktioner
+    SINGULARNAME: Artikelfunktioner
+    TABNAME: Funktionsuppsättningar
+    TITLE: Namn
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeSetTranslation:
+    PLURALNAME: Översättningar
+    SINGULARNAME: Översättning
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeTranslation:
+    PLURALNAME: Översättningar
+    SINGULARNAME: Översättning
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeValue:
+    Default: Standard
+    DefaultModifyAction: Åtgärd
+    DefaultModifyActionAdd: 'Lägg till / Lägg till'
+    DefaultModifyActionNone: '- utan -'
+    DefaultModifyActionSetTo: 'Skriv över'
+    DefaultModifyActionSubtract: 'Ta bort / skala av'
+    DefaultModifyDesc: 'Används som standardvärde för länkade objekt. Kan skrivas över individuellt för varje objekt.'
+    DefaultModifyPrice: 'Pris för standardjusteringspost'
+    DefaultModifyPriceAction: 'Justeringspost prisåtgärd'
+    DefaultModifyPriceValue: 'Justeringspostens prisvärde'
+    DefaultModifyProductNumber: 'Standardjustering Artikelnummer'
+    DefaultModifyProductNumberAction: 'Anpassning Artikelnummer Åtgärd'
+    DefaultModifyProductNumberValue: 'Justering Artikelnummer Värde'
+    DefaultModifyTitle: 'Standardanpassning Artikeltitel'
+    DefaultModifyTitleAction: 'Anpassning Artikeltitel Åtgärd'
+    DefaultModifyTitleValue: 'Artikeltitel justering Värde'
+    DefaultModifyValue: Värde
+    ModifyPrice: 'Pris för justeringspost'
+    ModifyProductNumber: 'Nummer på justeringspost'
+    ModifyTitle: 'Justering av artikelns titel'
+    PLURALNAME: 'Artikelns karakteristiska värden'
+    SINGULARNAME: 'Artikel karakteristiskt värde'
+    TABNAME: Värden
+    TITLE: Namn
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeValueTranslation:
+    PLURALNAME: Översättningar
+    SINGULARNAME: Översättning
+  SilverCart\ProductAttributes\Model\Widgets\PriceFilterWidget:
+    CMSTITLE: Prisfilter
+    DESCRIPTION: 'En widget där du kan ange ett prisintervall som du kan filtrera artiklar efter.'
+    DISABLE_FILTER: 'Avbryt filter'
+    FILTER: Filter
+    FRONTTITLE: 'Filtrera efter pris'
+    MAX_PRICE: till
+    MIN_PRICE: från
+    OffersAbove: 'om {min} {valuta}'
+    ShowOffersAbove: 'Visa erbjudanden via {min} {valuta}'
+    ShowOffersFromTo: 'Visa erbjudanden mellan {min} och {max} {valuta}'
+    TITLE: Prisfilter
+  SilverCart\ProductAttributes\Model\Widgets\ProductAttributeFilterWidget:
+    CMSTITLE: 'Filter för artikelfunktioner'
+    DESCRIPTION: 'Återger ett grupperat urval av filter som skapats med hjälp av de tilldelade artikelegenskaperna för den aktuella produktgruppen.'
+    DISABLE_FILTER_FOR: 'Avbryt alla filter för "{title}".'
+    FB_HINT: 'Fältet "Filterbeteende" bestämmer hur filtret reagerar. <br/><b>Flera val</b>: Kunden kan välja flera värden för en egenskap samtidigt. Till exempel kan alla objekt vars färg är röd ELLER svart visas. Alla filteregenskaper för en produktgrupp kan alltid väljas. <br/><b>Enkelval</b>: Kunden kan bara välja ett värde för en egenskap. De tillgängliga filtreringsegenskaperna baseras alltid på den filtrerade objektlistan.'
+    FB_MULTIPLECHOICE: 'Flera val'
+    FB_SINGLECHOICE: 'Enkelt val'
+    FILTERBEHAVIOUR: Filterbeteende
+    REMEMBERFILTER: 'Kom ihåg filter per produktgrupp'
+    TITLE: 'Filter för artikelfunktioner'

@@ -1,0 +1,113 @@
+cs:
+  SilverCart\ProductAttributes:
+    PleaseChooseVariantFor: 'Vyberte prosím variantu položky {title}'
+  SilverCart\ProductAttributes\Admin\Controllers\ProductAttributeAdmin:
+    MENUTITLE: 'Vlastnosti článku'
+  SilverCart\ProductAttributes\Extensions\Forms\AddToCartFormExtension:
+    HEADLINE: 'Možnosti výběru'
+  SilverCart\ProductAttributes\Extensions\Order\OrderPositionExtension:
+    VARIANTDEFINITION: 'Popis variant'
+  SilverCart\ProductAttributes\Extensions\Product\ProductExtension:
+    MASTER_PRODUCT: 'Tato položka je variantou položky s číslem položky'
+    NoUserInput: Bez
+    PRODUCT_ATTRIBUTE: Funkce
+    PRODUCT_ATTRIBUTES: Funkce
+    PRODUCT_ATTRIBUTE_VALUE: Hodnota
+    PRODUCT_ATTRIBUTE_VALUES: Hodnota
+    SLAVE_PRODUCTS: 'Tato položka má následující varianty:'
+  SilverCart\ProductAttributes\Model\Product\ProductAttribute:
+    AdTitle: 'Reklamní název'
+    AdTitleDesc: "Příklady pro funkci \"HDD storage space\" s hodnotou \"500 GB\":<br/>\n- \"Celkem {$Hodnota} úložného prostoru\" (zobrazení: \"Celkem 500 GB úložného prostoru\").<br/>\n- \"Úložný prostor: {$Hodnota}!\" (Zobrazení: \"Úložný prostor: 500 GB!\")<br/>\n- \"Kapacita pevného disku\" (Zobrazení: \"500 GB kapacita pevného disku\")<br/>\n"
+    AdTitleRightTitle: 'Název reklamy se zobrazuje na reklamně účinných místech, jako je stránka CMS pro výběr balíčku.'
+    CAN_BE_USED_FOR_DATASHEET: 'Použití pro datový list'
+    CAN_BE_USED_FOR_FILTERWIDGET: 'Použití pro filtr položek'
+    CAN_BE_USED_FOR_VARIANTS: 'Lze použít pro varianty založené na více částicích'
+    CAN_BE_USED_FOR_VARIANTS_DESC: 'Pokud je funkce varianty aktivována na základě více článků, je možné propojit několik článků dohromady a učinit je vzájemně volitelnými (např. jeden článek obdrží charakteristiku "Barva" -> "Červená", druhý obdrží charakteristiku "Barva" -> "Žlutá", třetí obdrží charakteristiku "Barva" -> "Zelená").'
+    CanBeUsedForDataSheetShort: 'Datový list'
+    CanBeUsedForFilterWidgetShort: 'Filtr článku'
+    CanBeUsedForSingleVariants: 'Lze použít pro varianty založené na jedné částici.'
+    CanBeUsedForSingleVariantsDesc: 'Charakteristiky článku lze použít pro varianty na základě jednotlivých článků. To znamená, že položka má několik vlastností, které si zákazník může vybrat (např. položka má vlastnosti "barva" -> "červená", "žlutá", "zelená").'
+    CanBeUsedForSingleVariantsShort: 'Jednotlivé varianty'
+    CanBeUsedForVariantsShort: 'Více variant'
+    DisplayConversionFactor: 'Konverzní faktor'
+    DisplayConversionUnit: 'Zobrazovací jednotka'
+    DisplayConversionUnitDesc: 'např. "GB", "MB", "cm", "€".'
+    DisplaySettings: 'Nastavení displeje'
+    DisplayZeroAsUnlimited: 'Zobrazení nulové hodnoty jako "neomezený'
+    ImportList: 'Funkce importu'
+    ImportListDesc: 'Zde vložte seznam funkcí, které chcete importovat. Vezměte prosím na vědomí, že na každý řádek se vkládá jeden prvek.'
+    ImportPrefix: 'Předpona importu'
+    ImportPrefixDesc: 'Text, který předchází každému importovanému prvku.'
+    ImportSuffix: 'Přípona importu'
+    ImportSuffixDesc: 'Text připojený ke každému prvku, který se má importovat.'
+    IsUserInputField: 'Aktivováno zadávání volného textu'
+    IsUserInputFieldDesc: 'Pokud je aktivováno zadávání volného textu, zobrazí se na položce možnost zadat text dle výběru zákazníka (např. "gravírování"/"potisk trička").'
+    PLURALNAME: 'Vlastnosti článku'
+    PLURALTITLE: 'Název v množném čísle'
+    SINGULARNAME: 'Funkce článku'
+    TABNAME: Funkce
+    TITLE: Název
+    UserInputFieldMustBeFilledIn: 'Musí být zadán volný text'
+    UserInputFieldMustBeFilledInDesc: 'Pokud je toto pole aktivováno, musí zákazník před přidáním propojené položky do nákupního košíku zadat text.'
+    unlimited: neomezené
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeSet:
+    PLURALNAME: 'Sady funkcí článku'
+    SINGULARNAME: 'Soubor funkcí článku'
+    TABNAME: 'Sady funkcí'
+    TITLE: Název
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeSetTranslation:
+    PLURALNAME: Překlady
+    SINGULARNAME: Překlad
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeTranslation:
+    PLURALNAME: Překlady
+    SINGULARNAME: Překlad
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeValue:
+    Default: Standardní
+    DefaultModifyAction: Akce
+    DefaultModifyActionAdd: 'Přidat / Přidat'
+    DefaultModifyActionNone: '- bez -'
+    DefaultModifyActionSetTo: Přepsat
+    DefaultModifyActionSubtract: 'Odstranění / odlepení'
+    DefaultModifyDesc: 'Používá se jako výchozí hodnota pro propojené položky. Lze přepsat jednotlivě u každé položky.'
+    DefaultModifyPrice: 'Standardní cena položky úpravy'
+    DefaultModifyPriceAction: 'Akce na úpravu ceny položky'
+    DefaultModifyPriceValue: 'Hodnota ceny opravné položky'
+    DefaultModifyProductNumber: 'Standardní nastavení Číslo výrobku'
+    DefaultModifyProductNumberAction: 'Úprava Číslo článku Akce'
+    DefaultModifyProductNumberValue: 'Úprava Číslo článku Hodnota'
+    DefaultModifyTitle: 'Standardní úprava Název článku'
+    DefaultModifyTitleAction: 'Úprava názvu článku Akce'
+    DefaultModifyTitleValue: 'Úprava názvu položky Hodnota'
+    DefaultModifyValue: Hodnota
+    ModifyPrice: 'Úprava ceny položky'
+    ModifyProductNumber: 'Číslo položky úpravy'
+    ModifyTitle: 'Úprava názvu článku'
+    PLURALNAME: 'Charakteristické hodnoty článku'
+    SINGULARNAME: 'Charakteristická hodnota článku'
+    TABNAME: Hodnoty
+    TITLE: Název
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeValueTranslation:
+    PLURALNAME: Překlady
+    SINGULARNAME: Překlad
+  SilverCart\ProductAttributes\Model\Widgets\PriceFilterWidget:
+    CMSTITLE: 'Cenový filtr'
+    DESCRIPTION: 'Poskytuje widget, který umožňuje zadat cenový rozsah, podle kterého se položky filtrují.'
+    DISABLE_FILTER: 'Zrušit filtr'
+    FILTER: Filtr
+    FRONTTITLE: 'Filtrovat podle ceny'
+    MAX_PRICE: na
+    MIN_PRICE: z
+    OffersAbove: 'o {min} {měna}'
+    ShowOffersAbove: 'Zobrazit nabídky přes {min} {měna}'
+    ShowOffersFromTo: 'Zobrazit nabídky mezi {min} a {max} {měna}'
+    TITLE: 'Cenový filtr'
+  SilverCart\ProductAttributes\Model\Widgets\ProductAttributeFilterWidget:
+    CMSTITLE: 'Filtr funkcí článku'
+    DESCRIPTION: 'Vrátí seskupený výběr filtrů vytvořených pomocí přiřazených vlastností položek aktuální skupiny produktů.'
+    DISABLE_FILTER_FOR: 'Zrušení všech filtrů pro "{title}".'
+    FB_HINT: 'Pole "Chování filtru" určuje, jak bude filtr reagovat. <br/><b>Vícenásobný výběr</b>: Zákazník může vybrat několik hodnot charakteristiky najednou. Například lze zobrazit všechny položky, jejichž barva je červená NEBO černá. Vždy lze vybrat všechny hodnoty filtračních charakteristik skupiny produktů. <br/><b>Jednotlivý výběr</b>: Zákazník může vybrat pouze jednu hodnotu vlastnosti. Dostupné hodnoty charakteristik filtru jsou vždy založeny na seznamu filtrovaných položek.'
+    FB_MULTIPLECHOICE: 'Vícenásobný výběr'
+    FB_SINGLECHOICE: 'Jednotlivý výběr'
+    FILTERBEHAVIOUR: 'Chování filtru'
+    REMEMBERFILTER: 'Zapamatujte si filtry pro jednotlivé skupiny produktů'
+    TITLE: 'Filtr funkcí článku'

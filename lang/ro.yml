@@ -1,0 +1,113 @@
+ro:
+  SilverCart\ProductAttributes:
+    PleaseChooseVariantFor: 'Vă rugăm să selectați o variantă pentru articolul {title}'
+  SilverCart\ProductAttributes\Admin\Controllers\ProductAttributeAdmin:
+    MENUTITLE: 'Caracteristicile articolului'
+  SilverCart\ProductAttributes\Extensions\Forms\AddToCartFormExtension:
+    HEADLINE: 'Opțiuni de selecție'
+  SilverCart\ProductAttributes\Extensions\Order\OrderPositionExtension:
+    VARIANTDEFINITION: 'Descrierea variantelor'
+  SilverCart\ProductAttributes\Extensions\Product\ProductExtension:
+    MASTER_PRODUCT: 'Acest articol este o variantă a articolului cu numărul de articol'
+    NoUserInput: Fără
+    PRODUCT_ATTRIBUTE: Caracteristică
+    PRODUCT_ATTRIBUTES: Caracteristici
+    PRODUCT_ATTRIBUTE_VALUE: Valoare
+    PRODUCT_ATTRIBUTE_VALUES: Valoare
+    SLAVE_PRODUCTS: 'Acest articol are următoarele variante:'
+  SilverCart\ProductAttributes\Model\Product\ProductAttribute:
+    AdTitle: 'Nume de publicitate'
+    AdTitleDesc: "Exemple pentru caracteristica \"Spațiu de stocare HDD\" cu o valoare de \"500 GB\":<br/>\n- \"Total spațiu de stocare {$Valoare}\" (afișare: \"Total 500 GB spațiu de stocare\").<br/>\n- \"Spațiu de stocare: {$Valoare}!\" (Afișaj: \"Spațiu de stocare: 500 GB!\")<br/>\n- \"Hard disk capacity\" (Afișaj: \"500 GB hard disk capacity\")<br/>\n"
+    AdTitleRightTitle: 'Numele publicitar este afișat în locuri eficiente din punct de vedere publicitar, cum ar fi o pagină CMS pentru o selecție de pachete.'
+    CAN_BE_USED_FOR_DATASHEET: 'Utilizare pentru fișa de date'
+    CAN_BE_USED_FOR_FILTERWIDGET: 'Utilizare pentru filtrul de articole'
+    CAN_BE_USED_FOR_VARIANTS: 'Poate fi utilizat pentru variantele bazate pe mai multe particule'
+    CAN_BE_USED_FOR_VARIANTS_DESC: 'În cazul în care funcția de variantă este activată pe bază de mai multe articole, este posibil să se lege mai multe articole între ele și să le facă selectabile reciproc (de exemplu, un articol primește caracteristica "Culoare" -> "Roșu", un al doilea articol primește caracteristica "Culoare" -> "Galben", un al treilea articol primește caracteristica "Culoare" -> "Verde").'
+    CanBeUsedForDataSheetShort: 'Fișă de date'
+    CanBeUsedForFilterWidgetShort: 'Filtru de articol'
+    CanBeUsedForSingleVariants: 'Poate fi utilizat pentru variantele bazate pe o singură particulă'
+    CanBeUsedForSingleVariantsDesc: 'Caracteristicile articolelor pot fi utilizate pentru variantele pe articol individual. Aceasta înseamnă că un articol are mai multe caracteristici care pot fi selectate de către client (de exemplu, un articol are caracteristicile "culoare" -> "roșu", "galben", "verde").'
+    CanBeUsedForSingleVariantsShort: 'Variante unice'
+    CanBeUsedForVariantsShort: Multi-variantă
+    DisplayConversionFactor: 'Factor de conversie'
+    DisplayConversionUnit: 'Unitate de afișare'
+    DisplayConversionUnitDesc: 'de exemplu, "GB", "MB", "cm", "€"'
+    DisplaySettings: 'Setări de afișare'
+    DisplayZeroAsUnlimited: 'Afișarea valorii zero ca "nelimitat'
+    ImportList: 'Caracteristici de import'
+    ImportListDesc: 'Introduceți aici o listă de caracteristici pe care doriți să le importați. Vă rugăm să rețineți că se introduce câte o caracteristică pe linie.'
+    ImportPrefix: 'Prefix de import'
+    ImportPrefixDesc: 'Textul care precede fiecare caracteristică care urmează să fie importată.'
+    ImportSuffix: 'Sufix de import'
+    ImportSuffixDesc: 'Text atașat fiecărei caracteristici care urmează să fie importate.'
+    IsUserInputField: 'Introducerea liberă a textului activată'
+    IsUserInputFieldDesc: 'În cazul în care este activată opțiunea de introducere liberă a textului, pe articol apare opțiunea de a introduce un text la alegerea clientului (de exemplu, "gravură"/"imprimare tricou").'
+    PLURALNAME: 'Caracteristicile articolului'
+    PLURALTITLE: 'Nume la plural'
+    SINGULARNAME: 'Caracteristica articolului'
+    TABNAME: Caracteristici
+    TITLE: Nume
+    UserInputFieldMustBeFilledIn: 'Textul liber trebuie introdus'
+    UserInputFieldMustBeFilledInDesc: 'Dacă acest câmp este activat, clientul trebuie să introducă un text înainte de a putea adăuga un articol legat la coșul de cumpărături.'
+    unlimited: nelimitat
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeSet:
+    PLURALNAME: 'Seturi de caracteristici ale articolului'
+    SINGULARNAME: 'Set de caracteristici ale articolului'
+    TABNAME: 'Seturi de caracteristici'
+    TITLE: Nume
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeSetTranslation:
+    PLURALNAME: Traduceri
+    SINGULARNAME: Traducere
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeTranslation:
+    PLURALNAME: Traduceri
+    SINGULARNAME: Traducere
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeValue:
+    Default: Standard
+    DefaultModifyAction: Acțiune
+    DefaultModifyActionAdd: 'Adăugați / Adăugați'
+    DefaultModifyActionNone: '- fără -'
+    DefaultModifyActionSetTo: Suprascrieți
+    DefaultModifyActionSubtract: 'Îndepărtare / Peel off'
+    DefaultModifyDesc: 'Utilizată ca valoare implicită pentru elementele legate. Poate fi suprascrisă în mod individual pentru fiecare element.'
+    DefaultModifyPrice: 'Prețul articolului de ajustare standard'
+    DefaultModifyPriceAction: 'Acțiunea de ajustare a prețului postului'
+    DefaultModifyPriceValue: 'Valoarea prețului poziției de ajustare'
+    DefaultModifyProductNumber: 'Reglare standard Numărul articolului'
+    DefaultModifyProductNumberAction: 'Ajustare Numărul articolului Acțiune'
+    DefaultModifyProductNumberValue: 'Ajustare Numărul articolului Valoare'
+    DefaultModifyTitle: 'Ajustarea standard Titlul articolului'
+    DefaultModifyTitleAction: 'Ajustare Titlul articolului Acțiune'
+    DefaultModifyTitleValue: 'Titlul postului ajustare Valoare'
+    DefaultModifyValue: Valoare
+    ModifyPrice: 'Prețul poziției de ajustare'
+    ModifyProductNumber: 'Numărul postului de ajustare'
+    ModifyTitle: 'Ajustarea titlului articolului'
+    PLURALNAME: 'Valorile caracteristice ale articolului'
+    SINGULARNAME: 'Valoarea caracteristică a articolului'
+    TABNAME: Valori
+    TITLE: Nume
+  SilverCart\ProductAttributes\Model\Product\ProductAttributeValueTranslation:
+    PLURALNAME: Traduceri
+    SINGULARNAME: Traducere
+  SilverCart\ProductAttributes\Model\Widgets\PriceFilterWidget:
+    CMSTITLE: 'Filtru de preț'
+    DESCRIPTION: 'Oferă un widget care vă permite să introduceți un interval de prețuri în funcție de care sunt filtrate articolele.'
+    DISABLE_FILTER: 'Anulează filtrul'
+    FILTER: Filtru
+    FRONTTITLE: 'Filtrați după preț'
+    MAX_PRICE: la
+    MIN_PRICE: 'de la'
+    OffersAbove: 'aproximativ {min} {monedă}'
+    ShowOffersAbove: 'Afișați ofertele prin {min} {valută}'
+    ShowOffersFromTo: 'Afișați ofertele între {min} și {max} {valută}'
+    TITLE: 'Filtru de preț'
+  SilverCart\ProductAttributes\Model\Widgets\ProductAttributeFilterWidget:
+    CMSTITLE: 'Filtru de caracteristici ale articolului'
+    DESCRIPTION: 'Returnează o selecție grupată de filtre create folosind caracteristicile articolelor atribuite grupului de produse curent.'
+    DISABLE_FILTER_FOR: 'Anulează toate filtrele pentru "{title}".'
+    FB_HINT: 'Câmpul "Filter behaviour" (Comportamentul filtrului) determină modul în care reacționează filtrul. <br/><b>Selecție multiplă</b>: Clientul poate selecta mai multe valori ale unei caracteristici în același timp. De exemplu, pot fi afișate toate elementele a căror culoare este roșu SAU negru. Toate valorile caracteristicilor de filtrare ale unui grup de produse pot fi întotdeauna selectate. <br/><b>Selecție unică:</b> Clientul poate selecta doar o singură valoare a unei caracteristici. Valorile caracteristicilor de filtrare disponibile se bazează întotdeauna pe lista de elemente filtrate.'
+    FB_MULTIPLECHOICE: 'Selecție multiplă'
+    FB_SINGLECHOICE: 'Selecție unică'
+    FILTERBEHAVIOUR: 'Comportamentul filtrului'
+    REMEMBERFILTER: 'Rețineți filtrele pentru fiecare grup de produse'
+    TITLE: 'Filtru de caracteristici ale articolului'
