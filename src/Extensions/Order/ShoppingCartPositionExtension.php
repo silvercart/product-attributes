@@ -227,11 +227,11 @@ class ShoppingCartPositionExtension extends DataExtension
     /**
      * Updates the title.
      *
-     * @param string &$title The title to update
+     * @param string|null &$title The title to update
      * 
      * @return string
      */
-    public function updateTitle(string &$title) : void
+    public function updateTitle(string &$title = null) : void
     {
         $product = $this->owner->Product();
         if ($product instanceof Product
