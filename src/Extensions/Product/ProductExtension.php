@@ -2,6 +2,7 @@
 
 namespace SilverCart\ProductAttributes\Extensions\Product;
 
+use SilverCart\Admin\Forms\GridField\GridFieldAddExistingAutocompleter as SilverCartGridFieldAddExistingAutocompleter;
 use SilverCart\Dev\Tools;
 use SilverCart\Forms\FormFields\MoneyField;
 use SilverCart\Forms\FormFields\TextField;
@@ -17,6 +18,7 @@ use SilverCart\ProductAttributes\Model\Product\ProductAttributeValue;
 use SilverStripe\Control\Controller;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataList;
@@ -148,6 +150,8 @@ class ProductExtension extends DataExtension
                 /* @var $attributeField GridField */
                 $subObjectComponent = new GridFieldSubObjectHandler($this->owner, ProductAttributeValue::class, $this->owner->ProductAttributeValues());
                 $attributeField->getConfig()->addComponent($subObjectComponent);
+                $attributeField->getConfig()->removeComponentsByType(GridFieldAddExistingAutocompleter::class);
+                $attributeField->getConfig()->addComponent(new SilverCartGridFieldAddExistingAutocompleter('buttons-before-right'));
             }
         }
         
