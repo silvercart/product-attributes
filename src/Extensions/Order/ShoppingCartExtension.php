@@ -2,8 +2,10 @@
 
 namespace SilverCart\ProductAttributes\Extensions\Order;
 
+use SilverCart\Dev\Tools;
 use SilverCart\Model\Order\ShoppingCartPosition;
 use SilverCart\Model\Product\Product;
+use SilverCart\ProductAttributes\Model\Product\ProductAttribute;
 use SilverStripe\ORM\DataExtension;
 
 /**
@@ -69,6 +71,13 @@ class ShoppingCartExtension extends DataExtension
                  && !empty($fieldValue)
                 ) {
                     $attributeID = str_replace('ProductAttribute', '', $fieldName);
+                    if (is_array($fieldValue)
+                     && array_key_exists('name', $fieldValue)
+                     && array_key_exists('type', $fieldValue)
+                     && array_key_exists('tmp_name', $fieldValue)
+                    ) {
+                        $fieldValue['file_path'] = ProductAttribute::singleton()->getUploadedFilePath($fieldValue, $attributeID);
+                    }
                     $attributeValues[$attributeID] = $fieldValue;
                 }
                 foreach (self::$registeredFieldHandlers as $fieldHandler) {

@@ -1,0 +1,1 @@
+<img src="{$ImageSource}" alt="{$ImageFileName}" class="img-fluid d-block" style="max-width: 80px;" />

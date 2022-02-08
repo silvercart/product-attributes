@@ -14,6 +14,7 @@ use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Filters\ExactMatchFilter;
 use SilverStripe\ORM\Filters\PartialMatchFilter;
+use SilverStripe\ORM\SS_List;
 
 /**
  * Attribute to relate to a product.
@@ -31,8 +32,9 @@ use SilverStripe\ORM\Filters\PartialMatchFilter;
  * @property bool   $DisplayZeroAsUnlimited  Display Zero As Unlimited
  * @property int    $Sort                    Sort
  */
-class ProductAttribute extends DataObject {
-    
+class ProductAttribute extends DataObject
+{
+    const SESSION_KEY_UPLOADED_FILE_CONTENT = 'SilverCart.ProductAttributes.UploadedFileContent';
     /**
      * DB attributes
      *
@@ -44,13 +46,15 @@ class ProductAttribute extends DataObject {
         'CanBeUsedForVariants'         => 'Boolean(0)',
         'CanBeUsedForSingleVariants'   => 'Boolean(0)',
         'IsUserInputField'             => 'Boolean(0)',
+        'IsUploadField'                => 'Boolean(0)',
         'UserInputFieldMustBeFilledIn' => 'Boolean(0)',
+        'AllowedUploadFileEndings'     => 'Text',
+        'AllowedUploadFileMimeTypes'   => 'Text',
         'DisplayConversionUnit'        => 'Varchar',
         'DisplayConversionFactor'      => 'Float',
         'DisplayZeroAsUnlimited'       => 'Boolean(0)',
         'Sort'                         => 'Int',
     ];
-
     /**
      * has-many relations
      *
@@ -60,7 +64,6 @@ class ProductAttribute extends DataObject {
         'ProductAttributeTranslations' => ProductAttributeTranslation::class,
         'ProductAttributeValues'       => ProductAttributeValue::class,
     ];
-    
     /**
      * belongs-many-many relations
      *
@@ -70,7 +73,6 @@ class ProductAttribute extends DataObject {
         'Products'             => Product::class,
         'ProductAttributeSets' => ProductAttributeSet::class,
     ];
-
     /**
      * Castings
      *
@@ -80,6 +82,7 @@ class ProductAttribute extends DataObject {
         'Title'                            => 'Text',
         'PluralTitle'                      => 'Text',
         'AdTitle'                          => 'Text',
+        'Description'                      => 'Text',
         'ProductAttributeSetsAsString'     => 'Text',
         'ProductAttributeValuesAsString'   => 'Text',
         'HasSelectedValues'                => 'Boolean',
@@ -88,7 +91,6 @@ class ProductAttribute extends DataObject {
         'CanBeUsedForVariantsString'       => 'Text',
         'CanBeUsedForSingleVariantsString' => 'Text',
     ];
-    
     /**
      * DB indexes
      * 
@@ -100,28 +102,24 @@ class ProductAttribute extends DataObject {
         'CanBeUsedForVariants'       => '("CanBeUsedForVariants")',
         'CanBeUsedForSingleVariants' => '("CanBeUsedForSingleVariants")',
     ];
-
-        /**
+    /**
      * Default sort fields and directions
      *
      * @var string
      */
     private static $default_sort = 'Sort, "SilvercartProductAttribute"."CanBeUsedForVariants" DESC, "SilvercartProductAttributeTranslation"."Title"';
-    
     /**
      * DB table name
      *
      * @var string
      */
     private static $table_name = 'SilvercartProductAttribute';
-    
     /**
      * Assigned values
      *
      * @var ArrayList
      */
     protected $assignedValues = null;
-    
     /**
      * Unassigned values
      *
@@ -133,12 +131,10 @@ class ProductAttribute extends DataObject {
      * Returns the translated singular name of the object. If no translation exists
      * the class name will be returned.
      * 
-     * @return string The objects singular name 
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
+     * @return string
      */
-    public function singular_name() {
+    public function singular_name() : string
+    {
         return Tools::singular_name_for($this);
     }
 
@@ -147,12 +143,10 @@ class ProductAttribute extends DataObject {
      * Returns the translated plural name of the object. If no translation exists
      * the class name will be returned.
      * 
-     * @return string the objects plural name
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
+     * @return string
      */
-    public function plural_name() {
+    public function plural_name() : string
+    {
         return Tools::plural_name_for($this);
     }
 
@@ -162,15 +156,17 @@ class ProductAttribute extends DataObject {
      * @param boolean $includerelations A boolean value to indicate if the labels returned include relation fields
      *
      * @return array
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
      */
-    public function fieldLabels($includerelations = true) {
+    public function fieldLabels($includerelations = true) : array
+    {
         $fieldLabels = array_merge(
             parent::fieldLabels($includerelations),
             Tools::field_labels_for(static::class),
             [
+                'AllowedUploadFileEndings'         => _t(static::class . '.AllowedUploadFileEndings', 'Allowed upload file endings'),
+                'AllowedUploadFileEndingsDesc'     => _t(static::class . '.AllowedUploadFileEndingsDesc', 'Add one file ending per line (e.g. "jpg", "jpeg", "png").'),
+                'AllowedUploadFileMimeTypes'       => _t(static::class . '.AllowedUploadFileMimeTypes', 'Allowed upload file mime types'),
+                'AllowedUploadFileMimeTypesDesc'   => _t(static::class . '.AllowedUploadFileMimeTypesDesc', 'Add one file mime type per line (e.g. "image/jpeg", "image/png").'),
                 'CanBeUsedForFilterWidget'         => _t(static::class . '.CAN_BE_USED_FOR_FILTERWIDGET', 'Use for product filter'),
                 'CanBeUsedForDataSheet'            => _t(static::class . '.CAN_BE_USED_FOR_DATASHEET', 'Use for data sheet'),
                 'CanBeUsedForVariants'             => _t(static::class . '.CAN_BE_USED_FOR_VARIANTS', 'Can be used for multi-product-variants'),
@@ -193,6 +189,8 @@ class ProductAttribute extends DataObject {
                 'ImportPrefixDesc'                 => _t(static::class . '.ImportPrefixDesc', 'Text will be prefixed to every imported attribute.'),
                 'ImportSuffix'                     => _t(static::class . '.ImportSuffix', 'Import Suffix'),
                 'ImportSuffixDesc'                 => _t(static::class . '.ImportSuffixDesc', 'Text will be suffixed to every imported attribute.'),
+                'IsUploadField'                    => _t(static::class . '.IsUploadField', 'Is upload field'),
+                'IsUploadFieldDesc'                => _t(static::class . '.IsUploadFieldDesc', 'If you are using the upload field, the customer can upload a custom file before adding a product to cart.'),
                 'IsUserInputField'                 => _t(static::class . '.IsUserInputField', 'Is user input field'),
                 'IsUserInputFieldDesc'             => _t(static::class . '.IsUserInputFieldDesc', 'If you are using the user input field, the customer can enter a custom text before adding a product to cart (z.B. "engraving"/"t-shirt overprint").'),
                 'unlimited'                        => _t(static::class . '.unlimited', 'unlimited'),
@@ -215,11 +213,15 @@ class ProductAttribute extends DataObject {
         $this->beforeUpdateCMSFields(function(FieldList $fields) {
             $fields->dataFieldByName('CanBeUsedForVariants')->setDescription($this->fieldLabel('CanBeUsedForVariantsDesc'));
             $fields->dataFieldByName('CanBeUsedForSingleVariants')->setDescription($this->fieldLabel('CanBeUsedForSingleVariantsDesc'));
+            $fields->dataFieldByName('IsUploadField')->setDescription($this->fieldLabel('IsUploadFieldDesc'));
+            $fields->dataFieldByName('AllowedUploadFileEndings')->setDescription($this->fieldLabel('AllowedUploadFileEndingsDesc'));
+            $fields->dataFieldByName('AllowedUploadFileMimeTypes')->setDescription($this->fieldLabel('AllowedUploadFileMimeTypesDesc'));
             $fields->dataFieldByName('IsUserInputField')->setDescription($this->fieldLabel('IsUserInputFieldDesc'));
             $fields->dataFieldByName('UserInputFieldMustBeFilledIn')->setDescription($this->fieldLabel('UserInputFieldMustBeFilledInDesc'));
             $fields->dataFieldByName('AdTitle')
                     ->setDescription($this->fieldLabel('AdTitleDesc'))
                     ->setRightTitle($this->fieldLabel('AdTitleRightTitle'));
+            $fields->dataFieldByName('Description')->setDescription($this->fieldLabel('DescriptionDesc'));
             if ($this->exists()) {
                 $importListField = TextareaField::create('ImportList', $this->fieldLabel('ImportList'));
                 $importListField->setDescription($this->fieldLabel('ImportListDesc'));
@@ -246,11 +248,9 @@ class ProductAttribute extends DataObject {
      * Searchable fields
      *
      * @return array
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
      */
-    public function searchableFields() {
+    public function searchableFields() : array
+    {
         $searchableFields = [
             'ProductAttributeTranslations.Title' => [
                 'title'  => $this->fieldLabel('Title'),
@@ -281,11 +281,9 @@ class ProductAttribute extends DataObject {
      * Summaryfields for display in tables.
      *
      * @return array
-     *
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
      */
-    public function summaryFields() {
+    public function summaryFields() : array
+    {
         $summaryFields = [
             'Title'                            => $this->fieldLabel('Title'),
             'PluralTitle'                      => $this->fieldLabel('PluralTitle'),
@@ -295,7 +293,6 @@ class ProductAttribute extends DataObject {
             'CanBeUsedForSingleVariantsString' => $this->fieldLabel('CanBeUsedForSingleVariantsShort'),
             'ProductAttributeValuesAsString'   => $this->fieldLabel('ProductAttributeValues'),
         ];
-        
         $this->extend('updateSummaryFields', $summaryFields);
         return $summaryFields;
     }
@@ -304,11 +301,9 @@ class ProductAttribute extends DataObject {
      * Check for import values after writing an attribute in backend.
      * 
      * @return void
-     *
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
      */
-    protected function onAfterWrite() {
+    protected function onAfterWrite() : void
+    {
         parent::onAfterWrite();
         $request    = Controller::curr()->getRequest();
         $importList = $request->postVar('ImportList');
@@ -340,38 +335,31 @@ class ProductAttribute extends DataObject {
      * Returns the translated title
      *
      * @return string
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
      */
-    public function getTitle() {
-        return $this->getTranslationFieldValue('Title');
+    public function getTitle() : string
+    {
+        return (string) $this->getTranslationFieldValue('Title');
     }
     
     /**
      * Returns the translated plural title
      *
      * @return string
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
      */
-    public function getPluralTitle() {
+    public function getPluralTitle() : string
+    {
         $pluralTitle = $this->getTranslationFieldValue('PluralTitle');
         if (empty($pluralTitle)) {
             // fall back to title
             $pluralTitle = $this->getTitle();
         }
-        return $pluralTitle;
+        return (string) $pluralTitle;
     }
     
     /**
      * Returns the translated ad title
      *
      * @return string
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 09.06.2020
      */
     public function getAdTitle() : string
     {
@@ -380,7 +368,46 @@ class ProductAttribute extends DataObject {
             // fall back to title
             $title = $this->getTitle();
         }
-        return $title;
+        return (string) $title;
+    }
+    
+    /**
+     * Returns the translated Description
+     *
+     * @return string
+     */
+    public function getDescription() : string
+    {
+        $value = $this->getTranslationFieldValue('Description');
+        return (string) $value;
+    }
+    
+    /**
+     * Returns the AllowedUploadFileEndings list as array.
+     * 
+     * @return array
+     */
+    public function getAllowedUploadFileEndingsToArray() : array
+    {
+        $allowed = (array) explode(PHP_EOL, trim($this->AllowedUploadFileEndings));
+        foreach ($allowed as $key => $ending) {
+            $allowed[$key] = trim($ending);
+        }
+        return $allowed;
+    }
+    
+    /**
+     * Returns the AllowedUploadFileMimeTypes list as array.
+     * 
+     * @return array
+     */
+    public function getAllowedUploadFileMimeTypesToArray() : array
+    {
+        $allowed = (array) explode(PHP_EOL, trim($this->AllowedUploadFileMimeTypes));
+        foreach ($allowed as $key => $type) {
+            $allowed[$key] = trim($type);
+        }
+        return $allowed;
     }
     
     /**
@@ -388,10 +415,11 @@ class ProductAttribute extends DataObject {
      *
      * @return string
      */
-    public function getProductAttributeSetsAsString() {
+    public function getProductAttributeSetsAsString() : string
+    {
         $productAttributeSetsArray    = $this->ProductAttributeSets()->map()->toArray();
         $productAttributeSetsAsString = implode(', ', $productAttributeSetsArray);
-        return $productAttributeSetsAsString;
+        return (string) $productAttributeSetsAsString;
     }
     
     /**
@@ -399,7 +427,8 @@ class ProductAttribute extends DataObject {
      *
      * @return string
      */
-    public function getProductAttributeValuesAsString() {
+    public function getProductAttributeValuesAsString() : string
+    {
         $limit                          = 3;
         $productAttributeValuesAsString = '';
         $addition                       = '';
@@ -413,7 +442,7 @@ class ProductAttribute extends DataObject {
             $productAttributeValuesAsString = '"' . implode('", "', $productAttributeValuesMap->toArray()) . '"';
             $productAttributeValuesAsString = stripslashes($productAttributeValuesAsString);
         }
-        return $productAttributeValuesAsString . $addition;
+        return (string) $productAttributeValuesAsString . $addition;
     }
     
     /**
@@ -422,7 +451,8 @@ class ProductAttribute extends DataObject {
      *
      * @return string
      */
-    public function getCanBeUsedForFilterWidgetString() {
+    public function getCanBeUsedForFilterWidgetString() : string
+    {
         $CanBeUsedForFilterWidget = Tools::field_label('No');
         if ($this->CanBeUsedForFilterWidget) {
             $CanBeUsedForFilterWidget = Tools::field_label('Yes');
@@ -436,7 +466,8 @@ class ProductAttribute extends DataObject {
      *
      * @return string
      */
-    public function getCanBeUsedForDataSheetString() {
+    public function getCanBeUsedForDataSheetString() : string
+    {
         $CanBeUsedForDataSheet = Tools::field_label('No');
         if ($this->CanBeUsedForDataSheet) {
             $CanBeUsedForDataSheet = Tools::field_label('Yes');
@@ -450,7 +481,8 @@ class ProductAttribute extends DataObject {
      *
      * @return string
      */
-    public function getCanBeUsedForVariantsString() {
+    public function getCanBeUsedForVariantsString() : string
+    {
         $CanBeUsedForVariants = Tools::field_label('No');
         if ($this->CanBeUsedForVariants) {
             $CanBeUsedForVariants = Tools::field_label('Yes');
@@ -464,7 +496,8 @@ class ProductAttribute extends DataObject {
      *
      * @return string
      */
-    public function getCanBeUsedForSingleVariantsString() {
+    public function getCanBeUsedForSingleVariantsString() : string
+    {
         $CanBeUsedForVariants = Tools::field_label('No');
         if ($this->CanBeUsedForSingleVariants) {
             $CanBeUsedForVariants = Tools::field_label('Yes');
@@ -475,19 +508,17 @@ class ProductAttribute extends DataObject {
     /**
      * Assigns the given values to the assigned values
      *
-     * @param ArrayList $valuesToAssign Values to assign
+     * @param ArrayList|DataList $valuesToAssign Values to assign
      * 
      * @return void
-     *
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 18.09.2014
      */
-    public function assignValues($valuesToAssign) {
+    public function assignValues(SS_List $valuesToAssign) : void
+    {
         if (is_null($this->assignedValues)) {
-            $this->setAssignedValues(new ArrayList());
+            $this->setAssignedValues(ArrayList::create());
         }
         if ($valuesToAssign instanceof DataList) {
-            $valuesToAssign = new ArrayList($valuesToAssign->toArray());
+            $valuesToAssign = ArrayList::create($valuesToAssign->toArray());
         }
         $this->assignedValues->merge($valuesToAssign);
     }
@@ -496,15 +527,14 @@ class ProductAttribute extends DataObject {
      * Returns whether this attribute has assigned values in a product or
      * product group context.
      *
-     * @return boolean 
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 15.03.2012
+     * @return bool
      */
-    public function hasAssignedValues() {
+    public function hasAssignedValues() : bool
+    {
         $hasAssignedValues = false;
-        if (!is_null($this->assignedValues) &&
-            $this->assignedValues->count() > 0) {
+        if (!is_null($this->assignedValues)
+         && $this->assignedValues->count() > 0
+        ) {
             $hasAssignedValues = true;
         }
         return $hasAssignedValues;
@@ -513,9 +543,10 @@ class ProductAttribute extends DataObject {
     /**
      * Returns the assigned values in relation to a context product
      *
-     * @return ArrayList
+     * @return ArrayList|null
      */
-    public function getAssignedValues() {
+    public function getAssignedValues() : ?ArrayList
+    {
         return $this->assignedValues;
     }
 
@@ -526,7 +557,8 @@ class ProductAttribute extends DataObject {
      * 
      * @return void
      */
-    public function setAssignedValues($assignedValues) {
+    public function setAssignedValues(ArrayList $assignedValues) : void
+    {
         $this->assignedValues = $assignedValues;
     }
     
@@ -535,7 +567,8 @@ class ProductAttribute extends DataObject {
      *
      * @return ArrayList
      */
-    public function getUnAssignedValues() {
+    public function getUnAssignedValues() : ArrayList
+    {
         return $this->unAssignedValues;
     }
 
@@ -546,16 +579,18 @@ class ProductAttribute extends DataObject {
      * 
      * @return void
      */
-    public function setUnAssignedValues($unAssignedValues) {
+    public function setUnAssignedValues(ArrayList $unAssignedValues) : void
+    {
         $this->unAssignedValues = $unAssignedValues;
     }
     
     /**
      * Returns whether this attribute has a selected value or not
      * 
-     * @return boolean
+     * @return bool
      */
-    public function getHasSelectedValues() {
+    public function getHasSelectedValues() : bool
+    {
         $hasSelectedValues = false;
         $assignedValues    = $this->getAssignedValues();
         if (!is_null($assignedValues)) {
@@ -569,4 +604,80 @@ class ProductAttribute extends DataObject {
         return $hasSelectedValues;
     }
     
+    /**
+     * Returns the uploaded file content for this attribute.
+     * 
+     * @param array $fileData    Uploaded file data
+     * @param int   $attributeID Attribute ID
+     * 
+     * @return string|null
+     */
+    public function getUploadedFileContent(array $fileData, int $attributeID = null) : ?string
+    {
+        $content = null;
+        if (file_exists($this->getUploadedFilePath($fileData, $attributeID))) {
+            $content = file_get_contents($this->getUploadedFilePath($fileData, $attributeID));
+        }
+        return $content;
+    }
+    
+    /**
+     * Sets the uploaded file content for this attribute.
+     * 
+     * @param string $content     File content to set
+     * @param array  $fileData    Uploaded file data
+     * @param int    $attributeID Attribute ID
+     * 
+     * @return ProductAttribute
+     */
+    public function setUploadedFileContent(string $content, array $fileData, int $attributeID = null) : ProductAttribute
+    {
+        file_put_contents($this->getUploadedFilePath($fileData, $attributeID), $content);
+        return $this;
+    }
+    
+    /**
+     * Returns the file path
+     * 
+     * @param array $fileData    Uploaded file data
+     * @param int   $attributeID Attribute ID
+     * 
+     * @return string
+     */
+    public function getUploadedFilePath(array $fileData, int $attributeID = null) : string
+    {
+        if ($attributeID === null) {
+            $attributeID = $this->ID;
+        }
+        $basePath = TEMP_PATH . '/uploaded-variant-files';
+        $fileName = str_replace('/', '_', "{$attributeID}-{$fileData['tmp_name']}-{$fileData['name']}");
+        $fullPath = "{$basePath}/{$fileName}";
+        if (!is_dir($basePath)) {
+            mkdir($basePath);
+        }
+        return $fullPath;
+    }
+    
+    /**
+     * Returns the uploaded file preview.
+     * 
+     * @param array $fileData    Uploaded file data
+     * @param int   $attributeID Attribute ID
+     * 
+     * @return string|\SilverStripe\ORM\FieldType\DBHTMLText
+     */
+    public function getUploadedFilePreview(array $fileData, int $attributeID = null)
+    {
+        $fileName    = $fileData['name'];
+        $mimeType    = $fileData['type'];
+        $fileContent = $this->getUploadedFileContent($fileData, $attributeID);
+        list ($generalType, $detailType) = explode('/', $mimeType);
+        if ($generalType === 'image') {
+            return $this->renderWith(self::class . '_UploadedImage', [
+                'ImageFileName' => $fileName,
+                'ImageSource'   => "data:{$mimeType};charset=utf-8;base64," . base64_encode($fileContent),
+            ]);
+        }
+        return $fileName;
+    }
 }

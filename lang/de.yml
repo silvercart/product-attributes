@@ -19,6 +19,10 @@ de:
     AdTitle: Werbename
     AdTitleDesc: "Beispiele für Merkmal \"HDD Speicherplatz\" mit einem Wert von \"500 GB\":<br/>\n• \"Insgesamt {$Value} Speicherplatz\" (Anzeige: \"Insgesamt 500 GB Speicherplatz\")<br/>\n• \"Speicherplatz: {$Value}!\" (Anzeige: \"Speicherplatz: 500 GB!\")<br/>\n• \"Festplattenkapazität\" (Anzeige: \"500 GB Festplattenkapazität\")<br/>\n"
     AdTitleRightTitle: 'Der Werbename wird an werbewirksamen Stellen wie z.B. einer CMS-Seite für eine Paket-Auswahl angezeigt.'
+    AllowedUploadFileEndings: 'Erlaubte Dateiendungen für Upload-Dateien'
+    AllowedUploadFileEndingsDesc: 'Pro Zeile eine Dateiendung (z.B. "jpg", "jpeg", "png") angeben.'
+    AllowedUploadFileMimeTypes: 'Erlaubte Mime-Typen für Upload-Dateien'
+    AllowedUploadFileMimeTypesDesc: 'Pro Zeile ein Mime-Type (z.B. "image/jpeg", "image/png") angeben.'
     CAN_BE_USED_FOR_DATASHEET: 'Für das Datenblatt verwenden'
     CAN_BE_USED_FOR_FILTERWIDGET: 'Für den Artikelfilter verwenden'
     CAN_BE_USED_FOR_VARIANTS: 'Kann für Multi-Artikel basierte Varianten verwendet werden'
@@ -29,17 +33,25 @@ de:
     CanBeUsedForSingleVariantsDesc: 'Artikelmerkmale können für Varianten auf Einzel-Artikel-Basis verwendet werden. Das bedeutet, ein Artikel erhält mehrere Merkmale die vom Kunden auswählbar sind (z.B. ein Artikel erhält die Merkmale "Farbe" -> "Rot", "Gelb", "Grün").'
     CanBeUsedForSingleVariantsShort: Einzel-Varianten
     CanBeUsedForVariantsShort: Multi-Varianten
+    Description: Beschreibung
+    DescriptionDesc: 'Beschreibungstext zur Anzeige am Kunden-Eingabefeld.'
     DisplayConversionFactor: Umrechnungsfaktor
     DisplayConversionUnit: 'Anzeige Einheit'
     DisplayConversionUnitDesc: 'z.B. "GB", "MB", "cm", "€"'
     DisplaySettings: Anzeige-Einstellungen
     DisplayZeroAsUnlimited: 'Null-Wert als "unbegrenzt" anzeigen'
+    ErrorFileEndingNotSupported: 'Entschuldigung, aber die Dateiendung "{ending}" wird von diesem Formular nicht unterstützt. Bitte verwenden Sie eine der folgenden Dateiendungen: {endings}'
+    ErrorFileMimeTypeNotSupported: 'Entschuldigung, aber der Dateityp der von Ihnen übermittelten Datei wird von diesem Formular nicht unterstützt. Bitte verwenden Sie einen der folgenden Dateitypen: {types}'
+    ErrorFileUploadFailed: 'Datei-Upload ist fehlgeschlagen! Bitte versuchen Sie es erneut.'
+    ErrorFileUploadRequired: 'Bitte laden Sie die erforderliche Datei hoch.'
     ImportList: 'Merkmale importieren'
     ImportListDesc: 'Fügen Sie hier eine Liste von Merkmalen ein, die Sie importieren möchten. Bitte beachten Sie, dass je Zeile ein Merkmal eingefügt wird.'
     ImportPrefix: 'Import Präfix'
     ImportPrefixDesc: 'Text, der jedem zu importierenden Merkmal vorangestellt wird.'
     ImportSuffix: 'Import Suffix'
     ImportSuffixDesc: 'Text, der jedem zu importierenden Merkmal angehängt wird.'
+    IsUploadField: 'Dateiupload aktivieren'
+    IsUploadFieldDesc: 'Wird der Dateiupload aktiviert, erscheint am Artikel die Möglichkeit, eine vom Kunden beliebig wählbaren Datei hochzuladen.'
     IsUserInputField: 'Freitexteingabe aktivierten'
     IsUserInputFieldDesc: 'Wird die Freitexteingabe aktiviert, erscheint am Artikel die Möglichkeit, einen vom Kunden beliebig wählbaren Text einzugeben (z.B. "Gravur"/"T-Shirt-Aufdruck")'
     PLURALNAME: Artikelmerkmale
@@ -47,8 +59,8 @@ de:
     SINGULARNAME: Artikelmerkmal
     TABNAME: Merkmale
     TITLE: Name
-    UserInputFieldMustBeFilledIn: 'Freitext muss eingegeben werden'
-    UserInputFieldMustBeFilledInDesc: 'Wird dieses Feld aktiviert, muss der Kunde einen Text eingeben, bevor er einen Verknüpften Artikel in den Warenkorb legen kann.'
+    UserInputFieldMustBeFilledIn: 'Freitext / Upload muss eingegeben werden'
+    UserInputFieldMustBeFilledInDesc: 'Wird dieses Feld aktiviert, muss der Kunde einen Text / Upload eingeben, bevor er einen Verknüpften Artikel in den Warenkorb legen kann.'
     unlimited: unbegrenzt
   SilverCart\ProductAttributes\Model\Product\ProductAttributeSet:
     PLURALNAME: Artikelmerkmal-Sets

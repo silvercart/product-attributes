@@ -91,6 +91,12 @@ class ShoppingCartPositionExtension extends DataExtension
             $userInputAttributes = [];
             foreach ($attributesArray as $ID => $attribute) {
                 if (is_array($attribute)) {
+                    if (array_key_exists('name', $attribute)
+                     && array_key_exists('type', $attribute)
+                     && array_key_exists('tmp_name', $attribute)
+                    ) {
+                        continue;
+                    }
                     $userInputAttributes[$ID] = $attribute;
                 }
             }
@@ -135,6 +141,43 @@ class ShoppingCartPositionExtension extends DataExtension
             }
         }
         return $userInputValues;
+    }
+    
+    /**
+     * Returns the related variant file upload attributes.
+     * 
+     * @return ArrayList
+     */
+    public function getUploadAttributes() : ArrayList
+    {
+        $uploadValues         = ArrayList::create();
+        $serializedAttributes = $this->owner->ProductAttributes;
+        $attributesArray      = unserialize($serializedAttributes);
+        if (is_array($attributesArray)
+         && count($attributesArray) > 0
+        ) {
+            $uploadAttributes = [];
+            foreach ($attributesArray as $ID => $attribute) {
+                if (is_array($attribute)
+                 && array_key_exists('name', $attribute)
+                 && array_key_exists('type', $attribute)
+                 && array_key_exists('tmp_name', $attribute)
+                 && array_key_exists('file_path', $attribute)
+                ) {
+                    $uploadAttributes[$ID] = $attribute;
+                }
+            }
+            foreach ($uploadAttributes as $ID => $uploadAttribute) {
+                $attribute = ProductAttribute::get()->byID($ID);
+                $uploadValues->push(ArrayData::create([
+                    'AttributeTitle' => $attribute->Title,
+                    'Title'          => $uploadAttribute['name'],
+                    'Preview'        => $attribute->getUploadedFilePreview($uploadAttribute),
+                    'ID'             => 0,
+                ]));
+            }
+        }
+        return $uploadValues;
     }
 
     /**

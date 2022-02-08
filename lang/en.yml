@@ -19,6 +19,10 @@ en:
     AdTitle: 'Advertising name'
     AdTitleDesc: "Examples for feature \"HDD storage space\" with a value of \"500 GB\":<br/>\n- \"Total {$Value} Storage Space\" (Display: \"Total 500 GB Storage Space\")<br/>\n- \"Storage: {$Value}!\" (Display: \"Disk space: 500 GB!\")<br/>\n- \"Hard disk capacity\" (display: \"500 GB hard disk capacity\")<br/>\n"
     AdTitleRightTitle: 'The advertising name is displayed in places that are effective in advertising, such as a CMS page for a package selection.'
+    AllowedUploadFileEndings: 'Allowed upload file endings'
+    AllowedUploadFileEndingsDesc: 'Add one file ending per line (e.g. "jpg", "jpeg", "png").'
+    AllowedUploadFileMimeTypes: 'Allowed upload file mime types'
+    AllowedUploadFileMimeTypesDesc: 'Add one file mime type per line (e.g. "image/jpeg", "image/png").'
     CAN_BE_USED_FOR_DATASHEET: 'Use for data sheet'
     CAN_BE_USED_FOR_FILTERWIDGET: 'Use for product filter'
     CAN_BE_USED_FOR_VARIANTS: 'Can be used for multi-product-variants'
@@ -29,17 +33,25 @@ en:
     CanBeUsedForSingleVariantsDesc: 'If this is active, you are able to use a single product with variants (e.g. one product gets the attributes "color" -> "red", "yellow", "green").'
     CanBeUsedForSingleVariantsShort: Single-Variants
     CanBeUsedForVariantsShort: Multi-Variants
+    Description: Description
+    DescriptionDesc: 'Information text to display at the customer input field.'
     DisplayConversionFactor: 'Conversion factor'
     DisplayConversionUnit: 'Display Unit'
     DisplayConversionUnitDesc: 'e.g. "GB", "MB", "cm", "€"'
     DisplaySettings: 'Display Settings'
     DisplayZeroAsUnlimited: 'Display zero value as "unlimited'
+    ErrorFileEndingNotSupported: 'Sorry, but the ending "{ending}" of the file you provided seems to be not supported by this form. Please use on of the following file endings: {endings}'
+    ErrorFileMimeTypeNotSupported: 'Sorry, but the type of the file you provided seems to be not supported by this form. Please use on of the following file types: {types}'
+    ErrorFileUploadFailed: 'File upload failed! Please try again.'
+    ErrorFileUploadRequired: 'Please upload the required file.'
     ImportList: 'Import attributes'
     ImportListDesc: 'Add one attribute per line into this field to import many attributes at once.'
     ImportPrefix: 'Import Prefix'
     ImportPrefixDesc: 'Text will be prefixed to every imported attribute.'
     ImportSuffix: 'Import Suffix'
     ImportSuffixDesc: 'Text will be suffixed to every imported attribute.'
+    IsUploadField: 'Is upload field'
+    IsUploadFieldDesc: 'If you are using the upload field, the customer can upload a custom file before adding a product to cart.'
     IsUserInputField: 'Is user input field'
     IsUserInputFieldDesc: 'If you are using the user input field, the customer can enter a custom text before adding a product to cart (z.B. "engraving"/"t-shirt overprint").'
     PLURALNAME: 'Product Attributes'
@@ -47,8 +59,8 @@ en:
     SINGULARNAME: 'Product Attribute'
     TABNAME: Attributes
     TITLE: Title
-    UserInputFieldMustBeFilledIn: 'User input is obligatory'
-    UserInputFieldMustBeFilledInDesc: 'If this is active, the customer has to enter a custom text before he is able to add the related product to cart.'
+    UserInputFieldMustBeFilledIn: 'User input / upload is obligatory'
+    UserInputFieldMustBeFilledInDesc: 'If this is active, the customer has to enter a custom text / upload before he is able to add the related product to cart.'
     unlimited: unlimited
   SilverCart\ProductAttributes\Model\Product\ProductAttributeSet:
     PLURALNAME: 'Product Attribute Sets'

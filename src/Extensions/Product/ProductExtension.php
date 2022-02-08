@@ -17,6 +17,7 @@ use SilverCart\ProductAttributes\Model\Product\ProductAttribute;
 use SilverCart\ProductAttributes\Model\Product\ProductAttributeValue;
 use SilverStripe\Control\Controller;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\FileField;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
 use SilverStripe\ORM\ArrayList;
@@ -805,6 +806,9 @@ class ProductExtension extends DataExtension
                                 $values,
                                 $selectedValue
                         );
+                        if (!empty($attribute->Description)) {
+                            $field->setDescription($attribute->Description);
+                        }
                     } else {
                         $field = ProductAttributeDropdownField::create(
                                 "ProductAttribute{$attribute->ID}",
@@ -812,6 +816,9 @@ class ProductExtension extends DataExtension
                                 $values,
                                 $selectedValue
                         );
+                        if (!empty($attribute->Description)) {
+                            $field->setDescription($attribute->Description);
+                        }
                     }
                     $fields[] = $field;
                 }
@@ -891,7 +898,10 @@ class ProductExtension extends DataExtension
         $product = $this->owner;
         $fields  = [];
         if ($product->hasSingleProductVariants()) {
-            $attributes = $product->getSingleProductVariantAttributes()->filter('IsUserInputField', false);
+            $attributes = $product->getSingleProductVariantAttributes()->filter([
+                'IsUserInputField' => false,
+                'IsUploadField'    => false,
+            ]);
             foreach ($attributes as $attribute) {
                 $values           = [];
                 $prices           = [];
@@ -936,11 +946,14 @@ class ProductExtension extends DataExtension
                     $field->setProductID($product->ID)
                             ->setProductPrices(json_encode($prices))
                             ->setProductVariantType(ProductAttributeDropdownField::VARIANT_TYPE_SINGLE);
+                    if (!empty($attribute->Description)) {
+                        $field->setDescription($attribute->Description);
+                    }
                     $fields[] = $field;
                 }
             }
         }
-        $this->singleProductVariantFormFields[$product->ID] = array_merge($fields, $this->getVariantUserInputFields());
+        $this->singleProductVariantFormFields[$product->ID] = array_merge($fields, $this->getVariantUserInputFields(), $this->getVariantUploadFields());
         return $this->singleProductVariantFormFields[$product->ID];
     }
     
@@ -984,7 +997,42 @@ class ProductExtension extends DataExtension
                 $field->setProductID($this->owner->ID)
                         ->setProductPrices(json_encode($prices))
                         ->setProductVariantType(ProductAttributeDropdownField::VARIANT_TYPE_SINGLE);
+                if (!empty($userInputAttribute->Description)) {
+                    $field->setDescription($userInputAttribute->Description);
+                }
                 if ($userInputAttribute->UserInputFieldMustBeFilledIn) {
+                    $field->setRequiredForced(true);
+                }
+                $fields[] = $field;
+            }
+        }
+        return $fields;
+    }
+    
+    /**
+     * Returns the form fields for the choice of a products user input variant
+     * fields.
+     * 
+     * @return array
+     */
+    protected function getVariantUploadFields() : array
+    {
+        $fields = [];
+        if (!$this->owner->hasSingleProductVariants()) {
+            return $fields;
+        }
+        $uploadAttributes = $this->owner->getSingleProductVariantAttributes()->filter('IsUploadField', true);
+        if ($uploadAttributes->exists()) {
+            foreach ($uploadAttributes as $uploadAttribute) {
+                
+                $field = FileField::create(
+                        "ProductAttribute{$uploadAttribute->ID}",
+                        $uploadAttribute->Title,
+                );
+                if (!empty($uploadAttribute->Description)) {
+                    $field->setDescription($uploadAttribute->Description);
+                }
+                if ($uploadAttribute->UserInputFieldMustBeFilledIn) {
                     $field->setRequiredForced(true);
                 }
                 $fields[] = $field;
@@ -1064,6 +1112,8 @@ class ProductExtension extends DataExtension
                 $formFieldName = "ProductAttribute{$attribute->ID}";
                 if ((!$attribute->IsUserInputField
                   || ($attribute->IsUserInputField
+                   && $attribute->UserInputFieldMustBeFilledIn)
+                  || ($attribute->IsUploadField
                    && $attribute->UserInputFieldMustBeFilledIn))
                  && (!array_key_exists($formFieldName, $formData)
                   || empty($formData[$formFieldName]))
@@ -1073,11 +1123,67 @@ class ProductExtension extends DataExtension
                      && !Controller::curr()->redirectedTo()
                     ) {
                         Controller::curr()->redirect($this->owner->Link());
-                        return;
                     }
+                    return;
+                }
+            }
+            foreach ($this->getSingleProductVariantAttributes()->filter('IsUploadField', true) as $uploadAttribute) {
+                if (!$this->validateSingleProductVariantFileUpload($uploadAttribute)) {
+                    $addToCartAllowed = false;
+                    break;
                 }
             }
         }
+    }
+    
+    /**
+     * Validates the uploaded file.
+     * 
+     * @param ProductAttribute $attribute Attribute
+     * 
+     * @return bool
+     */
+    public function validateSingleProductVariantFileUpload(ProductAttribute $attribute) : bool
+    {
+        $ctrl          = Controller::curr();
+        $formFieldName = "ProductAttribute{$attribute->ID}";
+        if (!array_key_exists($formFieldName, $_POST)
+         || empty($_POST[$formFieldName])
+         || !is_array($_POST[$formFieldName])
+         || !array_key_exists('tmp_name', $_POST[$formFieldName])
+         || empty($_POST[$formFieldName]['tmp_name'])
+        ) {
+            if ($attribute->UserInputFieldMustBeFilledIn) {
+                $ctrl->setErrorMessage(_t(ProductAttribute::class . '.ErrorFileUploadRequired', 'Please upload the required file.'));
+                return false;
+            }
+        }
+        $fileData         = $_POST[$formFieldName];
+        $fileName         = $fileData['name'];
+        $fileType         = trim($fileData['type']);
+        $fileTmpName      = $fileData['tmp_name'];
+        $fileEnding       = strrev(substr(strrev($fileName), 0, strpos(strrev($fileName), '.')));
+        $allowedEndings   = $attribute->getAllowedUploadFileEndingsToArray();
+        $allowedMimeTypes = $attribute->getAllowedUploadFileMimeTypesToArray();
+        if (!in_array($fileType, $allowedMimeTypes)) {
+            $ctrl->setErrorMessage(_t(ProductAttribute::class . '.ErrorFileMimeTypeNotSupported', 'Sorry, but the type of the file you provided seems to be not supported by this form. Please use on of the following file types: {types}', [
+                'types' => implode(', ', $allowedMimeTypes),
+            ]));
+            return false;
+        }
+        if (!in_array($fileEnding, $allowedEndings)) {
+            $ctrl->setErrorMessage(_t(ProductAttribute::class . '.ErrorFileEndingNotSupported', 'Sorry, but the ending "{ending}" of the file you provided seems to be not supported by this form. Please use on of the following file endings: {endings}', [
+                'ending'  => ".{$fileEnding}",
+                'endings' => implode(', ', $allowedEndings),
+            ]));
+            return false;
+        }
+        if (!file_exists($fileTmpName)) {
+            $ctrl->setErrorMessage(_t(self::class . '.ErrorFileUploadFailed', 'File upload failed! Please try again.'));
+            return false;
+        }
+        $attribute->setUploadedFileContent(file_get_contents($fileTmpName), $fileData);
+        return true;
     }
     
     /**
