@@ -247,6 +247,9 @@ class ProductGroupPageControllerExtension extends Extension
         ) {
             $chosen = ProductAttribute::getGloballyChosen();
             foreach ($chosen as $attributeID => $attributeValueIDs) {
+                if (!is_array($attributeValueIDs)) {
+                    continue;
+                }
                 $uniqueFilterValues = array_merge($uniqueFilterValues, $attributeValueIDs);
             }
             $uniqueFilterValues = array_unique($uniqueFilterValues);
