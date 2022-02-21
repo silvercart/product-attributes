@@ -23,10 +23,11 @@ class ProductAttributeTranslation extends DataObject {
      * @var array
      */
     private static $db = [
-        'Title'       => 'Varchar(64)',
-        'PluralTitle' => 'Varchar(64)',
-        'AdTitle'     => 'Varchar(128)',
-        'Description' => 'Text',
+        'Title'               => 'Varchar(64)',
+        'PluralTitle'         => 'Varchar(64)',
+        'AdTitle'             => 'Varchar(128)',
+        'NavigationItemTitle' => 'Varchar(128)',
+        'Description'         => 'Text',
     ];
     
     /**

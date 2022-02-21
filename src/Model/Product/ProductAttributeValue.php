@@ -11,12 +11,15 @@ use SilverCart\Model\Product\Product;
 use SilverCart\ORM\DataObjectExtension;
 use SilverStripe\Assets\Image;
 use SilverStripe\Control\Controller;
+use SilverStripe\Control\Director;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\i18n\i18n;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\ORM\Filters\ExactMatchFilter;
 use SilverStripe\ORM\Filters\PartialMatchFilter;
+use SilverStripe\ORM\ManyManyList;
+use SilverStripe\ORM\SS_List;
 
 /**
  * Value of a product attribute
@@ -32,6 +35,45 @@ use SilverStripe\ORM\Filters\PartialMatchFilter;
  */
 class ProductAttributeValue extends DataObject
 {
+    /**
+     * Adds this value to or removes this value from the list of globally chosen
+     * values.
+     * Returns true if the value was added and false if the value was removed.
+     * 
+     * @param int  $attributeID      Attribute ID
+     * @param int  $attributeValueID Attribute value ID
+     * @param bool $addOnly          Add only?
+     * 
+     * @return bool
+     */
+    public static function chooseGloballyByID(int $attributeID, int $attributeValueID, bool $addOnly = false) : bool
+    {
+        $added     = false;
+        $attribute = ProductAttribute::get()->byID($attributeID);
+        if ($attribute->CanBeUsedForFilterWidget
+         && $attribute->ShowAsNavigationItem
+        ) {
+            $chosen = ProductAttribute::getGloballyChosen();
+            if (!array_key_exists($attributeID, $chosen)
+             || (!$attribute->AllowMultipleChoice
+              && !in_array($attributeValueID, $chosen[$attributeID]))
+            ) {
+                $chosen[$attributeID] = [];
+            }
+            if (!in_array($attributeValueID, $chosen[$attributeID])) {
+                $chosen[$attributeID][] = $attributeValueID;
+                $added                  = true;
+            } elseif ($addOnly) {
+                $added = true;
+            } else {
+                $key = array_search($attributeValueID, $chosen[$attributeID]);
+                unset($chosen[$attributeID][$key]);
+            }
+            ProductAttribute::setGloballyChosen($chosen);
+        }
+        return $added;
+    }
+    
     /**
      * DB attributes
      *
@@ -255,6 +297,23 @@ class ProductAttributeValue extends DataObject
         ];
         $this->extend('updateSummaryFields', $summaryFields);
         return $summaryFields;
+    }
+    
+    /**
+     * Returns the related products
+     * 
+     * @return ManyManyList|\SilverStripe\ORM\UnsavedRelationList
+     */
+    public function Products() : SS_List
+    {
+        $products = $this->getManyManyComponents('Products');
+        if ($products instanceof ManyManyList) {
+            $productAttributeValue = $this;
+            $products->addCallbacks()->add(function(ManyManyList $list, Product $item, $extraFields) use ($productAttributeValue) {
+                $item->ProductAttributes()->add($productAttributeValue->ProductAttribute());
+            }, 'callback-add-product-attribute');
+        }
+        return $products;
     }
     
     /**
@@ -571,5 +630,46 @@ class ProductAttributeValue extends DataObject
             return (string) $this->ModifyTitleValue;
         }
         return (string) $this->DefaultModifyTitleValue;
+    }
+    
+    /**
+     * Adds this value to or removes this value from the list of globally chosen
+     * values.
+     * Returns true if the value was added and false if the value was removed.
+     * 
+     * @return bool
+     */
+    public function chooseGlobally() : bool
+    {
+        return self::chooseGloballyByID($this->ProductAttribute()->ID, $this->ID);
+    }
+    
+    /**
+     * Returns whether this value is globally chosen.
+     * 
+     * @return bool
+     */
+    public function IsGloballyChosen() : bool
+    {
+        $attributeID = $this->ProductAttribute()->ID;
+        $chosen      = ProductAttribute::getGloballyChosen();
+        return array_key_exists($attributeID, $chosen)
+            && in_array($this->ID, $chosen[$attributeID]);
+    }
+    
+    /**
+     * Returns the link to choose a value.
+     * 
+     * @return string|null
+     */
+    public function ChooseLink() : ?string
+    {
+        $link = null;
+        if ($this->ProductAttribute()->ShowAsNavigationItem
+         || $this->ProductAttribute()->RequestInProductGroups
+        ) {
+            $link = Director::makeRelative("sc-action/choose-product-attribute/{$this->ID}");
+        }
+        return $link;
     }
 }

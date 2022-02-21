@@ -45,6 +45,12 @@ class ProductFilterPlugin {
      * @var ProductGroupPageController 
      */
     protected $productGroup = null;
+    /**
+     * Product IDs to filter by.
+     * 
+     * @var array|null
+     */
+    protected $productIDs = null;
     
     /**
      * Returns the plugins filters
@@ -131,33 +137,37 @@ class ProductFilterPlugin {
         }
         return $this->productGroup;
     }
-    
+
     /**
      * Returns the filtered product IDs
      *
      * @return array
      */
-    public function getProductIDs() {
-        $productIDs   = [];
-        $productGroup = $this->getProductGroup();
-        $filterValues = $productGroup->getFilterValues();
-        if ($productGroup->filterEnabled() &&
-            is_array($filterValues) &&
-            count($filterValues) > 0 &&
-            !(count($filterValues) == 1 &&
-            empty($filterValues[0]))) {
-                
-            $productAttributeFilterWidget   = $productGroup->getProductAttributeFilterWidget();
-            if ($productAttributeFilterWidget instanceof ProductAttributeFilterWidget) {
-                if ($productAttributeFilterWidget->FilterBehaviour == 'MultipleChoice') {
-                    $productIDs = $this->getMultipleChoiceProductIDs();
-                } elseif ($productAttributeFilterWidget->FilterBehaviour == 'SingleChoice') {
-                    $productIDs = $this->getSingleChoiceProductIDs();
+    public function getProductIDs() : array
+    {
+        if ($this->productIDs === null) {
+            $productIDs   = [];
+            $productGroup = $this->getProductGroup();
+            $filterValues = $productGroup->getFilterValues();
+            if ($productGroup->filterEnabled()
+             && is_array($filterValues)
+             && count($filterValues) > 0
+             && !(count($filterValues) === 1
+               && empty($filterValues[0]))
+            ) {
+                $productAttributeFilterWidget = $productGroup->getProductAttributeFilterWidget();
+                if ($productAttributeFilterWidget instanceof ProductAttributeFilterWidget) {
+                    if ($productAttributeFilterWidget->FilterBehaviour === 'MultipleChoice') {
+                        $productIDs = $this->getMultipleChoiceProductIDs();
+                    } elseif ($productAttributeFilterWidget->FilterBehaviour === 'SingleChoice') {
+                        $productIDs = $this->getSingleChoiceProductIDs();
+                    }
                 }
             }
+            $this->extend('updateProductIDs', $productIDs);
+            $this->productIDs = $productIDs;
         }
-        $this->extend('updateProductIDs', $productIDs);
-        return $productIDs;
+        return $this->productIDs;
     }
     
     /**

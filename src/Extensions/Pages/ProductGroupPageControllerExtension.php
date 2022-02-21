@@ -5,11 +5,15 @@ namespace SilverCart\ProductAttributes\Extensions\Pages;
 use SilverCart\Dev\Tools;
 use SilverCart\Model\Pages\SearchResultsPage;
 use SilverCart\Model\Pages\SearchResultsPageController;
+use SilverCart\ProductAttributes\Model\Product\ProductAttribute;
+use SilverCart\ProductAttributes\Model\Product\ProductAttributeValue;
 use SilverCart\ProductAttributes\Model\Widgets\ProductAttributeFilterWidget;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Extension;
 use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\DataList;
+use SilverStripe\ORM\DB;
 use SilverStripe\View\ArrayData;
 
 /**
@@ -21,6 +25,8 @@ use SilverStripe\View\ArrayData;
  * @since 30.05.2018
  * @license see license file in modules root directory
  * @copyright 2018 pixeltricks GmbH
+ * 
+ * @property \SilverCart\Model\Pages\ProductGroupPageController $owner Owner
  */
 class ProductGroupPageControllerExtension extends Extension
 {
@@ -81,15 +87,15 @@ class ProductGroupPageControllerExtension extends Extension
         $action     = $allParams['Action'];
         $widget     = $this->getProductAttributeFilterWidget($this->getPreviousSessionKey());
         if ($widget instanceof ProductAttributeFilterWidget
-            && !$widget->RememberFilter
-            && $this->getSessionKey() != $this->getPreviousSessionKey()
+         && !$widget->RememberFilter
+         && $this->getSessionKey() != $this->getPreviousSessionKey()
         ) {
             $this->clearFilter($this->getPreviousSessionKey());
             $this->clearFilter($this->getSessionKey());
         }
         $this->setPreviousSessionKey($this->getSessionKey());
         if ($action == 'ProductAttributeFilter'
-            && $this->owner->getRequest()->isPOST()
+         && $this->owner->getRequest()->isPOST()
         ) {
             $this->initProductAttributeFilter($request);
         }
@@ -227,15 +233,54 @@ class ProductGroupPageControllerExtension extends Extension
     {
         $uniqueFilterValues = array_unique((array) $filterValues);
         if (count($uniqueFilterValues) == 1
-            && array_key_exists(0, $uniqueFilterValues)
-            && empty($uniqueFilterValues[0])
+         && array_key_exists(0, $uniqueFilterValues)
+         && empty($uniqueFilterValues[0])
         ) {
             $uniqueFilterValues = [];
+        } elseif (count($uniqueFilterValues) > 1
+               && $uniqueFilterValues[0] === 'NaN'
+        ) {
+            array_shift($uniqueFilterValues);
+        }
+        if ($this->owner->getAction() !== 'ProductAttributeFilter'
+         && !$this->owner->getRequest()->isPOST()
+        ) {
+            $chosen = ProductAttribute::getGloballyChosen();
+            foreach ($chosen as $attributeID => $attributeValueIDs) {
+                $uniqueFilterValues = array_merge($uniqueFilterValues, $attributeValueIDs);
+            }
+            $uniqueFilterValues = array_unique($uniqueFilterValues);
         }
         Tools::Session()->set(static::SESSION_KEY_FILTER_PLUGIN . '.' . $this->getSessionKey(), $uniqueFilterValues);
         Tools::saveSession();
         if (empty($uniqueFilterValues)) {
             $this->clearFilter($this->getSessionKey());
+        } else {
+            $global = ProductAttribute::getGlobal();
+            if ($global !== null
+             && $global->exists()
+            ) {
+                $idList       = implode(',', $uniqueFilterValues);
+                $table        = ProductAttributeValue::config()->table_name;
+                $result       = DB::query("SELECT DISTINCT ID,ProductAttributeID FROM {$table} WHERE ID IN ({$idList})");
+                $idMap        = $result->map();
+                $attributeIDs = array_unique($idMap);
+                if (in_array($global->ID, $attributeIDs)) {
+                    ProductAttribute::setGloballyChosen([]);
+                    foreach ($idMap as $attributeValueID => $attributeID) {
+                        if ($attributeID !== $global->ID) {
+                            continue;
+                        }
+                        ProductAttributeValue::chooseGloballyByID($attributeID, $attributeValueID, true);
+                    }
+                } elseif ($this->owner->getAction() !== 'ProductAttributeFilter'
+                       && !$this->owner->getRequest()->isPOST()
+                ) {
+                    $chosen = ProductAttribute::getGloballyChosen();
+                    print "<pre>";
+                    var_dump($chosen);
+                }
+            }
         }
         $this->filterValues = $uniqueFilterValues;
     }
@@ -453,5 +498,42 @@ class ProductGroupPageControllerExtension extends Extension
     {
         Tools::Session()->set(static::SESSION_KEY_FILTER_WIDGET . '.PreviousSessionKey', $previousSessionKey);
         Tools::saveSession();
+    }
+    
+    /**
+     * Returns all product attributes to request in product groups.
+     * 
+     * @return DataList
+     */
+    public function ProductAttributeRequestInProductGroupsItems() : DataList
+    {
+        return ProductAttribute::get()->filter('RequestInProductGroups', true);
+    }
+    
+    /**
+     * Returns the first product attribute to request in product groups.
+     * 
+     * @return DataList
+     */
+    public function ProductAttributeRequestInProductGroupsItem() : ?ProductAttribute
+    {
+        return $this->ProductAttributeRequestInProductGroupsItems()->first();
+    }
+    
+    /**
+     * Returns whether to show the modal to choose a lobal product attribute.
+     * 
+     * @return bool
+     */
+    public function ShowChooseGlobalProductAttributesModal() : bool
+    {
+        $show = false;
+        $item = $this->ProductAttributeRequestInProductGroupsItem();
+        if ($item !== null
+         && !$item->HasGloballyChosenValues()
+        ) {
+            $show = true;
+        }
+        return $show;
     }
 }

@@ -5,16 +5,21 @@ namespace SilverCart\ProductAttributes\Model\Product;
 use SilverCart\Dev\Tools;
 use SilverCart\Forms\FormFields\TextareaField;
 use SilverCart\Forms\FormFields\TextField;
+use SilverCart\Model\Customer\Customer;
 use SilverCart\Model\Product\Product;
 use SilverCart\ORM\DataObjectExtension;
 use SilverStripe\Control\Controller;
+use SilverStripe\Control\Director;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\ToggleCompositeField;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\ORM\Filters\ExactMatchFilter;
 use SilverStripe\ORM\Filters\PartialMatchFilter;
 use SilverStripe\ORM\SS_List;
+use SilverStripe\Security\Member;
 
 /**
  * Attribute to relate to a product.
@@ -26,21 +31,126 @@ use SilverStripe\ORM\SS_List;
  * @since 30.05.2018
  * @license see license file in modules root directory
  * 
- * @property string $AdTitle                 Advertisement Title
- * @property string $DisplayConversionUnit   Display Conversion Unit
- * @property float  $DisplayConversionFactor Display Conversion Factor
- * @property bool   $DisplayZeroAsUnlimited  Display Zero As Unlimited
- * @property int    $Sort                    Sort
+ * @property bool   $ShowAsNavigationItem         ShowAsNavigationItem
+ * @property bool   $RequestInProductGroups       RequestInProductGroups
+ * @property bool   $CanBeUsedForFilterWidget     CanBeUsedForFilterWidget
+ * @property bool   $CanBeUsedForDataSheet        CanBeUsedForDataSheet
+ * @property bool   $CanBeUsedForVariants         CanBeUsedForVariants
+ * @property bool   $CanBeUsedForSingleVariants   CanBeUsedForSingleVariants
+ * @property bool   $IsUserInputField             IsUserInputField
+ * @property bool   $IsUploadField                IsUploadField
+ * @property bool   $UserInputFieldMustBeFilledIn UserInputFieldMustBeFilledIn
+ * @property string $AllowedUploadFileEndings     AllowedUploadFileEndings
+ * @property string $AllowedUploadFileMimeTypes   AllowedUploadFileMimeTypes
+ * @property string $AdTitle                      Advertisement Title
+ * @property string $NavigationItemTitle          Navigation Item Title
+ * @property string $DisplayConversionUnit        Display Conversion Unit
+ * @property float  $DisplayConversionFactor      Display Conversion Factor
+ * @property bool   $DisplayZeroAsUnlimited       Display Zero As Unlimited
+ * @property int    $Sort                         Sort
+ * 
+ * @method \SilverStripe\ORM\HasManyList ProductAttributeTranslations() Returns the related ProductAttributeTranslations.
+ * @method \SilverStripe\ORM\HasManyList ProductAttributeValues()       Returns the related ProductAttributeValues.
+ * 
+ * @method \SilverStripe\ORM\ManyManyList Products()             Returns the related Products.
+ * @method \SilverStripe\ORM\ManyManyList ProductAttributeSets() Returns the related ProductAttributeSets.
  */
 class ProductAttribute extends DataObject
 {
-    const SESSION_KEY_UPLOADED_FILE_CONTENT = 'SilverCart.ProductAttributes.UploadedFileContent';
+    const SESSION_KEY_GLOBALLY_CHOSEN = 'SilverCart.ProductAttributes.GloballyChosen';
+    
+    /**
+     * Goablly available attributes.
+     * 
+     * @var DataList|null
+     */
+    protected static $globals = null;
+    /**
+     * Goablly available attribute.
+     * 
+     * @var ProductAttribute|null
+     */
+    protected static $global = null;
+
+    /**
+     * Returns the gloablly chosen attributes.
+     * 
+     * @return array
+     */
+    public static function getGloballyChosen() : array
+    {
+        $sessionStore   = (array) Tools::Session()->get(self::SESSION_KEY_GLOBALLY_CHOSEN);
+        $customerConfig = [];
+        $currentUser    = Customer::currentRegisteredCustomer();
+        if ($currentUser instanceof Member) {
+            $customerConfig = $currentUser->getCustomerConfig()->getProductAttributeSettingsToArray();
+            if (!empty($customerConfig)
+             && empty($sessionStore)
+            ) {
+                $sessionStore = $customerConfig;
+                Tools::Session()->set(self::SESSION_KEY_GLOBALLY_CHOSEN, $sessionStore);
+                Tools::saveSession();
+            } elseif (!empty($sessionStore)
+                   && empty ($customerConfig)
+            ) {
+                $currentUser->getCustomerConfig()->writeProductAttributeSettings($sessionStore);
+            }
+        }
+        return $sessionStore;
+    }
+    
+    /**
+     * Returns the gloablly available attributes.
+     * 
+     * @return DataList|null
+     */
+    public static function getGlobals() : ?DataList
+    {
+        if (self::$globals === null) {
+            self::$globals = self::get()->filter('ShowAsNavigationItem', true);
+        }
+        return self::$globals;
+    }
+    
+    /**
+     * Returns the gloablly available attribute.
+     * 
+     * @return ProductAttribute|null
+     */
+    public static function getGlobal() : ?ProductAttribute
+    {
+        if (self::$global === null) {
+            self::$global = self::getGlobals()->first();
+        }
+        return self::$global;
+    }
+    
+    /**
+     * Sets the gloablly chosen attributes.
+     * 
+     * @param array $chosen Chosen attributes
+     * 
+     * @return void
+     */
+    public static function setGloballyChosen(array $chosen) : void
+    {
+        Tools::Session()->set(self::SESSION_KEY_GLOBALLY_CHOSEN, $chosen);
+        Tools::saveSession();
+        $currentUser = Customer::currentRegisteredCustomer();
+        if ($currentUser instanceof Member) {
+            $currentUser->getCustomerConfig()->writeProductAttributeSettings($chosen);
+        }
+    }
+    
     /**
      * DB attributes
      *
      * @var array
      */
     private static $db = [
+        'AllowMultipleChoice'          => 'Boolean(1)',
+        'ShowAsNavigationItem'         => 'Boolean(0)',
+        'RequestInProductGroups'       => 'Boolean(0)',
         'CanBeUsedForFilterWidget'     => 'Boolean(1)',
         'CanBeUsedForDataSheet'        => 'Boolean(1)',
         'CanBeUsedForVariants'         => 'Boolean(0)',
@@ -82,6 +192,7 @@ class ProductAttribute extends DataObject
         'Title'                            => 'Text',
         'PluralTitle'                      => 'Text',
         'AdTitle'                          => 'Text',
+        'NavigationItemTitle'              => 'Text',
         'Description'                      => 'Text',
         'ProductAttributeSetsAsString'     => 'Text',
         'ProductAttributeValuesAsString'   => 'Text',
@@ -196,6 +307,7 @@ class ProductAttribute extends DataObject
                 'unlimited'                        => _t(static::class . '.unlimited', 'unlimited'),
                 'UserInputFieldMustBeFilledIn'     => _t(static::class . '.UserInputFieldMustBeFilledIn', 'User input is obligatory'),
                 'UserInputFieldMustBeFilledInDesc' => _t(static::class . '.UserInputFieldMustBeFilledInDesc', 'If this is active, the customer has to enter a custom text before he is able to add the related product to cart.'),
+                'ProductFilterSettings'            => _t(static::class . '.ProductFilterSettings', 'Filter-Einstellungen'),
             ]
         );
 
@@ -222,6 +334,21 @@ class ProductAttribute extends DataObject
                     ->setDescription($this->fieldLabel('AdTitleDesc'))
                     ->setRightTitle($this->fieldLabel('AdTitleRightTitle'));
             $fields->dataFieldByName('Description')->setDescription($this->fieldLabel('DescriptionDesc'));
+            $filterToggle = ToggleCompositeField::create(
+                    'ProductFilterToggle',
+                    $this->fieldLabel('ProductFilterSettings'),
+                    [
+                        $fields->dataFieldByName('AllowMultipleChoice'),
+                        $fields->dataFieldByName('ShowAsNavigationItem'),
+                        $fields->dataFieldByName('NavigationItemTitle'),
+                        $fields->dataFieldByName('RequestInProductGroups'),
+                    ]
+            )->setHeadingLevel(4)->setStartClosed(true);
+            $fields->removeByName('AllowMultipleChoice');
+            $fields->removeByName('ShowAsNavigationItem');
+            $fields->removeByName('NavigationItemTitle');
+            $fields->removeByName('RequestInProductGroups');
+            $fields->insertAfter($filterToggle, 'CanBeUsedForFilterWidget');
             if ($this->exists()) {
                 $importListField = TextareaField::create('ImportList', $this->fieldLabel('ImportList'));
                 $importListField->setDescription($this->fieldLabel('ImportListDesc'));
@@ -369,6 +496,16 @@ class ProductAttribute extends DataObject
             $title = $this->getTitle();
         }
         return (string) $title;
+    }
+    
+    /**
+     * Returns the translated NavigationItemTitle
+     *
+     * @return string
+     */
+    public function getNavigationItemTitle() : string
+    {
+        return (string) $this->getTranslationFieldValue('NavigationItemTitle');
     }
     
     /**
@@ -679,5 +816,63 @@ class ProductAttribute extends DataObject
             ]);
         }
         return $fileName;
+    }
+    
+    /**
+     * Returns whether this attribute has globally chosen values.
+     * 
+     * @return bool
+     */
+    public function HasGloballyChosenValues() : bool
+    {
+        $chosen = self::getGloballyChosen();
+        return array_key_exists($this->ID, $chosen)
+            && !empty($chosen[$this->ID]);
+    }
+    
+    /**
+     * Returns the globally chosen values.
+     * 
+     * @return SS_List
+     */
+    public function GloballyChosenValues() : SS_List
+    {
+        $chosen = self::getGloballyChosen();
+        if (array_key_exists($this->ID, $chosen)
+         && !empty($chosen[$this->ID])
+        ) {
+            return $this->ProductAttributeValues()->filterAny('ID', $chosen[$this->ID]);
+        }
+        return ArrayList::create();
+    }
+    
+    /**
+     * Returns the link to reload the global nav item by AJAX.
+     * 
+     * @return string
+     */
+    public function ReloadGlobalNavItemLink()
+    {
+        return Director::makeRelative("sc-action/reload-product-attribute-nav-item");
+    }
+    
+    /**
+     * Renders the object with the default template or the template with the given
+     * $templateAddition.
+     * 
+     * @param string $templateAddition Template addition
+     * @param string $cssClasses       CSS classes to add
+     * 
+     * @return DBHTMLText
+     */
+    public function forTemplate(string $templateAddition = null, string $cssClasses = null) : DBHTMLText
+    {
+        $template = self::class;
+        if ($templateAddition !== null) {
+            $template = "{$template}_{$templateAddition}";
+        }
+        return $this->renderWith($template, [
+            'CSSClasses' => $cssClasses,
+        ]);
     }
 }

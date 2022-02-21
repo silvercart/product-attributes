@@ -1,6 +1,12 @@
 ---
 Name: silvercart-product-attributes-extensions
 ---
+SilverCart\Control\ActionHandler:
+  extensions:
+    - SilverCart\ProductAttributes\Extensions\Control\ActionHandlerExtension
+SilverCart\Model\Customer\CustomerConfig:
+  extensions:
+    - SilverCart\ProductAttributes\Extensions\Customer\CustomerConfigExtension
 SilverCart\Model\Order\Order:
   extensions:
     - SilverCart\ProductAttributes\Extensions\Order\OrderExtension
@@ -43,6 +49,7 @@ SilverCart\ProductAttributes\Model\Product\ProductAttributeSet:
     - SilverCart\Model\Translation\TranslatableDataObjectExtension
 SilverCart\ProductAttributes\Model\Product\ProductAttributeValue:
   extensions:
+    - SilverCart\Extensions\Model\FontAwesomeExtension
     - SilverCart\Model\Translation\TranslatableDataObjectExtension
 SilverCart\Forms\AddToCartForm:
   extensions:

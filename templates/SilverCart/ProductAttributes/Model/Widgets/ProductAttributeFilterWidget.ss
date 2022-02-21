@@ -11,7 +11,11 @@
             <% if $AssignedValues %>
                 <% loop AssignedValues %>
             <li>
+            <% if $AllowMultipleChoice %>
                 <label for="silvercart-product-attribute-value-{$ID}"><input type="checkbox" name="silvercart-product-attribute-value-{$ID}" id="silvercart-product-attribute-value-{$ID}" class="silvercart-product-attribute-value silvercart-product-attribute-{$ProductAttribute.ID}" value="{$ID}" <% if $IsFilterValue %>checked="checked"<% end_if %> /> {$Title}</label>
+            <% else %>
+                <label for="silvercart-product-attribute-value-{$ID}"><input type="radio" name="silvercart-product-attribute-value-{$ProductAttribute.ID}" id="silvercart-product-attribute-value-{$ID}" class="silvercart-product-attribute-value silvercart-product-attribute-{$ProductAttribute.ID}" value="{$ID}" <% if $IsFilterValue %>checked="checked"<% end_if %> /> {$Title}</label>
+            <% end_if %>
             </li>
                 <% end_loop %>
             <% end_if %>

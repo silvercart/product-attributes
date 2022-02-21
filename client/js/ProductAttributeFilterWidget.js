@@ -31,6 +31,7 @@ silvercart.attributes.filter.Call                = function() {
             width : mainContainer.css('width'),
             height : mainContainer.css('height'),
             position : 'absolute',
+            zIndex: '10000',
             display : 'none',
             top : '0px',
             background : '#fff'
@@ -40,6 +41,7 @@ silvercart.attributes.filter.Call                = function() {
             left : (window.innerWidth / 2) - 64,
             top : (window.innerHeight / 2) - 7,
             position : 'fixed',
+            zIndex: '10001',
             width : 128,
             height : 15
         });
@@ -62,6 +64,9 @@ silvercart.attributes.filter.Call                = function() {
                     }
                     if (typeof silvercart.attributes.filter.CallbackFunction === 'function') {
                         silvercart.attributes.filter.CallbackFunction();
+                    }
+                    if (typeof silvercart.attributes.navigationItem === 'function') {
+                        silvercart.attributes.navigationItem().reload();
                     }
                 },
                 'error':    function() {
@@ -140,7 +145,10 @@ $(function() {
     });
 
     var triggerFilter = function() {
-        silvercart.attributes.filter.RefreshSelectedFilters($(this));
+        silvercart.attributes.filter.FilterValues = [];
+        $('.silvercart-product-attribute-value').each(function() {
+            silvercart.attributes.filter.RefreshSelectedFilters($(this));
+        });
         window.clearTimeout(silvercart.attributes.filter.CallbackTimeout);
         silvercart.attributes.filter.CallbackTimeout = window.setTimeout(silvercart.attributes.filter.Call, 800);
     };

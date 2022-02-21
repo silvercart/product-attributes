@@ -12,6 +12,7 @@ use SilverCart\ProductAttributes\Model\Product\ProductAttributeValue;
 use SilverCart\ProductAttributes\Model\Product\ProductAttributeValueTranslation;
 use SilverStripe\Control\Controller;
 use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\i18n\i18n;
 
 /**
@@ -24,29 +25,26 @@ use SilverStripe\i18n\i18n;
  * @license see license file in modules root directory
  * @copyright 2018 pixeltricks GmbH
  */
-class ProductAttributeFilterWidgetController extends WidgetController {
-    
+class ProductAttributeFilterWidgetController extends WidgetController
+{
     /**
      * Possible filter attributes
      *
      * @var ArrayList 
      */
     protected $attributes = null;
-    
     /**
      * Form action for filter form
      *
      * @var string
      */
     protected $formAction = null;
-    
     /**
      * Product list
      *
      * @var ArrayList
      */
     protected $products = null;
-    
     /**
      * ProductGroup Controller
      *
@@ -58,20 +56,20 @@ class ProductAttributeFilterWidgetController extends WidgetController {
      * Initializes the widget controller
      * 
      * @return void
-     *
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
      */
-    public function init() {
+    public function init() : void
+    {
         parent::init();
-        if (Controller::curr() instanceof ProductGroupPageController &&
-            !Controller::curr()->isProductDetailView()) {
+        if (Controller::curr() instanceof ProductGroupPageController
+         && !Controller::curr()->isProductDetailView()
+        ) {
             $this->setFormAction(Controller::curr()->data()->Link('ProductAttributeFilter'));
-            $attributes = new ArrayList();
+            $attributes = ArrayList::create();
             $products   = $this->getProducts();
-            if ($products &&
-                $products->count() > 0) {
-                $productIDs = implode(',', $products->map('ID','ID')->toArray());
+            if ($products
+             && $products->count() > 0
+            ) {
+                $productIDs                                = implode(',', $products->map('ID','ID')->toArray());
                 $productTableName                          = Product::config()->get('table_name');
                 $productAttributeTableName                 = ProductAttribute::config()->get('table_name');
                 $productAttributeTranslationTableName      = ProductAttributeTranslation::config()->get('table_name');
@@ -128,17 +126,23 @@ class ProductAttributeFilterWidgetController extends WidgetController {
                             }
                         }
                     } else {
-                        $attributes = new ArrayList();
+                        $attributes = ArrayList::create();
                     }
                 }
             }
             if ($attributes instanceof ArrayList) {
+                $sortField     = ProductAttributeFilterWidget::config()->product_attribute_sort_field;
+                $sortDirection = ProductAttributeFilterWidget::config()->product_attribute_sort_direction;
+                if ($sortField === null) {
+                    $sortField     = 'Sort';
+                    $sortDirection = 'ASC';
+                }
                 $attributes = $attributes->sort([
                     'HasSelectedValues' => 'DESC',
-                    'Title' => 'ASC',
+                    $sortField          => $sortDirection,
                 ]);
             } else {
-                $attributes = new ArrayList();
+                $attributes = ArrayList::create();
             }
             $this->setAttributes($attributes);
         }
@@ -147,25 +151,25 @@ class ProductAttributeFilterWidgetController extends WidgetController {
     /**
      * Returns the JS main selector.
      * 
-     * @return void
+     * @return string
      */
-    public function getJsMainSelector() {
+    public function getJsMainSelector() : string
+    {
         return ProductAttributeFilterWidget::get_js_main_selector();
     }
 
     /**
      * Returns the widgets content
      *
-     * @return \SilverStripe\ORM\FieldType\DBHTMLText
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 21.03.2012
+     * @return DBHTMLText
      */
-    public function Content() {
+    public function Content() : DBHTMLText
+    {
         $content = false;
-        if (Controller::curr() instanceof ProductGroupPageController &&
-            !Controller::curr()->isProductDetailView() &&
-            $this->getAttributes()->Count() > 0) {
+        if (Controller::curr() instanceof ProductGroupPageController
+         && !Controller::curr()->isProductDetailView()
+         && $this->getAttributes()->Count() > 0
+        ) {
             $content = trim(parent::Content());
         }
         return Tools::string2html($content);
@@ -174,9 +178,10 @@ class ProductAttributeFilterWidgetController extends WidgetController {
     /**
      * Returns the attributes
      *
-     * @return ArrayList 
+     * @return ArrayList|null
      */
-    public function getAttributes() {
+    public function getAttributes() : ?ArrayList
+    {
         return $this->attributes;
     }
 
@@ -187,7 +192,8 @@ class ProductAttributeFilterWidgetController extends WidgetController {
      * 
      * @return void
      */
-    public function setAttributes($attributes) {
+    public function setAttributes(ArrayList $attributes) : void
+    {
         $this->attributes = $attributes;
     }
     
@@ -196,8 +202,9 @@ class ProductAttributeFilterWidgetController extends WidgetController {
      *
      * @return string
      */
-    public function getFormAction() {
-        return $this->formAction;
+    public function getFormAction() : string
+    {
+        return (string) $this->formAction;
     }
     
     /**
@@ -207,7 +214,8 @@ class ProductAttributeFilterWidgetController extends WidgetController {
      * 
      * @return void
      */
-    public function setFormAction($formAction) {
+    public function setFormAction(string $formAction) : void
+    {
         $this->formAction = $formAction;
     }
 
@@ -216,25 +224,25 @@ class ProductAttributeFilterWidgetController extends WidgetController {
      *
      * @return ArrayList
      */
-    public function getProducts() {
+    public function getProducts() : ArrayList
+    {
         if (is_null($this->products)) {
             $groupBehaviorController = "SilverCart\\GroupBehavior\\Model\\Pages\\ProductGroupPageController";
             if (class_exists($groupBehaviorController)) {
                 $groupBehaviorController::$disable_filter = true;
             }
             if ($this->FilterBehaviour == 'MultipleChoice') {
-                $products = new ArrayList(Controller::curr()->getUnfilteredProducts(false, false, true)->toArray());
-                $products->merge(new ArrayList(Controller::curr()->getInjectedProducts([ProductAttributeFilterWidget::class])->toArray()));
+                $products = ArrayList::create(Controller::curr()->getUnfilteredProducts(false, false, true)->toArray());
+                $products->merge(ArrayList::create(Controller::curr()->getInjectedProducts([ProductAttributeFilterWidget::class])->toArray()));
             } else {
-                $products = new ArrayList(Controller::curr()->getProducts(false, false, true, true)->toArray());
-                $products->merge(new ArrayList(Controller::curr()->getInjectedProducts([ProductAttributeFilterWidget::class])->toArray()));
+                $products = ArrayList::create(Controller::curr()->getProducts(false, false, true, true)->toArray());
+                $products->merge(ArrayList::create(Controller::curr()->getInjectedProducts([ProductAttributeFilterWidget::class])->toArray()));
             }
             $this->products = $products;
             if (class_exists($groupBehaviorController)) {
                 $groupBehaviorController::$disable_filter = false;
             }
         }
-
         return $this->products;
     }
 
@@ -243,11 +251,12 @@ class ProductAttributeFilterWidgetController extends WidgetController {
      *
      * @return ProductGroupPageController
      */
-    public function getProductGroup() {
+    public function getProductGroup() : ProductGroupPageController
+    {
         if (is_null($this->productGroup)) {
             $productGroup = Controller::curr();
             if (!$productGroup instanceof ProductGroupPageController) {
-                $productGroup = new ProductGroupPageController();
+                $productGroup = ProductGroupPageController::singleton();
             }
             $this->productGroup = $productGroup;
         }
@@ -258,15 +267,12 @@ class ProductAttributeFilterWidgetController extends WidgetController {
      * Creates the cache key for this widget.
      *
      * @return string
-     *
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
      */
-    public function WidgetCacheKey() {
+    public function WidgetCacheKey() : string
+    {
         $key        = '';
         $products   = $this->getProducts();
         $attributes = $this->getAttributes();
-        
         if ($products->Count() > 0) {
             $productMap           = $products->map('ID', 'LastEditedForCache')->toArray();
             $productMapIDs        = array_keys($productMap);
@@ -293,6 +299,6 @@ class ProductAttributeFilterWidgetController extends WidgetController {
 
             $key = implode('_', $keyParts);
         }
-        return $key;
+        return (string) $key;
     }
 }

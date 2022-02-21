@@ -8,19 +8,21 @@ use SilverCart\Model\Widgets\Widget;
 use SilverStripe\Control\Controller;
 use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\CheckboxField;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\ORM\FieldType\DBHTMLText;
 
 /**
  * Provides a view of items of a definable productgroup.
  *
  * @package SilverCart
- * @subpackage ProductAttributes_Model_Widgets
+ * @subpackage ProductAttributes\Model\Widgets
  * @author Sebastian Diel <sdiel@pixeltricks.de>
  * @since 30.05.2018
  * @license see license file in modules root directory
  * @copyright 2018 pixeltricks GmbH
  */
-class ProductAttributeFilterWidget extends Widget {
-    
+class ProductAttributeFilterWidget extends Widget
+{
     /**
      * DB attributes.
      *
@@ -30,28 +32,39 @@ class ProductAttributeFilterWidget extends Widget {
         'FilterBehaviour' => 'Enum("MultipleChoice,SingleChoice","MultipleChoice")',
         'RememberFilter'  => 'Boolean(0)',
     ];
-    
     /**
      * DB table name
      *
      * @var string
      */
     private static $table_name = 'SilvercartProductAttributeFilterWidget';
-    
     /**
      * Javascript selector to load content into.
      *
      * @var string
      */
     private static $js_main_selector = '#main';
+    /**
+     * Sort field for the attributes.
+     *
+     * @var string
+     */
+    private static $product_attribute_sort_field = 'Sort';
+    /**
+     * Sort direction for the attributes.
+     *
+     * @var string
+     */
+    private static $product_attribute_sort_direction = 'ASC';
 
     /**
      * Returns the JS selector.
      * 
      * @return string
      */
-    public static function get_js_main_selector() {
-        return self::$js_main_selector;
+    public static function get_js_main_selector() : string
+    {
+        return (string) self::config()->js_main_selector;
     }
 
     /**
@@ -59,32 +72,29 @@ class ProductAttributeFilterWidget extends Widget {
      * 
      * @param string $js_main_selector JS main selector
      */
-    public static function set_js_main_selector($js_main_selector) {
-        self::$js_main_selector = $js_main_selector;
+    public static function set_js_main_selector(string $js_main_selector) : void
+    {
+        self::config()->update('js_main_selector', $js_main_selector);
     }
 
     /**
      * Returns the title of this widget.
      * 
      * @return string
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
      */
-    public function Title() {
-        return $this->fieldLabel('WidgetTitle');
+    public function Title() : string
+    {
+        return (string) $this->fieldLabel('WidgetTitle');
     }
     
     /**
      * Returns the title of this widget for display in the WidgetArea GUI.
      * 
      * @return string
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
      */
-    public function CMSTitle() {
-        return $this->fieldLabel('WidgetCMSTitle');
+    public function CMSTitle() : string
+    {
+        return (string) $this->fieldLabel('WidgetCMSTitle');
     }
     
     /**
@@ -92,38 +102,33 @@ class ProductAttributeFilterWidget extends Widget {
      * WidgetArea GUI.
      * 
      * @return string
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
      */
-    public function Description() {
-        return $this->fieldLabel('WidgetDescription');
+    public function Description() : string
+    {
+        return (string) $this->fieldLabel('WidgetDescription');
     }
     
     /**
      * Returns the extra css classes.
      * 
      * @return string
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 22.04.2013
      */
-    public function ExtraCssClasses() {
-        return $this->dbObject('ExtraCssClasses')->getValue() . ' silvercart-product-attribute-filter-widget';
+    public function ExtraCssClasses() : string
+    {
+        return (string) "{$this->dbObject('ExtraCssClasses')->getValue()} silvercart-product-attribute-filter-widget";
     }
 
     /**
      * Returns the widgets content
      *
-     * @return \SilverStripe\ORM\FieldType\DBHTMLText
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
+     * @return DBHTMLText
      */
-    public function Content() {
+    public function Content() : DBHTMLText
+    {
         $content = false;
-        if (Controller::curr() instanceof ProductGroupPageController &&
-            !Controller::curr()->isProductDetailView()) {
+        if (Controller::curr() instanceof ProductGroupPageController
+         && !Controller::curr()->isProductDetailView()
+        ) {
             $content = parent::Content();
         }
         return Tools::string2html($content);
@@ -135,11 +140,9 @@ class ProductAttributeFilterWidget extends Widget {
      * @param boolean $includerelations A boolean value to indicate if the labels returned include relation fields
      *
      * @return array
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
      */
-    public function fieldLabels($includerelations = true) {
+    public function fieldLabels($includerelations = true) : array
+    {
         return array_merge(
                 parent::fieldLabels($includerelations),
                 Tools::field_labels_for(static::class),
@@ -159,7 +162,8 @@ class ProductAttributeFilterWidget extends Widget {
      *
      * @return FieldList
      */
-    public function getCMSFields() {
+    public function getCMSFields() : FieldList
+    {
         $fields                 = parent::getCMSFields();
         $filterBehaviourDbField = $this->dbObject('FilterBehaviour');
         $enumValues             = $filterBehaviourDbField->enumValues();
@@ -167,11 +171,11 @@ class ProductAttributeFilterWidget extends Widget {
         foreach ($enumValues as $key => $value) {
             $items[$key] = _t(static::class . '.FB_' . strtoupper($value), $value);
         }
-        $filterBehaviourField = new OptionsetField('FilterBehaviour', $this->fieldLabel('FilterBehaviour'), $items, $this->FilterBehaviour);
+        $filterBehaviourField = OptionsetField::create('FilterBehaviour', $this->fieldLabel('FilterBehaviour'), $items, $this->FilterBehaviour);
         $filterBehaviourField->setRightTitle(Tools::string2html($this->fieldLabel('FilterBehaviourDesc')));
         $fields->addFieldToTab('Root.Main', $filterBehaviourField);
         
-        $rememberFilterField = new CheckboxField('RememberFilter', $this->fieldLabel('RememberFilter'));
+        $rememberFilterField = CheckboxField::create('RememberFilter', $this->fieldLabel('RememberFilter'));
         $fields->addFieldToTab('Root.Main', $rememberFilterField);
         return $fields;
     }

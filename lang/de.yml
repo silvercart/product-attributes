@@ -1,6 +1,9 @@
 de:
   SilverCart\ProductAttributes:
+    Choose: '{title} wählen'
     PleaseChooseVariantFor: 'Bitte wählen Sie eine Variante für den Artikel {title}'
+    UpdateGlobalAttributes: '{title} ändern'
+    YourGlobalAttributes: 'Ihre {title}:'
   SilverCart\ProductAttributes\Admin\Controllers\ProductAttributeAdmin:
     MENUTITLE: Artikelmerkmale
   SilverCart\ProductAttributes\Extensions\Forms\AddToCartFormExtension:
@@ -23,6 +26,8 @@ de:
     AllowedUploadFileEndingsDesc: 'Pro Zeile eine Dateiendung (z.B. "jpg", "jpeg", "png") angeben.'
     AllowedUploadFileMimeTypes: 'Erlaubte Mime-Typen für Upload-Dateien'
     AllowedUploadFileMimeTypesDesc: 'Pro Zeile ein Mime-Type (z.B. "image/jpeg", "image/png") angeben.'
+    AllowMultipleChoice: 'Mehrfachauswahl erlauben'
+    AllowMultipleChoiceDesc: 'Wenn aktiviert, kann bspw. ein Farbfilter nach mehreren Farben gleichzeitig gefiltert werden. Wenn nicht, kann immer nur eine einzige Farbe gefiltert werden.'
     CAN_BE_USED_FOR_DATASHEET: 'Für das Datenblatt verwenden'
     CAN_BE_USED_FOR_FILTERWIDGET: 'Für den Artikelfilter verwenden'
     CAN_BE_USED_FOR_VARIANTS: 'Kann für Multi-Artikel basierte Varianten verwendet werden'
@@ -54,8 +59,13 @@ de:
     IsUploadFieldDesc: 'Wird der Dateiupload aktiviert, erscheint am Artikel die Möglichkeit, eine vom Kunden beliebig wählbaren Datei hochzuladen.'
     IsUserInputField: 'Freitexteingabe aktivierten'
     IsUserInputFieldDesc: 'Wird die Freitexteingabe aktiviert, erscheint am Artikel die Möglichkeit, einen vom Kunden beliebig wählbaren Text einzugeben (z.B. "Gravur"/"T-Shirt-Aufdruck")'
+    NavigationItemTitle: 'Titelzeile Hauptmenü Auswahl'
     PLURALNAME: Artikelmerkmale
     PLURALTITLE: Pluralname
+    RequestInProductGroups: 'Beim betreten einer Warengruppe nachfragen'
+    RequestInProductGroupsDesc: '"Auswahl im Hauptmenü anzeigen" muss aktiviert sein. Sobald ein Kunde eine Warengruppe betritt, wird dieser über ein Popup aufgefordert, eine Wahl zu treffen, falls noch nicht geschehen.'
+    ShowAsNavigationItem: 'Auswahl im Hauptmenü anzeigen'
+    ShowAsNavigationItemDesc: '"Für den Artikelfilter verwenden" muss aktiviert sein. Wenn aktiviert, wird dieses Merkmal Shop-Übergreifend zur Auswahl gestellt.'
     SINGULARNAME: Artikelmerkmal
     TABNAME: Merkmale
     TITLE: Name
@@ -114,6 +124,7 @@ de:
     ShowOffersFromTo: 'Angebote zwischen {min} und {max} {currency} anzeigen'
     TITLE: Preis-Filter
   SilverCart\ProductAttributes\Model\Widgets\ProductAttributeFilterWidget:
+    Clear: 'Auswahl aufheben'
     CMSTITLE: Artikelmerkmal-Filter
     DESCRIPTION: 'Liefert eine gruppierte Auswahl von Filtern, die anhand der zugewiesenen Artikelmerkmale der aktuellen Warengruppe erstellt wird.'
     DISABLE_FILTER_FOR: 'Alle Filter für &quot;{title}&quot; aufheben'
