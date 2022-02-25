@@ -3,6 +3,7 @@
 namespace SilverCart\ProductAttributes\Model\Product;
 
 use SilverCart\Dev\Tools;
+use SilverCart\Model\Translation\TranslationExtension;
 use SilverStripe\ORM\DataObject;
 
 /**
@@ -14,9 +15,15 @@ use SilverStripe\ORM\DataObject;
  * @copyright 2018 pixeltricks GmbH
  * @since 30.05.2018
  * @license see license file in modules root directory
+ * 
+ * @property string $Title Title
+ * 
+ * @method ProductAttributeSet ProductAttributeSet() Returns the related ProductAttributeSet.
+ * 
+ * @mixin TranslationExtension
  */
-class ProductAttributeSetTranslation extends DataObject {
-    
+class ProductAttributeSetTranslation extends DataObject
+{
     /**
      * Attributes.
      *
@@ -25,7 +32,6 @@ class ProductAttributeSetTranslation extends DataObject {
     private static $db = [
         'Title' => 'Varchar(64)',
     ];
-    
     /**
      * 1:1 or 1:n relationships.
      *
@@ -34,52 +40,52 @@ class ProductAttributeSetTranslation extends DataObject {
     private static $has_one = [
         'ProductAttributeSet' => ProductAttributeSet::class,
     ];
-    
     /**
      * DB table name
      *
      * @var string
      */
     private static $table_name = 'SilvercartProductAttributeSetTranslation';
+    /**
+     * Extensions.
+     * 
+     * @var string[]
+     */
+    private static $extensions = [
+        TranslationExtension::class,
+    ];
     
     /**
      * Returns the translated singular name of the object. If no translation exists
      * the class name will be returned.
      * 
-     * @return string The objects singular name 
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
+     * @return string
      */
-    public function singular_name() {
-        return Tools::singular_name_for($this);
+    public function singular_name() : string
+    {
+        return (string) Tools::singular_name_for($this);
     }
-
 
     /**
      * Returns the translated plural name of the object. If no translation exists
      * the class name will be returned.
      * 
-     * @return string the objects plural name
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
+     * @return string
      */
-    public function plural_name() {
-        return Tools::plural_name_for($this);
+    public function plural_name() : string
+    {
+        return (string) Tools::plural_name_for($this);
     }
     
     /**
      * Field labels for display in tables.
      *
-     * @param boolean $includerelations A boolean value to indicate if the labels returned include relation fields
+     * @param bool $includerelations A boolean value to indicate if the labels returned include relation fields
      *
      * @return array
-     *
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
      */
-    public function fieldLabels($includerelations = true) {
+    public function fieldLabels($includerelations = true) : array
+    {
         $fieldLabels = array_merge(
             parent::fieldLabels($includerelations),
             Tools::field_labels_for(static::class),
@@ -92,5 +98,4 @@ class ProductAttributeSetTranslation extends DataObject {
         $this->extend('updateFieldLabels', $fieldLabels);
         return $fieldLabels;
     }
-    
 }

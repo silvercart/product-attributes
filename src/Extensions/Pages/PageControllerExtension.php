@@ -5,6 +5,7 @@ namespace SilverCart\ProductAttributes\Extensions\Pages;
 use SilverCart\Model\Pages\CartPageController;
 use SilverCart\Model\Pages\CheckoutStepController;
 use SilverCart\ProductAttributes\Model\Product\ProductAttribute;
+use SilverCart\ProductAttributes\Model\Product\ProductAttributeValue;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Core\Extension;
@@ -65,6 +66,28 @@ class PageControllerExtension extends Extension
                 'silvercart/product-attributes:client/js/ProductAttributeDropdownField.js',
             ]
         );
+    }
+    
+    /**
+     * Checks the HTTP GET parameters for product attributes.
+     * 
+     * @return void
+     */
+    public function onBeforeInit() : void
+    {
+        if (array_key_exists('scpa', $_GET)
+         && is_array($_GET['scpa'])
+        ) {
+            foreach ($_GET['scpa'] as $attributeSegment => $valueSegment) {
+                $attribute = ProductAttribute::getByURLSegment($attributeSegment);
+                if ($attribute instanceof ProductAttribute) {
+                    $value = ProductAttributeValue::getByURLSegment($valueSegment, ['ProductAttributeID' => $attribute->ID]);
+                    if ($value instanceof ProductAttributeValue) {
+                        $value->chooseGlobally();
+                    }
+                }
+            }
+        }
     }
     
     /**

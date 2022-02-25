@@ -3,6 +3,7 @@
 namespace SilverCart\ProductAttributes\Model\Product;
 
 use SilverCart\Dev\Tools;
+use SilverCart\Model\Translation\TranslationExtension;
 use SilverStripe\ORM\DataObject;
 
 /**
@@ -14,9 +15,19 @@ use SilverStripe\ORM\DataObject;
  * @copyright 2018 pixeltricks GmbH
  * @since 30.05.2018
  * @license see license file in modules root directory
+ * 
+ * @property string $Title               Title
+ * @property string $PluralTitle         Plural Title
+ * @property string $AdTitle             Ad Title
+ * @property string $NavigationItemTitle Navigation Item Title
+ * @property string $Description         Description
+ * 
+ * @method ProductAttribute ProductAttribute() Returns the related ProductAttribute.
+ * 
+ * @mixin TranslationExtension
  */
-class ProductAttributeTranslation extends DataObject {
-    
+class ProductAttributeTranslation extends DataObject
+{
     /**
      * Attributes.
      *
@@ -29,7 +40,6 @@ class ProductAttributeTranslation extends DataObject {
         'NavigationItemTitle' => 'Varchar(128)',
         'Description'         => 'Text',
     ];
-    
     /**
      * 1:1 or 1:n relationships.
      *
@@ -38,7 +48,6 @@ class ProductAttributeTranslation extends DataObject {
     private static $has_one = [
         'ProductAttribute' => ProductAttribute::class,
     ];
-    
     /**
      * DB indexes
      * 
@@ -47,39 +56,41 @@ class ProductAttributeTranslation extends DataObject {
     private static $indexes = [
         'Title' => '("Title")',
     ];
-    
     /**
      * DB table name
      *
      * @var string
      */
     private static $table_name = 'SilvercartProductAttributeTranslation';
-
+    /**
+     * Extensions.
+     * 
+     * @var string[]
+     */
+    private static $extensions = [
+        TranslationExtension::class,
+    ];
+    
     /**
      * Returns the translated singular name of the object. If no translation exists
      * the class name will be returned.
      * 
-     * @return string The objects singular name 
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
+     * @return string
      */
-    public function singular_name() {
-        return Tools::singular_name_for($this);
+    public function singular_name() : string
+    {
+        return (string) Tools::singular_name_for($this);
     }
-
 
     /**
      * Returns the translated plural name of the object. If no translation exists
      * the class name will be returned.
      * 
-     * @return string the objects plural name
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
+     * @return string
      */
-    public function plural_name() {
-        return Tools::plural_name_for($this);
+    public function plural_name() : string
+    {
+        return (string) Tools::plural_name_for($this);
     }
     
     /**
@@ -88,11 +99,9 @@ class ProductAttributeTranslation extends DataObject {
      * @param boolean $includerelations A boolean value to indicate if the labels returned include relation fields
      *
      * @return array
-     *
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
      */
-    public function fieldLabels($includerelations = true) {
+    public function fieldLabels($includerelations = true) : array
+    {
         $fieldLabels = array_merge(
             parent::fieldLabels($includerelations),
             Tools::field_labels_for(static::class),
@@ -102,9 +111,7 @@ class ProductAttributeTranslation extends DataObject {
                 'PluralTitle'   => _t(ProductAttribute::class . '.PLURALTITLE', 'Plural title'),
             ]
         );
-
         $this->extend('updateFieldLabels', $fieldLabels);
         return $fieldLabels;
     }
 }
-

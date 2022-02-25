@@ -62,13 +62,17 @@ de:
     NavigationItemTitle: 'Titelzeile Hauptmenü Auswahl'
     PLURALNAME: Artikelmerkmale
     PLURALTITLE: Pluralname
+    ProductFilterSettings: 'Filter-Einstellungen'
     RequestInProductGroups: 'Beim betreten einer Warengruppe nachfragen'
     RequestInProductGroupsDesc: '"Auswahl im Hauptmenü anzeigen" muss aktiviert sein. Sobald ein Kunde eine Warengruppe betritt, wird dieser über ein Popup aufgefordert, eine Wahl zu treffen, falls noch nicht geschehen.'
     ShowAsNavigationItem: 'Auswahl im Hauptmenü anzeigen'
     ShowAsNavigationItemDesc: '"Für den Artikelfilter verwenden" muss aktiviert sein. Wenn aktiviert, wird dieses Merkmal Shop-Übergreifend zur Auswahl gestellt.'
+    SingleVariantSettings: Einzel-Varianten-Einstellungen
     SINGULARNAME: Artikelmerkmal
     TABNAME: Merkmale
     TITLE: Name
+    URLSegment: URL-Parameter
+    URLSegmentDesc: 'Der URL-Parameter kann unter Verwendung des unten angegebenen Schemas zusammen mit einem verknüpften Artikelmerkmal-Wert als HTTP-GET Parameter an jede beliebige Shop-URL angehangen werden. Wird der Shop mit einem solchen Link betreten, wird der angegebene Wert als Artikel-Filter belegt.'
     UserInputFieldMustBeFilledIn: 'Freitext / Upload muss eingegeben werden'
     UserInputFieldMustBeFilledInDesc: 'Wird dieses Feld aktiviert, muss der Kunde einen Text / Upload eingeben, bevor er einen Verknüpften Artikel in den Warenkorb legen kann.'
     unlimited: unbegrenzt
@@ -101,6 +105,7 @@ de:
     DefaultModifyTitleAction: 'Anpassung Artikeltitel Aktion'
     DefaultModifyTitleValue: 'Anpassung Artikeltitel Wert'
     DefaultModifyValue: Wert
+    ExampleLink: Beispiel-Link
     ModifyPrice: 'Anpassung Artikelpreis'
     ModifyProductNumber: 'Anpassung Artikelnummer'
     ModifyTitle: 'Anpassung Artikeltitel'
@@ -108,6 +113,10 @@ de:
     SINGULARNAME: Artikelmerkmal-Wert
     TABNAME: Werte
     TITLE: Name
+    URLParameter: 'Vollständiger URL-Parameter'
+    URLParameterDesc: 'Inklusive URL-Parameter des Artikelmerkmals.'
+    URLSegment: URL-Parameter
+    URLSegmentDesc: 'Der URL-Parameter kann unter Verwendung des unten angegebenen Schemas zusammen mit dem verknüpften Artikelmerkmal als HTTP-GET Parameter an jede beliebige Shop-URL angehangen werden. Wird der Shop mit einem solchen Link betreten, wird der angegebene Wert als Artikel-Filter belegt.'
   SilverCart\ProductAttributes\Model\Product\ProductAttributeValueTranslation:
     PLURALNAME: Übersetzungen
     SINGULARNAME: Übersetzung

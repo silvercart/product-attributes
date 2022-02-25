@@ -3,6 +3,7 @@
 namespace SilverCart\ProductAttributes\Model\Product;
 
 use SilverCart\Dev\Tools;
+use SilverCart\Model\Translation\TranslatableDataObjectExtension;
 use SilverCart\ORM\DataObjectExtension;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\ORM\DataObject;
@@ -19,6 +20,8 @@ use SilverStripe\ORM\Map;
  * @copyright 2018 pixeltricks GmbH
  * @since 30.05.2018
  * @license see license file in modules root directory
+ * 
+ * @mixin TranslatableDataObjectExtension
  */
 class ProductAttributeSet extends DataObject
 {
@@ -69,6 +72,14 @@ class ProductAttributeSet extends DataObject
      * @var string
      */
     private static $default_sort = 'Sort, "ProductAttributeSetTranslation"."Title"';
+    /**
+     * Extensions.
+     * 
+     * @var string[]
+     */
+    private static $extensions = [
+        TranslatableDataObjectExtension::class,
+    ];
 
     /**
      * Returns the translated singular name of the object. If no translation exists

@@ -3,14 +3,16 @@
 namespace SilverCart\ProductAttributes\Model\Product;
 
 use SilverCart\Dev\Tools;
+use SilverCart\Extensions\Model\FontAwesomeExtension;
 use SilverCart\Forms\FormFields\TextareaField;
 use SilverCart\Forms\FormFields\TextField;
 use SilverCart\Model\Customer\Customer;
 use SilverCart\Model\Product\Product;
-use SilverCart\ORM\DataObjectExtension;
+use SilverCart\Model\Translation\TranslatableDataObjectExtension;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\Forms\ToggleCompositeField;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
@@ -20,6 +22,8 @@ use SilverStripe\ORM\Filters\ExactMatchFilter;
 use SilverStripe\ORM\Filters\PartialMatchFilter;
 use SilverStripe\ORM\SS_List;
 use SilverStripe\Security\Member;
+use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
+use UndefinedOffset\SortableGridField\Forms\GridFieldSortableRows;
 
 /**
  * Attribute to relate to a product.
@@ -47,6 +51,7 @@ use SilverStripe\Security\Member;
  * @property string $DisplayConversionUnit        Display Conversion Unit
  * @property float  $DisplayConversionFactor      Display Conversion Factor
  * @property bool   $DisplayZeroAsUnlimited       Display Zero As Unlimited
+ * @property string $URLSegment                   URLSegment
  * @property int    $Sort                         Sort
  * 
  * @method \SilverStripe\ORM\HasManyList ProductAttributeTranslations() Returns the related ProductAttributeTranslations.
@@ -54,9 +59,15 @@ use SilverStripe\Security\Member;
  * 
  * @method \SilverStripe\ORM\ManyManyList Products()             Returns the related Products.
  * @method \SilverStripe\ORM\ManyManyList ProductAttributeSets() Returns the related ProductAttributeSets.
+ * 
+ * @mixin TranslatableDataObjectExtension
+ * @mixin FontAwesomeExtension
  */
 class ProductAttribute extends DataObject
 {
+    use \SilverCart\ORM\ExtensibleDataObject;
+    use \SilverCart\Model\URLSegmentable;
+    
     const SESSION_KEY_GLOBALLY_CHOSEN = 'SilverCart.ProductAttributes.GloballyChosen';
     
     /**
@@ -163,6 +174,7 @@ class ProductAttribute extends DataObject
         'DisplayConversionUnit'        => 'Varchar',
         'DisplayConversionFactor'      => 'Float',
         'DisplayZeroAsUnlimited'       => 'Boolean(0)',
+        'URLSegment'                   => 'Varchar',
         'Sort'                         => 'Int',
     ];
     /**
@@ -201,6 +213,8 @@ class ProductAttribute extends DataObject
         'CanBeUsedForDataSheetString'      => 'Text',
         'CanBeUsedForVariantsString'       => 'Text',
         'CanBeUsedForSingleVariantsString' => 'Text',
+        'URLParameter'                     => 'Text',
+        'ExampleLink'                      => 'Text',
     ];
     /**
      * DB indexes
@@ -225,6 +239,27 @@ class ProductAttribute extends DataObject
      * @var string
      */
     private static $table_name = 'SilvercartProductAttribute';
+    /**
+     * Extensions.
+     * 
+     * @var string[]
+     */
+    private static $extensions = [
+        TranslatableDataObjectExtension::class,
+        FontAwesomeExtension::class,
+    ];
+    /**
+     * Determines to insert the translation CMS fields by TranslatableDataObjectExtension.
+     * 
+     * @var bool
+     */
+    private static $insert_translation_cms_fields = true;
+    /**
+     * Determines to insert the translation CMS fields before this field.
+     * 
+     * @var string
+     */
+    private static $insert_translation_cms_fields_before = 'CanBeUsedForFilterWidget';
     /**
      * Assigned values
      *
@@ -270,49 +305,43 @@ class ProductAttribute extends DataObject
      */
     public function fieldLabels($includerelations = true) : array
     {
-        $fieldLabels = array_merge(
-            parent::fieldLabels($includerelations),
-            Tools::field_labels_for(static::class),
-            [
-                'AllowedUploadFileEndings'         => _t(static::class . '.AllowedUploadFileEndings', 'Allowed upload file endings'),
-                'AllowedUploadFileEndingsDesc'     => _t(static::class . '.AllowedUploadFileEndingsDesc', 'Add one file ending per line (e.g. "jpg", "jpeg", "png").'),
-                'AllowedUploadFileMimeTypes'       => _t(static::class . '.AllowedUploadFileMimeTypes', 'Allowed upload file mime types'),
-                'AllowedUploadFileMimeTypesDesc'   => _t(static::class . '.AllowedUploadFileMimeTypesDesc', 'Add one file mime type per line (e.g. "image/jpeg", "image/png").'),
-                'CanBeUsedForFilterWidget'         => _t(static::class . '.CAN_BE_USED_FOR_FILTERWIDGET', 'Use for product filter'),
-                'CanBeUsedForDataSheet'            => _t(static::class . '.CAN_BE_USED_FOR_DATASHEET', 'Use for data sheet'),
-                'CanBeUsedForVariants'             => _t(static::class . '.CAN_BE_USED_FOR_VARIANTS', 'Can be used for multi-product-variants'),
-                'CanBeUsedForVariantsDesc'         => _t(static::class . '.CAN_BE_USED_FOR_VARIANTS_DESC', 'If this is active, you are able to combine multiple products to use as variants (e.g. one product gets the attribute "color" -> "red", a second one "color" -> "yellow", a third one "color" -> "green").'),
-                'CanBeUsedForFilterWidgetShort'    => _t(static::class . '.CanBeUsedForFilterWidgetShort', 'Product filter'),
-                'CanBeUsedForDataSheetShort'       => _t(static::class . '.CanBeUsedForDataSheetShort', 'Data sheet'),
-                'CanBeUsedForVariantsShort'        => _t(static::class . '.CanBeUsedForVariantsShort', 'Multi-Variants'),
-                'CanBeUsedForSingleVariants'       => _t(static::class . '.CanBeUsedForSingleVariants', 'Can be used for single-product-variants'),
-                'CanBeUsedForSingleVariantsDesc'   => _t(static::class . '.CanBeUsedForSingleVariantsDesc', 'If this is active, you are able to use a single product with variants (e.g. one product gets the attributes "color" -> "red", "yellow", "green").'),
-                'CanBeUsedForSingleVariantsShort'  => _t(static::class . '.CanBeUsedForSingleVariantsShort', 'Single-Variants'),
-                'Title'                            => _t(static::class . '.TITLE', 'Title'),
-                'PluralTitle'                      => _t(static::class . '.PLURALTITLE', 'Plural title'),
-                'ProductAttributeTranslations'     => ProductAttributeTranslation::singleton()->plural_name(),
-                'ProductAttributeValues'           => ProductAttributeValue::singleton()->plural_name(),
-                'Products'                         => Product::singleton()->plural_name(),
-                'ProductAttributeSets'             => ProductAttributeSet::singleton()->plural_name(),
-                'ImportList'                       => _t(static::class . '.ImportList', 'Import attributes'),
-                'ImportListDesc'                   => _t(static::class . '.ImportListDesc', 'Add one attribute per line into this field to import many attributes at once.'),
-                'ImportPrefix'                     => _t(static::class . '.ImportPrefix', 'Import Prefix'),
-                'ImportPrefixDesc'                 => _t(static::class . '.ImportPrefixDesc', 'Text will be prefixed to every imported attribute.'),
-                'ImportSuffix'                     => _t(static::class . '.ImportSuffix', 'Import Suffix'),
-                'ImportSuffixDesc'                 => _t(static::class . '.ImportSuffixDesc', 'Text will be suffixed to every imported attribute.'),
-                'IsUploadField'                    => _t(static::class . '.IsUploadField', 'Is upload field'),
-                'IsUploadFieldDesc'                => _t(static::class . '.IsUploadFieldDesc', 'If you are using the upload field, the customer can upload a custom file before adding a product to cart.'),
-                'IsUserInputField'                 => _t(static::class . '.IsUserInputField', 'Is user input field'),
-                'IsUserInputFieldDesc'             => _t(static::class . '.IsUserInputFieldDesc', 'If you are using the user input field, the customer can enter a custom text before adding a product to cart (z.B. "engraving"/"t-shirt overprint").'),
-                'unlimited'                        => _t(static::class . '.unlimited', 'unlimited'),
-                'UserInputFieldMustBeFilledIn'     => _t(static::class . '.UserInputFieldMustBeFilledIn', 'User input is obligatory'),
-                'UserInputFieldMustBeFilledInDesc' => _t(static::class . '.UserInputFieldMustBeFilledInDesc', 'If this is active, the customer has to enter a custom text before he is able to add the related product to cart.'),
-                'ProductFilterSettings'            => _t(static::class . '.ProductFilterSettings', 'Filter-Einstellungen'),
-            ]
-        );
-
-        $this->extend('updateFieldLabels', $fieldLabels);
-        return $fieldLabels;
+        return $this->defaultFieldLabels($includerelations, [
+            'AllowedUploadFileEndings'         => _t(static::class . '.AllowedUploadFileEndings', 'Allowed upload file endings'),
+            'AllowedUploadFileEndingsDesc'     => _t(static::class . '.AllowedUploadFileEndingsDesc', 'Add one file ending per line (e.g. "jpg", "jpeg", "png").'),
+            'AllowedUploadFileMimeTypes'       => _t(static::class . '.AllowedUploadFileMimeTypes', 'Allowed upload file mime types'),
+            'AllowedUploadFileMimeTypesDesc'   => _t(static::class . '.AllowedUploadFileMimeTypesDesc', 'Add one file mime type per line (e.g. "image/jpeg", "image/png").'),
+            'CanBeUsedForFilterWidget'         => _t(static::class . '.CAN_BE_USED_FOR_FILTERWIDGET', 'Use for product filter'),
+            'CanBeUsedForDataSheet'            => _t(static::class . '.CAN_BE_USED_FOR_DATASHEET', 'Use for data sheet'),
+            'CanBeUsedForVariants'             => _t(static::class . '.CAN_BE_USED_FOR_VARIANTS', 'Can be used for multi-product-variants'),
+            'CanBeUsedForVariantsDesc'         => _t(static::class . '.CAN_BE_USED_FOR_VARIANTS_DESC', 'If this is active, you are able to combine multiple products to use as variants (e.g. one product gets the attribute "color" -> "red", a second one "color" -> "yellow", a third one "color" -> "green").'),
+            'CanBeUsedForFilterWidgetShort'    => _t(static::class . '.CanBeUsedForFilterWidgetShort', 'Product filter'),
+            'CanBeUsedForDataSheetShort'       => _t(static::class . '.CanBeUsedForDataSheetShort', 'Data sheet'),
+            'CanBeUsedForVariantsShort'        => _t(static::class . '.CanBeUsedForVariantsShort', 'Multi-Variants'),
+            'CanBeUsedForSingleVariants'       => _t(static::class . '.CanBeUsedForSingleVariants', 'Can be used for single-product-variants'),
+            'CanBeUsedForSingleVariantsDesc'   => _t(static::class . '.CanBeUsedForSingleVariantsDesc', 'If this is active, you are able to use a single product with variants (e.g. one product gets the attributes "color" -> "red", "yellow", "green").'),
+            'CanBeUsedForSingleVariantsShort'  => _t(static::class . '.CanBeUsedForSingleVariantsShort', 'Single-Variants'),
+            'Title'                            => _t(static::class . '.TITLE', 'Title'),
+            'PluralTitle'                      => _t(static::class . '.PLURALTITLE', 'Plural title'),
+            'ProductAttributeTranslations'     => ProductAttributeTranslation::singleton()->plural_name(),
+            'ProductAttributeValues'           => ProductAttributeValue::singleton()->plural_name(),
+            'Products'                         => Product::singleton()->plural_name(),
+            'ProductAttributeSets'             => ProductAttributeSet::singleton()->plural_name(),
+            'ImportList'                       => _t(static::class . '.ImportList', 'Import attributes'),
+            'ImportListDesc'                   => _t(static::class . '.ImportListDesc', 'Add one attribute per line into this field to import many attributes at once.'),
+            'ImportPrefix'                     => _t(static::class . '.ImportPrefix', 'Import Prefix'),
+            'ImportPrefixDesc'                 => _t(static::class . '.ImportPrefixDesc', 'Text will be prefixed to every imported attribute.'),
+            'ImportSuffix'                     => _t(static::class . '.ImportSuffix', 'Import Suffix'),
+            'ImportSuffixDesc'                 => _t(static::class . '.ImportSuffixDesc', 'Text will be suffixed to every imported attribute.'),
+            'IsUploadField'                    => _t(static::class . '.IsUploadField', 'Is upload field'),
+            'IsUploadFieldDesc'                => _t(static::class . '.IsUploadFieldDesc', 'If you are using the upload field, the customer can upload a custom file before adding a product to cart.'),
+            'IsUserInputField'                 => _t(static::class . '.IsUserInputField', 'Is user input field'),
+            'IsUserInputFieldDesc'             => _t(static::class . '.IsUserInputFieldDesc', 'If you are using the user input field, the customer can enter a custom text before adding a product to cart (z.B. "engraving"/"t-shirt overprint").'),
+            'unlimited'                        => _t(static::class . '.unlimited', 'unlimited'),
+            'UserInputFieldMustBeFilledIn'     => _t(static::class . '.UserInputFieldMustBeFilledIn', 'User input is obligatory'),
+            'UserInputFieldMustBeFilledInDesc' => _t(static::class . '.UserInputFieldMustBeFilledInDesc', 'If this is active, the customer has to enter a custom text before he is able to add the related product to cart.'),
+            'ProductFilterSettings'            => _t(static::class . '.ProductFilterSettings', 'Filter settings'),
+            'SingleVariantSettings'            => _t(static::class . '.SingleVariantSettings', 'Single variant settings'),
+        ]);
     }
     
     /**
@@ -330,25 +359,36 @@ class ProductAttribute extends DataObject
             $fields->dataFieldByName('AllowedUploadFileMimeTypes')->setDescription($this->fieldLabel('AllowedUploadFileMimeTypesDesc'));
             $fields->dataFieldByName('IsUserInputField')->setDescription($this->fieldLabel('IsUserInputFieldDesc'));
             $fields->dataFieldByName('UserInputFieldMustBeFilledIn')->setDescription($this->fieldLabel('UserInputFieldMustBeFilledInDesc'));
-            $fields->dataFieldByName('AdTitle')
-                    ->setDescription($this->fieldLabel('AdTitleDesc'))
-                    ->setRightTitle($this->fieldLabel('AdTitleRightTitle'));
-            $fields->dataFieldByName('Description')->setDescription($this->fieldLabel('DescriptionDesc'));
             $filterToggle = ToggleCompositeField::create(
                     'ProductFilterToggle',
                     $this->fieldLabel('ProductFilterSettings'),
                     [
                         $fields->dataFieldByName('AllowMultipleChoice'),
                         $fields->dataFieldByName('ShowAsNavigationItem'),
-                        $fields->dataFieldByName('NavigationItemTitle'),
                         $fields->dataFieldByName('RequestInProductGroups'),
                     ]
             )->setHeadingLevel(4)->setStartClosed(true);
             $fields->removeByName('AllowMultipleChoice');
             $fields->removeByName('ShowAsNavigationItem');
-            $fields->removeByName('NavigationItemTitle');
             $fields->removeByName('RequestInProductGroups');
             $fields->insertAfter($filterToggle, 'CanBeUsedForFilterWidget');
+            $singleVariantToggle = ToggleCompositeField::create(
+                    'SingleVariantToggle',
+                    $this->fieldLabel('SingleVariantSettings'),
+                    [
+                        $fields->dataFieldByName('IsUserInputField'),
+                        $fields->dataFieldByName('IsUploadField'),
+                        $fields->dataFieldByName('UserInputFieldMustBeFilledIn'),
+                        $fields->dataFieldByName('AllowedUploadFileEndings'),
+                        $fields->dataFieldByName('AllowedUploadFileMimeTypes'),
+                    ]
+            )->setHeadingLevel(4)->setStartClosed(true);
+            $fields->removeByName('IsUserInputField');
+            $fields->removeByName('IsUploadField');
+            $fields->removeByName('UserInputFieldMustBeFilledIn');
+            $fields->removeByName('AllowedUploadFileEndings');
+            $fields->removeByName('AllowedUploadFileMimeTypes');
+            $fields->insertAfter($singleVariantToggle, 'CanBeUsedForSingleVariants');
             if ($this->exists()) {
                 $importListField = TextareaField::create('ImportList', $this->fieldLabel('ImportList'));
                 $importListField->setDescription($this->fieldLabel('ImportListDesc'));
@@ -361,14 +401,35 @@ class ProductAttribute extends DataObject
                 $fields->addFieldToTab('Root.ProductAttributeValues', $importPrefixField);
                 $fields->addFieldToTab('Root.ProductAttributeValues', $importSuffixField);
                 $valueGridField = $fields->dataFieldByName('ProductAttributeValues');
-                if (class_exists('\Symbiote\GridFieldExtensions\GridFieldOrderableRows')) {
-                    $valueGridField->getConfig()->addComponent(new \Symbiote\GridFieldExtensions\GridFieldOrderableRows('Sort'));
-                } elseif (class_exists('\UndefinedOffset\SortableGridField\Forms\GridFieldSortableRows')) {
-                    $valueGridField->getConfig()->addComponent(new \UndefinedOffset\SortableGridField\Forms\GridFieldSortableRows('Sort'));
+                if (class_exists(GridFieldOrderableRows::class)) {
+                    $valueGridField->getConfig()->addComponent(GridFieldOrderableRows::create('Sort'));
+                } elseif (class_exists(GridFieldSortableRows::class)) {
+                    $valueGridField->getConfig()->addComponent(new GridFieldSortableRows('Sort'));
                 }
             }
+            if ($this->ShowAsNavigationItem) {
+                $fields->dataFieldByName('URLSegment')->setDescription($this->fieldLabel('URLSegmentDesc'));
+                if (!empty($this->URLSegment)
+                 && $this->ProductAttributeValues()->exists()
+                ) {
+                    $fields->insertAfter('URLSegment', ReadonlyField::create('ExampleLink', $this->fieldLabel('ExampleLink'), $this->getExampleLink()));
+                    $fields->insertAfter('URLSegment', ReadonlyField::create('URLParameter', $this->fieldLabel('URLParameter'), $this->getURLParameter())->setRightTitle($this->fieldLabel('URLParameterDesc')));
+                }
+            } else {
+                $fields->removeByName('URLSegment');
+            }
+            if ($this->exists()) {
+                $fields->removeByName('Sort');
+            }
         });
-        return DataObjectExtension::getCMSFields($this, 'CanBeUsedForFilterWidget', false);
+        $this->afterExtending('updateCMSFields', function(FieldList $fields) {
+            $fields->dataFieldByName('AdTitle')
+                    ->setDescription($this->fieldLabel('AdTitleDesc'))
+                    ->setRightTitle($this->fieldLabel('AdTitleRightTitle'));
+            $fields->dataFieldByName('Description')->setDescription($this->fieldLabel('DescriptionDesc'));
+            $fields->insertAfter('ShowAsNavigationItem', $fields->dataFieldByName('NavigationItemTitle'));
+        });
+        return parent::getCMSFields();
     }
 
     /**
@@ -422,6 +483,19 @@ class ProductAttribute extends DataObject
         ];
         $this->extend('updateSummaryFields', $summaryFields);
         return $summaryFields;
+    }
+    
+    /**
+     * On before write.
+     * 
+     * @return void
+     */
+    protected function onBeforeWrite() : void
+    {
+        parent::onBeforeWrite();
+        if (empty($this->URLSegment)) {
+            $this->generateURLSegment();
+        }
     }
     
     /**
@@ -517,6 +591,36 @@ class ProductAttribute extends DataObject
     {
         $value = $this->getTranslationFieldValue('Description');
         return (string) $value;
+    }
+    
+    /**
+     * Returns the URL parameter (HTTP GET) for this attribute value.
+     * 
+     * @param ProductAttributeValue $value Value to get link for
+     * 
+     * @return string
+     */
+    public function getURLParameter(ProductAttributeValue $value = null) : string
+    {
+        $link = '';
+        if ($value === null) {
+            $value = $this->ProductAttributeValues()->first();
+        }
+        if ($value instanceof ProductAttributeValue) {
+            $link = "scpa[{$this->URLSegment}]={$value->URLSegment}";
+        }
+        return $link;
+    }
+    
+    /**
+     * Returns the example link including the URL parameter (HTTP GET) for this 
+     * attribute value.
+     * 
+     * @return string
+     */
+    public function getExampleLink() : string
+    {
+        return Director::absoluteURL("?{$this->getURLParameter()}");
     }
     
     /**
@@ -816,6 +920,16 @@ class ProductAttribute extends DataObject
             ]);
         }
         return $fileName;
+    }
+    
+    /**
+     * Returns whether this attribute can be set globally.
+     * 
+     * @return bool
+     */
+    public function isGlobal() : bool
+    {
+        return (bool) $this->ShowAsNavigationItem;
     }
     
     /**

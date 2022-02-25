@@ -5,15 +5,18 @@ namespace SilverCart\ProductAttributes\Model\Product;
 use NumberFormatter;
 use SilverCart\Dev\Tools;
 use SilverCart\Admin\Forms\AlertField;
+use SilverCart\Extensions\Model\FontAwesomeExtension;
 use SilverCart\Forms\FormFields\FieldGroup;
 use SilverCart\Model\Product\Image as SilverCartImage;
 use SilverCart\Model\Product\Product;
-use SilverCart\ORM\DataObjectExtension;
+use SilverCart\Model\Translation\TranslatableDataObjectExtension;
 use SilverStripe\Assets\Image;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\i18n\i18n;
+use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\ORM\Filters\ExactMatchFilter;
@@ -31,10 +34,25 @@ use SilverStripe\ORM\SS_List;
  * @since 30.05.2018
  * @license see license file in modules root directory
  * 
+ * @property string $DefaultModifyTitleAction         Default Modify Title Action
+ * @property string $DefaultModifyTitleValue          Default Modify Title Value
+ * @property string $DefaultModifyPriceAction         Default Modify Price Action
+ * @property string $DefaultModifyPriceValue          Default Modify Price Value
+ * @property string $DefaultModifyProductNumberAction Default Modify ProductNumber Action
+ * @property string $DefaultModifyProductNumberValue  Default Modify ProductNumber Value
+ * @property string $URLSegment                       URLSegment
+ * @property string $Sort                             Sort
+ * 
  * @method ProductAttribute ProductAttribute() Returns the related ProductAttribute
+ * 
+ * @mixin TranslatableDataObjectExtension
+ * @mixin FontAwesomeExtension
  */
 class ProductAttributeValue extends DataObject
 {
+    use \SilverCart\ORM\ExtensibleDataObject;
+    use \SilverCart\Model\URLSegmentable;
+    
     /**
      * Adds this value to or removes this value from the list of globally chosen
      * values.
@@ -80,6 +98,7 @@ class ProductAttributeValue extends DataObject
      * @var array
      */
     private static $db = [
+        'URLSegment'                       => 'Varchar',
         'DefaultModifyTitleAction'         => 'Enum(",add,setTo",null)',
         'DefaultModifyTitleValue'          => 'Varchar(256)',
         'DefaultModifyPriceAction'         => 'Enum(",add,subtract,setTo",null)',
@@ -126,6 +145,8 @@ class ProductAttributeValue extends DataObject
         'FinalModifyPriceValue'          => 'Text',
         'FinalModifyProductNumberAction' => 'Text',
         'FinalModifyProductNumberValue'  => 'Text',
+        'URLParameter'                   => 'Text',
+        'ExampleLink'                    => 'Text',
     ];
     /**
      * default sort
@@ -139,6 +160,27 @@ class ProductAttributeValue extends DataObject
      * @var string
      */
     private static $table_name = 'SilvercartProductAttributeValue';
+    /**
+     * Extensions.
+     * 
+     * @var string[]
+     */
+    private static $extensions = [
+        TranslatableDataObjectExtension::class,
+        FontAwesomeExtension::class,
+    ];
+    /**
+     * Determines to insert the translation CMS fields by TranslatableDataObjectExtension.
+     * 
+     * @var bool
+     */
+    private static $insert_translation_cms_fields = true;
+    /**
+     * Determines to insert the translation CMS fields before this field.
+     * 
+     * @var string
+     */
+    private static $insert_translation_cms_fields_before = 'URLSegment';
 
     /**
      * Returns the translated singular name of the object. If no translation exists
@@ -166,49 +208,43 @@ class ProductAttributeValue extends DataObject
     /**
      * Field labels for display in tables.
      *
-     * @param boolean $includerelations A boolean value to indicate if the labels returned include relation fields
+     * @param bool $includerelations A boolean value to indicate if the labels returned include relation fields
      *
      * @return array
      */
     public function fieldLabels($includerelations = true) : array
     {
-        $fieldLabels = array_merge(
-            parent::fieldLabels($includerelations),
-            Tools::field_labels_for(static::class),
-            [
-                'Title'                                 => _t(static::class . '.TITLE', 'Title'),
-                'ProductAttributeValueTranslations'     => ProductAttributeValueTranslation::singleton()->plural_name(),
-                'ProductAttribute'                      => ProductAttribute::singleton()->singular_name(),
-                'Products'                              => Product::singleton()->plural_name(),
-                'Image'                                 => SilverCartImage::singleton()->singular_name(),
-                'Default'                               => _t(static::class . '.Default', "default"),
-                'DefaultModifyDesc'                     => _t(static::class . '.DefaultModifyDesc', "Will be used as default for related products. Can be overwritten individually for each product."),
-                'DefaultModifyAction'                   => _t(static::class . '.DefaultModifyAction', "Action"),
-                'DefaultModifyActionNone'               => _t(static::class . '.DefaultModifyActionNone', "-none-"),
-                'DefaultModifyValue'                    => _t(static::class . '.DefaultModifyValue', "Value"),
-                'DefaultModifyPrice'                    => _t(static::class . '.DefaultModifyPrice', "Default product price modification"),
-                'DefaultModifyPriceAction'              => _t(static::class . '.DefaultModifyAction', "Action"),
-                'DefaultModifyPriceActionAdd'           => _t(static::class . '.DefaultModifyActionAdd', "Add"),
-                'DefaultModifyPriceActionSetTo'         => _t(static::class . '.DefaultModifyActionSetTo', "Set to"),
-                'DefaultModifyPriceActionSubtract'      => _t(static::class . '.DefaultModifyActionSubtract', "Subtract"),
-                'DefaultModifyPriceValue'               => _t(static::class . '.DefaultModifyValue', "Value"),
-                'DefaultModifyProductNumber'            => _t(static::class . '.DefaultModifyProductNumber', "Default product number modification"),
-                'DefaultModifyProductNumberAction'      => _t(static::class . '.DefaultModifyAction', "Action"),
-                'DefaultModifyProductNumberActionAdd'   => _t(static::class . '.DefaultModifyActionAdd', "Add"),
-                'DefaultModifyProductNumberActionSetTo' => _t(static::class . '.DefaultModifyActionSetTo', "Set to"),
-                'DefaultModifyProductNumberValue'       => _t(static::class . '.DefaultModifyValue', "Value"),
-                'DefaultModifyTitle'                    => _t(static::class . '.DefaultModifyTitle', "Default product title modification"),
-                'DefaultModifyTitleAction'              => _t(static::class . '.DefaultModifyAction', "Action"),
-                'DefaultModifyTitleActionAdd'           => _t(static::class . '.DefaultModifyActionAdd', "Add"),
-                'DefaultModifyTitleActionSetTo'         => _t(static::class . '.DefaultModifyActionSetTo', "Set to"),
-                'DefaultModifyTitleValue'               => _t(static::class . '.DefaultModifyValue', "Value"),
-                'ModifyPrice'                           => _t(static::class . '.ModifyPrice', "Modify product price"),
-                'ModifyProductNumber'                   => _t(static::class . '.ModifyProductNumber', "Modify product number"),
-                'ModifyTitle'                           => _t(static::class . '.ModifyTitle', "Modify product title"),
-            ]
-        );
-        $this->extend('updateFieldLabels', $fieldLabels);
-        return $fieldLabels;
+        return $this->defaultFieldLabels($includerelations, [
+            'Title'                                 => _t(static::class . '.TITLE', 'Title'),
+            'ProductAttributeValueTranslations'     => ProductAttributeValueTranslation::singleton()->plural_name(),
+            'ProductAttribute'                      => ProductAttribute::singleton()->singular_name(),
+            'Products'                              => Product::singleton()->plural_name(),
+            'Image'                                 => SilverCartImage::singleton()->singular_name(),
+            'Default'                               => _t(static::class . '.Default', "default"),
+            'DefaultModifyDesc'                     => _t(static::class . '.DefaultModifyDesc', "Will be used as default for related products. Can be overwritten individually for each product."),
+            'DefaultModifyAction'                   => _t(static::class . '.DefaultModifyAction', "Action"),
+            'DefaultModifyActionNone'               => _t(static::class . '.DefaultModifyActionNone', "-none-"),
+            'DefaultModifyValue'                    => _t(static::class . '.DefaultModifyValue', "Value"),
+            'DefaultModifyPrice'                    => _t(static::class . '.DefaultModifyPrice', "Default product price modification"),
+            'DefaultModifyPriceAction'              => _t(static::class . '.DefaultModifyAction', "Action"),
+            'DefaultModifyPriceActionAdd'           => _t(static::class . '.DefaultModifyActionAdd', "Add"),
+            'DefaultModifyPriceActionSetTo'         => _t(static::class . '.DefaultModifyActionSetTo', "Set to"),
+            'DefaultModifyPriceActionSubtract'      => _t(static::class . '.DefaultModifyActionSubtract', "Subtract"),
+            'DefaultModifyPriceValue'               => _t(static::class . '.DefaultModifyValue', "Value"),
+            'DefaultModifyProductNumber'            => _t(static::class . '.DefaultModifyProductNumber', "Default product number modification"),
+            'DefaultModifyProductNumberAction'      => _t(static::class . '.DefaultModifyAction', "Action"),
+            'DefaultModifyProductNumberActionAdd'   => _t(static::class . '.DefaultModifyActionAdd', "Add"),
+            'DefaultModifyProductNumberActionSetTo' => _t(static::class . '.DefaultModifyActionSetTo', "Set to"),
+            'DefaultModifyProductNumberValue'       => _t(static::class . '.DefaultModifyValue', "Value"),
+            'DefaultModifyTitle'                    => _t(static::class . '.DefaultModifyTitle', "Default product title modification"),
+            'DefaultModifyTitleAction'              => _t(static::class . '.DefaultModifyAction', "Action"),
+            'DefaultModifyTitleActionAdd'           => _t(static::class . '.DefaultModifyActionAdd', "Add"),
+            'DefaultModifyTitleActionSetTo'         => _t(static::class . '.DefaultModifyActionSetTo', "Set to"),
+            'DefaultModifyTitleValue'               => _t(static::class . '.DefaultModifyValue', "Value"),
+            'ModifyPrice'                           => _t(static::class . '.ModifyPrice', "Modify product price"),
+            'ModifyProductNumber'                   => _t(static::class . '.ModifyProductNumber', "Modify product number"),
+            'ModifyTitle'                           => _t(static::class . '.ModifyTitle', "Modify product title"),
+        ]);
     }
     
     /**
@@ -218,49 +254,62 @@ class ProductAttributeValue extends DataObject
      */
     public function getCMSFields() : FieldList
     {
-        $fields = DataObjectExtension::getCMSFields($this);
-        if ($this->ProductAttribute()->CanBeUsedForSingleVariants) {
-            $fields->dataFieldByName('DefaultModifyPriceValue')->setRightTitle($this->fieldLabel('DefaultModifyDesc'));
-            $fields->dataFieldByName('DefaultModifyProductNumberValue')->setRightTitle($this->fieldLabel('DefaultModifyDesc'));
-            $fields->dataFieldByName('DefaultModifyTitleValue')->setRightTitle($this->fieldLabel('DefaultModifyDesc'));
-            
-            $fields->dataFieldByName('DefaultModifyPriceAction')->setHasEmptyDefault(true);
-            $fields->dataFieldByName('DefaultModifyPriceAction')->setEmptyString($this->fieldLabel('DefaultModifyActionNone'));
-            $fields->dataFieldByName('DefaultModifyPriceAction')->setSource(Tools::enum_i18n_labels($this, 'DefaultModifyPriceAction', $this->fieldLabel('DefaultModifyActionNone')));
-            $fields->dataFieldByName('DefaultModifyProductNumberAction')->setHasEmptyDefault(true);
-            $fields->dataFieldByName('DefaultModifyProductNumberAction')->setEmptyString($this->fieldLabel('DefaultModifyActionNone'));
-            $fields->dataFieldByName('DefaultModifyProductNumberAction')->setSource(Tools::enum_i18n_labels($this, 'DefaultModifyProductNumberAction', $this->fieldLabel('DefaultModifyActionNone')));
-            $fields->dataFieldByName('DefaultModifyTitleAction')->setHasEmptyDefault(true);
-            $fields->dataFieldByName('DefaultModifyTitleAction')->setEmptyString($this->fieldLabel('DefaultModifyActionNone'));
-            $fields->dataFieldByName('DefaultModifyTitleAction')->setSource(Tools::enum_i18n_labels($this, 'DefaultModifyTitleAction', $this->fieldLabel('DefaultModifyActionNone')));
-            
-            $priceField = FieldGroup::create('DefaultModifyPrice', $this->fieldLabel('DefaultModifyPrice'), $fields);
-            $priceField->push($fields->dataFieldByName('DefaultModifyPriceAction'));
-            $priceField->push($fields->dataFieldByName('DefaultModifyPriceValue'));
-            $priceField->breakAndPush(AlertField::create('DefaultModifyPriceDesc', $this->fieldLabel('DefaultModifyDesc')));
-            
-            $productNumberField = FieldGroup::create('DefaultModifyProductNumber', $this->fieldLabel('DefaultModifyProductNumber'), $fields);
-            $productNumberField->push($fields->dataFieldByName('DefaultModifyProductNumberAction'));
-            $productNumberField->push($fields->dataFieldByName('DefaultModifyProductNumberValue'));
-            $productNumberField->breakAndPush(AlertField::create('DefaultModifyProductNumberDesc', $this->fieldLabel('DefaultModifyDesc')));
-            
-            $titleField = FieldGroup::create('DefaultModifyTitle', $this->fieldLabel('DefaultModifyTitle'), $fields);
-            $titleField->push($fields->dataFieldByName('DefaultModifyTitleAction'));
-            $titleField->push($fields->dataFieldByName('DefaultModifyTitleValue'));
-            $titleField->breakAndPush(AlertField::create('DefaultModifyTitleDesc', $this->fieldLabel('DefaultModifyDesc')));
-            
-            $fields->addFieldToTab('Root.Main', $priceField);
-            $fields->addFieldToTab('Root.Main', $productNumberField);
-            $fields->addFieldToTab('Root.Main', $titleField);
-        } else {
-            $fields->removeByName('DefaultModifyPriceAction');
-            $fields->removeByName('DefaultModifyPriceValue');
-            $fields->removeByName('DefaultModifyProductNumberAction');
-            $fields->removeByName('DefaultModifyProductNumberValue');
-            $fields->removeByName('DefaultModifyTitleAction');
-            $fields->removeByName('DefaultModifyTitleValue');
-        }
-        return $fields;
+        $this->beforeUpdateCMSFields(function(FieldList $fields) {
+            if ($this->ProductAttribute()->CanBeUsedForSingleVariants) {
+                $fields->dataFieldByName('DefaultModifyPriceValue')->setRightTitle($this->fieldLabel('DefaultModifyDesc'));
+                $fields->dataFieldByName('DefaultModifyProductNumberValue')->setRightTitle($this->fieldLabel('DefaultModifyDesc'));
+                $fields->dataFieldByName('DefaultModifyTitleValue')->setRightTitle($this->fieldLabel('DefaultModifyDesc'));
+
+                $fields->dataFieldByName('DefaultModifyPriceAction')->setHasEmptyDefault(true);
+                $fields->dataFieldByName('DefaultModifyPriceAction')->setEmptyString($this->fieldLabel('DefaultModifyActionNone'));
+                $fields->dataFieldByName('DefaultModifyPriceAction')->setSource(Tools::enum_i18n_labels($this, 'DefaultModifyPriceAction', $this->fieldLabel('DefaultModifyActionNone')));
+                $fields->dataFieldByName('DefaultModifyProductNumberAction')->setHasEmptyDefault(true);
+                $fields->dataFieldByName('DefaultModifyProductNumberAction')->setEmptyString($this->fieldLabel('DefaultModifyActionNone'));
+                $fields->dataFieldByName('DefaultModifyProductNumberAction')->setSource(Tools::enum_i18n_labels($this, 'DefaultModifyProductNumberAction', $this->fieldLabel('DefaultModifyActionNone')));
+                $fields->dataFieldByName('DefaultModifyTitleAction')->setHasEmptyDefault(true);
+                $fields->dataFieldByName('DefaultModifyTitleAction')->setEmptyString($this->fieldLabel('DefaultModifyActionNone'));
+                $fields->dataFieldByName('DefaultModifyTitleAction')->setSource(Tools::enum_i18n_labels($this, 'DefaultModifyTitleAction', $this->fieldLabel('DefaultModifyActionNone')));
+
+                $priceField = FieldGroup::create('DefaultModifyPrice', $this->fieldLabel('DefaultModifyPrice'), $fields);
+                $priceField->push($fields->dataFieldByName('DefaultModifyPriceAction'));
+                $priceField->push($fields->dataFieldByName('DefaultModifyPriceValue'));
+                $priceField->breakAndPush(AlertField::create('DefaultModifyPriceDesc', $this->fieldLabel('DefaultModifyDesc')));
+
+                $productNumberField = FieldGroup::create('DefaultModifyProductNumber', $this->fieldLabel('DefaultModifyProductNumber'), $fields);
+                $productNumberField->push($fields->dataFieldByName('DefaultModifyProductNumberAction'));
+                $productNumberField->push($fields->dataFieldByName('DefaultModifyProductNumberValue'));
+                $productNumberField->breakAndPush(AlertField::create('DefaultModifyProductNumberDesc', $this->fieldLabel('DefaultModifyDesc')));
+
+                $titleField = FieldGroup::create('DefaultModifyTitle', $this->fieldLabel('DefaultModifyTitle'), $fields);
+                $titleField->push($fields->dataFieldByName('DefaultModifyTitleAction'));
+                $titleField->push($fields->dataFieldByName('DefaultModifyTitleValue'));
+                $titleField->breakAndPush(AlertField::create('DefaultModifyTitleDesc', $this->fieldLabel('DefaultModifyDesc')));
+
+                $fields->addFieldToTab('Root.Main', $priceField);
+                $fields->addFieldToTab('Root.Main', $productNumberField);
+                $fields->addFieldToTab('Root.Main', $titleField);
+            } else {
+                $fields->removeByName('DefaultModifyPriceAction');
+                $fields->removeByName('DefaultModifyPriceValue');
+                $fields->removeByName('DefaultModifyProductNumberAction');
+                $fields->removeByName('DefaultModifyProductNumberValue');
+                $fields->removeByName('DefaultModifyTitleAction');
+                $fields->removeByName('DefaultModifyTitleValue');
+            }
+            if ($this->ProductAttribute()->ShowAsNavigationItem) {
+                $fields->dataFieldByName('URLSegment')->setDescription($this->fieldLabel('URLSegmentDesc'));
+                if (!empty($this->URLSegment)) {
+                    $fields->insertAfter('URLSegment', ReadonlyField::create('ExampleLink', $this->fieldLabel('ExampleLink'), $this->getExampleLink()));
+                    $fields->insertAfter('URLSegment', ReadonlyField::create('URLParameter', $this->fieldLabel('URLParameter'), $this->getURLParameter())->setRightTitle($this->fieldLabel('URLParameterDesc')));
+                }
+            } else {
+                $fields->removeByName('URLSegment');
+            }
+            if ($this->exists()) {
+                $fields->removeByName('Sort');
+            }
+        });
+        return parent::getCMSFields();
     }
 
     /**
@@ -297,6 +346,54 @@ class ProductAttributeValue extends DataObject
         ];
         $this->extend('updateSummaryFields', $summaryFields);
         return $summaryFields;
+    }
+    
+    /**
+     * On before write.
+     * 
+     * @return void
+     */
+    protected function onBeforeWrite() : void
+    {
+        parent::onBeforeWrite();
+        if (empty($this->URLSegment)) {
+            $this->generateURLSegment();
+        }
+    }
+    
+    /**
+     * Updates the $records base to validate the URLSegment for.
+     * 
+     * @param DataList &$records Records to update
+     * 
+     * @return void
+     */
+    public function updateGenerateURLSegmentRecords(DataList &$records) : void
+    {
+        if ($this->ProductAttribute()->exists()) {
+            $records = $records->exclude('ProductAttributeID', $this->ProductAttributeID);
+        }
+    }
+    
+    /**
+     * Returns the URL parameter (HTTP GET) for this attribute value.
+     * 
+     * @return string
+     */
+    public function getURLParameter() : string
+    {
+        return "scpa[{$this->ProductAttribute()->URLSegment}]={$this->URLSegment}";
+    }
+    
+    /**
+     * Returns the example link including the URL parameter (HTTP GET) for this 
+     * attribute value.
+     * 
+     * @return string
+     */
+    public function getExampleLink() : string
+    {
+        return Director::absoluteURL("?{$this->getURLParameter()}");
     }
     
     /**

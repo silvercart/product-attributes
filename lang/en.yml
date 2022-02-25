@@ -26,6 +26,8 @@ en:
     AllowedUploadFileEndingsDesc: 'Add one file ending per line (e.g. "jpg", "jpeg", "png").'
     AllowedUploadFileMimeTypes: 'Allowed upload file mime types'
     AllowedUploadFileMimeTypesDesc: 'Add one file mime type per line (e.g. "image/jpeg", "image/png").'
+    AllowMultipleChoice: 'Allow multiple choice'
+    AllowMultipleChoiceDesc: 'If enabled, e.g. a color filter can be filtered by multiple colors at once. If not, you can only filter by a single color.'
     CAN_BE_USED_FOR_DATASHEET: 'Use for data sheet'
     CAN_BE_USED_FOR_FILTERWIDGET: 'Use for product filter'
     CAN_BE_USED_FOR_VARIANTS: 'Can be used for multi-product-variants'
@@ -57,13 +59,20 @@ en:
     IsUploadFieldDesc: 'If you are using the upload field, the customer can upload a custom file before adding a product to cart.'
     IsUserInputField: 'Is user input field'
     IsUserInputFieldDesc: 'If you are using the user input field, the customer can enter a custom text before adding a product to cart (z.B. "engraving"/"t-shirt overprint").'
+    NavigationItemTitle: 'Navigation item title'
     PLURALNAME: 'Product Attributes'
     PLURALTITLE: 'Plural title'
+    ProductFilterSettings: 'Filter settings'
     RequestInProductGroups: 'Request when entering a product group'
+    RequestInProductGroupsDesc: '"Show as a main navigation item" must be enabled. As soon as a customer enters a product group, a popup with this attributes choices appears, if not happened yet.'
     ShowAsNavigationItem: 'Show as a main navigation item'
+    ShowAsNavigationItemDesc: '"Use for product filter" must be enabled. If enabled, this attribute can be chosen on every shop page.'
+    SingleVariantSettings: 'Single variant settings'
     SINGULARNAME: 'Product Attribute'
     TABNAME: Attributes
     TITLE: Title
+    URLSegment: 'URL parameter'
+    URLSegmentDesc: 'The URL parameter can be used together with a related attribute value parameter as a HTTP GET parameter, using the schema above. It can be added to any shop URL. When usng such an URL, the attribute value will be automatically set as filter value.'
     UserInputFieldMustBeFilledIn: 'User input / upload is obligatory'
     UserInputFieldMustBeFilledInDesc: 'If this is active, the customer has to enter a custom text / upload before he is able to add the related product to cart.'
     unlimited: unlimited
@@ -96,6 +105,7 @@ en:
     DefaultModifyTitleAction: 'Default product title modification action'
     DefaultModifyTitleValue: 'Default product title modification value'
     DefaultModifyValue: Value
+    ExampleLink: 'Example link'
     ModifyPrice: 'Modify product price'
     ModifyProductNumber: 'Modify product number'
     ModifyTitle: 'Modify product title'
@@ -103,6 +113,10 @@ en:
     SINGULARNAME: 'Product Attribute Value'
     TABNAME: Values
     TITLE: Title
+    URLParameter: 'Complete URL parameter'
+    URLParameterDesc: 'Including the URL parameter of the related attribute.'
+    URLSegment: 'URL parameter'
+    URLSegmentDesc: 'The URL parameter can be used together with the related attribute parameter as a HTTP GET parameter, using the schema above. It can be added to any shop URL. When usng such an URL, the attribute value will be automatically set as filter value.'
   SilverCart\ProductAttributes\Model\Product\ProductAttributeValueTranslation:
     PLURALNAME: Translations
     SINGULARNAME: Translation
