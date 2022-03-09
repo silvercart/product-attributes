@@ -113,9 +113,7 @@ class ProductAttributeSet extends DataObject
     public function fieldLabels($includerelations = true) : array
     {
         return $this->defaultFieldLabels($includerelations, [
-            'Title'                           => _t(static::class . '.TITLE', 'Title'),
-            'ProductAttributeSetTranslations' => ProductAttributeSetTranslation::singleton()->plural_name(),
-            'ProductAttributes'               => ProductAttribute::singleton()->plural_name(),
+            'Title' => _t(static::class . '.TITLE', 'Title'),
         ]);
     }
     

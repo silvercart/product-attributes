@@ -216,10 +216,6 @@ class ProductAttributeValue extends DataObject
     {
         return $this->defaultFieldLabels($includerelations, [
             'Title'                                 => _t(static::class . '.TITLE', 'Title'),
-            'ProductAttributeValueTranslations'     => ProductAttributeValueTranslation::singleton()->plural_name(),
-            'ProductAttribute'                      => ProductAttribute::singleton()->singular_name(),
-            'Products'                              => Product::singleton()->plural_name(),
-            'Image'                                 => SilverCartImage::singleton()->singular_name(),
             'Default'                               => _t(static::class . '.Default', "default"),
             'DefaultModifyDesc'                     => _t(static::class . '.DefaultModifyDesc', "Will be used as default for related products. Can be overwritten individually for each product."),
             'DefaultModifyAction'                   => _t(static::class . '.DefaultModifyAction', "Action"),
