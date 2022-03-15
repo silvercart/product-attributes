@@ -490,7 +490,7 @@ class ProductAttribute extends DataObject
     {
         parent::onBeforeWrite();
         if (empty($this->URLSegment)) {
-            $this->generateURLSegment();
+            $this->generateURLSegment(false);
         }
     }
     
