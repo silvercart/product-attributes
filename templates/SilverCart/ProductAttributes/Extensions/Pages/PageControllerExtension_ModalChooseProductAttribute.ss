@@ -5,9 +5,9 @@
         <% end_if %>
     <div class="row no-gutters-">
         <% loop $ProductAttributeValues %>
-        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-20">
             <% if $IsGloballyChosen %>
-            <div class="container-choose-product-attribute mr-3px border p-relative hover-shadow" style="transition: all 0.5s;">
+            <div class="container-choose-product-attribute h-100 mr-3px border p-relative hover-shadow" style="transition: all 0.5s;">
                 <span class="container-chosen p-absolute l-5 t-5 text-success bg-white border border-success rounded-circle p-5px"><span class="fas fa-check fa-2x"></span></span>
             <% if $Image %>
                 <img src="{$Image.Fill(333,185).URL}" class="img-fluid" alt="<% if $Image.Title %>{$Image.Title.ATT}<% else %>{$Title.ATT}<% end_if %>">
