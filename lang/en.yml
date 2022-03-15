@@ -105,6 +105,7 @@ en:
     DefaultModifyTitleAction: 'Default product title modification action'
     DefaultModifyTitleValue: 'Default product title modification value'
     DefaultModifyValue: Value
+    DisableGlobally: 'Disable as main navigation item. Option will still be displayed but can''t be chosen.'
     ExampleLink: 'Example link'
     ModifyPrice: 'Modify product price'
     ModifyProductNumber: 'Modify product number'

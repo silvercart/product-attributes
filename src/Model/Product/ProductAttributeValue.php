@@ -99,6 +99,7 @@ class ProductAttributeValue extends DataObject
      */
     private static $db = [
         'URLSegment'                       => 'Varchar',
+        'DisableGlobally'                  => 'Boolean',
         'DefaultModifyTitleAction'         => 'Enum(",add,setTo",null)',
         'DefaultModifyTitleValue'          => 'Varchar(256)',
         'DefaultModifyPriceAction'         => 'Enum(",add,subtract,setTo",null)',
@@ -251,6 +252,9 @@ class ProductAttributeValue extends DataObject
     public function getCMSFields() : FieldList
     {
         $this->beforeUpdateCMSFields(function(FieldList $fields) {
+            if (!$this->ProductAttribute()->isGlobal()) {
+                $fields->removeByName('DisableGlobally');
+            }
             if ($this->ProductAttribute()->CanBeUsedForSingleVariants) {
                 $fields->dataFieldByName('DefaultModifyPriceValue')->setRightTitle($this->fieldLabel('DefaultModifyDesc'));
                 $fields->dataFieldByName('DefaultModifyProductNumberValue')->setRightTitle($this->fieldLabel('DefaultModifyDesc'));
@@ -353,7 +357,7 @@ class ProductAttributeValue extends DataObject
     {
         parent::onBeforeWrite();
         if (empty($this->URLSegment)) {
-            $this->generateURLSegment();
+            $this->generateURLSegment(false);
         }
     }
     

@@ -105,6 +105,7 @@ de:
     DefaultModifyTitleAction: 'Anpassung Artikeltitel Aktion'
     DefaultModifyTitleValue: 'Anpassung Artikeltitel Wert'
     DefaultModifyValue: Wert
+    DisableGlobally: 'Für die globale Auswahl (Auswahl im Hauptmenü) deaktivieren. Option wird weiterhin angezegt, kann aber nicht gewählt werden.'
     ExampleLink: Beispiel-Link
     ModifyPrice: 'Anpassung Artikelpreis'
     ModifyProductNumber: 'Anpassung Artikelnummer'
