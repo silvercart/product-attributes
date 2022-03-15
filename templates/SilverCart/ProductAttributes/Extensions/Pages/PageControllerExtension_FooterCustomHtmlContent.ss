@@ -22,7 +22,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body pb-0">
+            <div class="modal-body">
                 <div class="text-center my-5 py-5"><span class="spinner spinner-border"></span></div>
             </div>
         <% if $AllowMultipleChoice %>

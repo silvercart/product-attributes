@@ -13,6 +13,7 @@ silvercart.attributes.navigationItem = (function () {
             {
                 selector:                        '#modal-choose-product-attribute',
                 containerChooseProductAttribute: '.container-choose-product-attribute',
+                containerChosen:                 '.container-chosen',
                 btnChooseProductAttribute:       '.btn-choose-product-attribute',
             },
         },
@@ -51,7 +52,7 @@ silvercart.attributes.navigationItem = (function () {
                     event.preventDefault();
                     var btn = $(this);
                     if (!property.allowMultipleChoice
-                     && $(btn).hasClass('btn-success')
+                     && $(btn).hasClass('chosen')
                     ) {
                         setTimeout(function() {
                             $(selector.modalChooseProductAttribute.selector).modal('hide');
@@ -60,7 +61,7 @@ silvercart.attributes.navigationItem = (function () {
                     }
                     btn.attr('disabled', 'disabled');
                     btn.addClass('disabled');
-                    btn.prepend('<span class="spinner-border spinner-border-sm"></span>');
+                    btn.prepend('<span class="spinner-border spinner-border-sm p-absolute l-5 b-10"></span>');
                     $(btn).closest(selector.modalChooseProductAttribute.containerChooseProductAttribute).css({transistion: 'background-color 0.5s'});
                     $.ajax({
                         url:   btn.attr('href'),
@@ -77,32 +78,21 @@ silvercart.attributes.navigationItem = (function () {
                             $(selector.navItem).replaceWith(response.HTMLNavItem);
                             if (!property.allowMultipleChoice) {
                                 $(selector.modalChooseProductAttribute.btnChooseProductAttribute).each(function() {
-                                    var altText  = $(this).data('alt-text'),
-                                        text     = $(this).html();
                                     if ($(this).data('item-id') === $(btn).data('item-id')) {
                                         return;
                                     }
-                                    if ($(this).hasClass('btn-success')) {
-                                        $(this).closest(selector.modalChooseProductAttribute.containerChooseProductAttribute)
-                                                .removeClass('bg-success')
-                                                .removeClass('text-white');
-                                        $(this)
-                                                .removeClass('btn-success')
-                                                .addClass('btn-outline-success')
-                                                .data('alt-text', text)
-                                                .html(altText);
+                                    if ($(this).hasClass('chosen')) {
+                                        $(selector.modalChooseProductAttribute.containerChosen, $(this).closest(selector.modalChooseProductAttribute.containerChooseProductAttribute))
+                                                .addClass('d-none');
+                                        $(this).removeClass('chosen');
                                     }
                                 });
                             }
                             if (response.Added) {
-                                $(btn).closest(selector.modalChooseProductAttribute.containerChooseProductAttribute)
-                                        .addClass('bg-success')
-                                        .addClass('text-white');
+                                $(selector.modalChooseProductAttribute.containerChosen, btn.closest(selector.modalChooseProductAttribute.containerChooseProductAttribute))
+                                        .removeClass('d-none');
                                 $(btn)
-                                        .removeClass('btn-outline-success')
-                                        .addClass('btn-success')
-                                        .data('alt-text', text)
-                                        .html(altText);
+                                        .addClass('chosen');
                                 if (typeof input === "object"
                                  && input.length > 0
                                  && !input.is(':checked')
@@ -115,14 +105,10 @@ silvercart.attributes.navigationItem = (function () {
                                     }, 500);
                                 }
                             } else {
-                                $(btn).closest(selector.modalChooseProductAttribute.containerChooseProductAttribute)
-                                        .removeClass('bg-success')
-                                        .removeClass('text-white');
+                                $(selector.modalChooseProductAttribute.containerChosen, btn.closest(selector.modalChooseProductAttribute.containerChooseProductAttribute))
+                                        .addClass('d-none');
                                 $(btn)
-                                        .removeClass('btn-success')
-                                        .addClass('btn-outline-success')
-                                        .data('alt-text', text)
-                                        .html(altText);
+                                        .removeClass('chosen');
                                 if (typeof input === "object"
                                  && input.length > 0
                                  && input.is(':checked')
