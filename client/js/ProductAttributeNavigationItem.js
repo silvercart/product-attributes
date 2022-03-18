@@ -3,6 +3,7 @@ var silvercart            = silvercart            ? silvercart            : [];
 silvercart.attributes.navigationItem = (function () {
     var property = {
             allowMultipleChoice: false,
+            reloadPage:          false,
         },
         selector = {
             container:                   '#container-choose-product-attribute',
@@ -71,8 +72,6 @@ silvercart.attributes.navigationItem = (function () {
                         },
                         success: function(data) {
                             var response = $.parseJSON(data),
-                                altText  = $(btn).data('alt-text'),
-                                text     = $(btn).html(),
                                 itemID   = $(btn).data('item-id'),
                                 input    = $('input#silvercart-product-attribute-value-' + itemID);
                             $(selector.navItem).replaceWith(response.HTMLNavItem);
@@ -100,9 +99,14 @@ silvercart.attributes.navigationItem = (function () {
                                     input.trigger('click');
                                 }
                                 if (!property.allowMultipleChoice) {
-                                    setTimeout(function() {
-                                        $(selector.modalChooseProductAttribute.selector).modal('hide');
-                                    }, 500);
+                                    if (property.reloadPage) {
+                                        location.reload();
+                                        return;
+                                    } else {
+                                        setTimeout(function() {
+                                            $(selector.modalChooseProductAttribute.selector).modal('hide');
+                                        }, 500);
+                                    }
                                 }
                             } else {
                                 $(selector.modalChooseProductAttribute.containerChosen, btn.closest(selector.modalChooseProductAttribute.containerChooseProductAttribute))
@@ -158,6 +162,7 @@ silvercart.attributes.navigationItem = (function () {
                         $(selector.modalChooseProductAttribute.selector).modal('show');
                     }
                     property.allowMultipleChoice = parseInt($(selector.modalChooseProductAttribute.selector).data('allow-multiple-choice')) === 1;
+                    property.reloadPage          = parseInt($(selector.modalChooseProductAttribute.selector).data('reload-page')) === 1;
                 }
             },
             reload: function()

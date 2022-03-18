@@ -40,6 +40,8 @@ en:
     CanBeUsedForVariantsShort: Multi-Variants
     Description: Description
     DescriptionDesc: 'Information text to display at the customer input field.'
+    DisableFilterReset: 'Disable "Clear" function'
+    DisableFilterResetDesc: 'As soon as chosen, this attribute can''t be cleared out of the filter anymore. The value can still be changed. Works only if "Allow multiple choice" is disabled.'
     DisplayConversionFactor: 'Conversion factor'
     DisplayConversionUnit: 'Display Unit'
     DisplayConversionUnitDesc: 'e.g. "GB", "MB", "cm", "€"'

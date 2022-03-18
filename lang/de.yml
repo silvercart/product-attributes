@@ -40,6 +40,8 @@ de:
     CanBeUsedForVariantsShort: Multi-Varianten
     Description: Beschreibung
     DescriptionDesc: 'Beschreibungstext zur Anzeige am Kunden-Eingabefeld.'
+    DisableFilterReset: '"Auswahl aufheben" deaktivieren'
+    DisableFilterResetDesc: 'Einmal ausgewählt, kann dieses Merkmal nicht mehr deaktiviert werden, sondern nur noch geändert. Funktioniert nur, wenn die Option "Mehrfachauswahl erlauben" deaktiviert ist.'
     DisplayConversionFactor: Umrechnungsfaktor
     DisplayConversionUnit: 'Anzeige Einheit'
     DisplayConversionUnitDesc: 'z.B. "GB", "MB", "cm", "€"'

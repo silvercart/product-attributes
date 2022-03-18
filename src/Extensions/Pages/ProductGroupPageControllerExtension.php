@@ -10,7 +10,6 @@ use SilverCart\ProductAttributes\Model\Product\ProductAttributeValue;
 use SilverCart\ProductAttributes\Model\Widgets\ProductAttributeFilterWidget;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
-use SilverStripe\Core\Extension;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DB;
@@ -28,7 +27,7 @@ use SilverStripe\View\ArrayData;
  * 
  * @property \SilverCart\Model\Pages\ProductGroupPageController $owner Owner
  */
-class ProductGroupPageControllerExtension extends Extension
+class ProductGroupPageControllerExtension extends GlobalProductAttributesControllerExtension
 {
     use \SilverCart\ProductAttributes\Control\PriceRangeController;
     
@@ -501,42 +500,5 @@ class ProductGroupPageControllerExtension extends Extension
     {
         Tools::Session()->set(static::SESSION_KEY_FILTER_WIDGET . '.PreviousSessionKey', $previousSessionKey);
         Tools::saveSession();
-    }
-    
-    /**
-     * Returns all product attributes to request in product groups.
-     * 
-     * @return DataList
-     */
-    public function ProductAttributeRequestInProductGroupsItems() : DataList
-    {
-        return ProductAttribute::get()->filter('RequestInProductGroups', true);
-    }
-    
-    /**
-     * Returns the first product attribute to request in product groups.
-     * 
-     * @return DataList
-     */
-    public function ProductAttributeRequestInProductGroupsItem() : ?ProductAttribute
-    {
-        return $this->ProductAttributeRequestInProductGroupsItems()->first();
-    }
-    
-    /**
-     * Returns whether to show the modal to choose a lobal product attribute.
-     * 
-     * @return bool
-     */
-    public function ShowChooseGlobalProductAttributesModal() : bool
-    {
-        $show = false;
-        $item = $this->ProductAttributeRequestInProductGroupsItem();
-        if ($item !== null
-         && !$item->HasGloballyChosenValues()
-        ) {
-            $show = true;
-        }
-        return $show;
     }
 }

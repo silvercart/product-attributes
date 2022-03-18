@@ -82,6 +82,33 @@ class ProductAttribute extends DataObject
      * @var ProductAttribute|null
      */
     protected static $global = null;
+    
+    /**
+     * Applies the global filter attributes on the given $products list.
+     * 
+     * @param SS_List $products Product list to filter
+     * 
+     * @return SS_List
+     */
+    public static function filterProductsGlobally(SS_List $products) : SS_List
+    {
+        if ($products instanceof DataList) {
+            $filterValues = [];
+            foreach (self::getGloballyChosen() as $attributeID => $valueIDs) {
+                $filterValues = array_merge($filterValues, $valueIDs);
+            }
+            if (count($filterValues) > 0) {
+                $filterValuesString         = "'" . implode("','", $filterValues) . "'";
+                $productTable               = Product::config()->table_name;
+                $productAttributeValueTable = ProductAttributeValue::config()->table_name;
+                $tableAlias                 = 'P_PAV';
+                return $products
+                        ->leftJoin("{$productTable}_ProductAttributeValues", "{$tableAlias}.{$productTable}ID = {$productTable}.ID", $tableAlias)
+                        ->where("{$tableAlias}.{$productAttributeValueTable}ID IN ({$filterValuesString})");
+            }
+        }
+        return $products;
+    }
 
     /**
      * Returns the gloablly chosen attributes.
@@ -160,6 +187,7 @@ class ProductAttribute extends DataObject
      */
     private static $db = [
         'AllowMultipleChoice'          => 'Boolean(1)',
+        'DisableFilterReset'           => 'Boolean(0)',
         'ShowAsNavigationItem'         => 'Boolean(0)',
         'RequestInProductGroups'       => 'Boolean(0)',
         'CanBeUsedForFilterWidget'     => 'Boolean(1)',
@@ -348,6 +376,7 @@ class ProductAttribute extends DataObject
     public function getCMSFields() : FieldList
     {
         $this->beforeUpdateCMSFields(function(FieldList $fields) {
+            $fields->dataFieldByName('DisableFilterReset')->setDescription($this->fieldLabel('DisableFilterResetDesc'));
             $fields->dataFieldByName('CanBeUsedForVariants')->setDescription($this->fieldLabel('CanBeUsedForVariantsDesc'));
             $fields->dataFieldByName('CanBeUsedForSingleVariants')->setDescription($this->fieldLabel('CanBeUsedForSingleVariantsDesc'));
             $fields->dataFieldByName('IsUploadField')->setDescription($this->fieldLabel('IsUploadFieldDesc'));
@@ -360,11 +389,13 @@ class ProductAttribute extends DataObject
                     $this->fieldLabel('ProductFilterSettings'),
                     [
                         $fields->dataFieldByName('AllowMultipleChoice'),
+                        $fields->dataFieldByName('DisableFilterReset'),
                         $fields->dataFieldByName('ShowAsNavigationItem'),
                         $fields->dataFieldByName('RequestInProductGroups'),
                     ]
             )->setHeadingLevel(4)->setStartClosed(true);
             $fields->removeByName('AllowMultipleChoice');
+            $fields->removeByName('DisableFilterReset');
             $fields->removeByName('ShowAsNavigationItem');
             $fields->removeByName('RequestInProductGroups');
             $fields->insertAfter($filterToggle, 'CanBeUsedForFilterWidget');
