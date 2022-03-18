@@ -109,6 +109,26 @@ class ProductAttribute extends DataObject
         }
         return $products;
     }
+    
+    /**
+     * Checks whether the global filter matches with the given $product.
+     * 
+     * @param Product $product Product to check
+     * 
+     * @return SS_List
+     */
+    public static function productMatchesGlobally(Product $product) : bool
+    {
+        $match        = true;
+        $filterValues = [];
+        foreach (self::getGloballyChosen() as $attributeID => $valueIDs) {
+            $filterValues = array_merge($filterValues, $valueIDs);
+        }
+        if (count($filterValues) > 0) {
+            $match = $product->ProductAttributeValues()->filter('ID', $filterValues)->exists();
+        }
+        return $match;
+    }
 
     /**
      * Returns the gloablly chosen attributes.
