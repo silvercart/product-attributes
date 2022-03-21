@@ -113,6 +113,8 @@ en:
     ModifyProductNumber: 'Modify product number'
     ModifyTitle: 'Modify product title'
     PLURALNAME: 'Product Attribute Values'
+    ProductImportList: 'Import products'
+    ProductImportListDesc: 'Add one product number per line into this field to import many product relations at once.'
     SINGULARNAME: 'Product Attribute Value'
     TABNAME: Values
     TITLE: Title

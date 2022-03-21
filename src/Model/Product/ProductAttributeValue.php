@@ -7,7 +7,6 @@ use SilverCart\Dev\Tools;
 use SilverCart\Admin\Forms\AlertField;
 use SilverCart\Extensions\Model\FontAwesomeExtension;
 use SilverCart\Forms\FormFields\FieldGroup;
-use SilverCart\Model\Product\Image as SilverCartImage;
 use SilverCart\Model\Product\Product;
 use SilverCart\Model\Translation\TranslatableDataObjectExtension;
 use SilverStripe\Assets\Image;
@@ -15,6 +14,7 @@ use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\ReadonlyField;
+use SilverStripe\Forms\TextareaField;
 use SilverStripe\i18n\i18n;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
@@ -241,6 +241,8 @@ class ProductAttributeValue extends DataObject
             'ModifyPrice'                           => _t(static::class . '.ModifyPrice', "Modify product price"),
             'ModifyProductNumber'                   => _t(static::class . '.ModifyProductNumber', "Modify product number"),
             'ModifyTitle'                           => _t(static::class . '.ModifyTitle', "Modify product title"),
+            'ProductImportList'                     => _t(static::class . '.ProductImportList', 'Import products'),
+            'ProductImportListDesc'                 => _t(static::class . '.ProductImportListDesc', 'Add one product number per line into this field to import many product relations at once.'),
         ]);
     }
     
@@ -308,6 +310,9 @@ class ProductAttributeValue extends DataObject
             if ($this->exists()) {
                 $fields->removeByName('Sort');
             }
+            $productImportListField = TextareaField::create('ProductImportList', $this->fieldLabel('ProductImportList'));
+            $productImportListField->setDescription($this->fieldLabel('ProductImportListDesc'));
+            $fields->addFieldToTab('Root.Products', $productImportListField);
         });
         return parent::getCMSFields();
     }
@@ -358,6 +363,38 @@ class ProductAttributeValue extends DataObject
         parent::onBeforeWrite();
         if (empty($this->URLSegment)) {
             $this->generateURLSegment(false);
+        }
+    }
+    
+    /**
+     * Check for import values after writing an attribute in backend.
+     * 
+     * @return void
+     */
+    protected function onAfterWrite() : void
+    {
+        parent::onAfterWrite();
+        $request    = Controller::curr()->getRequest();
+        $importList = $request->postVar('ProductImportList');
+        if (!is_null($importList)
+         && !empty($importList)
+        ) {
+            $productNumbers = explode(PHP_EOL, $importList);
+            foreach ($productNumbers as $productNumber) {
+                $productNumber = trim($productNumber);
+                if (empty($productNumber)) {
+                    continue;
+                }
+                if ($this->Products()->find('ProductNumberShop', $productNumber)) {
+                    continue;
+                }
+                $product = Product::get_by_product_number($productNumber);
+                if ($product instanceof Product
+                 && $product->exists()
+                ) {
+                    $this->Products()->add($product);
+                }
+            }
         }
     }
     

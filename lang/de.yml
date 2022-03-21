@@ -113,6 +113,8 @@ de:
     ModifyProductNumber: 'Anpassung Artikelnummer'
     ModifyTitle: 'Anpassung Artikeltitel'
     PLURALNAME: Artikelmerkmal-Werte
+    ProductImportList: 'Artikel importieren'
+    ProductImportListDesc: 'Fügen Sie hier eine Liste von Artikelnummern ein, die Sie mit diesem Merkmal verknüpfen möchten. Bitte beachten Sie, dass je Zeile eine Artikelnummer eingefügt wird.'
     SINGULARNAME: Artikelmerkmal-Wert
     TABNAME: Werte
     TITLE: Name
