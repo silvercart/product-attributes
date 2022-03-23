@@ -54,6 +54,7 @@ class ActionHandlerExtension extends Extension
             return HTTPResponse::create(json_encode([
                 'Added'       => $added,
                 'HTMLNavItem' => (string) $chosenValue->ProductAttribute()->forTemplate('HeaderNavItem'),
+                'URLSegment'  => (string) $chosenValue->ProductAttribute()->URLSegment,
             ]));
         } else {
             return $this->owner->redirectBack();

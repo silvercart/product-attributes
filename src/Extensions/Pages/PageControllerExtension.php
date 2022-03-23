@@ -82,7 +82,9 @@ class PageControllerExtension extends Extension
                 $attribute = ProductAttribute::getByURLSegment($attributeSegment);
                 if ($attribute instanceof ProductAttribute) {
                     $value = ProductAttributeValue::getByURLSegment($valueSegment, ['ProductAttributeID' => $attribute->ID]);
-                    if ($value instanceof ProductAttributeValue) {
+                    if ($value instanceof ProductAttributeValue
+                     && !$value->IsGloballyChosen()
+                    ) {
                         $value->chooseGlobally();
                     }
                 }

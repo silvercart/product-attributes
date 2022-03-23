@@ -100,7 +100,25 @@ silvercart.attributes.navigationItem = (function () {
                                 }
                                 if (!property.allowMultipleChoice) {
                                     if (property.reloadPage) {
-                                        location.reload();
+                                        var target     = location.origin + location.pathname,
+                                            search     = location.search,
+                                            urlParams  = new URLSearchParams(search),
+                                            urlSegment = response.URLSegment,
+                                            value      = urlParams.get('scpa[' + urlSegment + ']');
+                                        search = search.replace('&scpasm=1', '');
+                                        search = search.replace('scpasm=1', '');
+                                        if (value !== null) {
+                                            search = search.replace('&scpa%5B' + urlSegment + '%5D=' + value, '');
+                                            search = search.replace('scpa%5B' + urlSegment + '%5D=' + value, '');
+                                            search = search.replace('&scpa[' + urlSegment + ']=' + value, '');
+                                            search = search.replace('scpa[' + urlSegment + ']=' + value, '');
+                                        }
+                                        search = search.replace('?&', '?');
+                                        if (search === '?') {
+                                            location.href = target;
+                                        } else {
+                                            location.href = target + search;
+                                        }
                                         return;
                                     } else {
                                         setTimeout(function() {
