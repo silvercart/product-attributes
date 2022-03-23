@@ -3,6 +3,7 @@
 namespace SilverCart\ProductAttributes\Extensions\Pages;
 
 use SilverCart\ProductAttributes\Model\Product\ProductAttribute;
+use SilverStripe\Control\Controller;
 use SilverStripe\Core\Extension;
 use SilverStripe\ORM\DataList;
 
@@ -54,12 +55,15 @@ class GlobalProductAttributesControllerExtension extends Extension
      */
     public function ShowChooseGlobalProductAttributesModal() : bool
     {
-        $show = false;
-        $item = $this->ProductAttributeRequestInProductGroupsItem();
-        if ($item !== null
-         && !$item->HasGloballyChosenValues()
-        ) {
-            $show = true;
+        $show = Controller::has_curr()
+             && Controller::curr()->getRequest()->getVar('scpasm') === '1';
+        if (!$show) {
+            $item = $this->ProductAttributeRequestInProductGroupsItem();
+            if ($item !== null
+             && !$item->HasGloballyChosenValues()
+            ) {
+                $show = true;
+            }
         }
         return $show;
     }
