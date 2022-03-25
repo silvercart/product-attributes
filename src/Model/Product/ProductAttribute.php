@@ -309,6 +309,12 @@ class ProductAttribute extends DataObject
      */
     private static $insert_translation_cms_fields_before = 'CanBeUsedForFilterWidget';
     /**
+     * Determines whether to allow global reset or not.
+     * 
+     * @var bool
+     */
+    private static $allow_global_reset = false;
+    /**
      * Assigned values
      *
      * @var ArrayList
@@ -1012,9 +1018,44 @@ class ProductAttribute extends DataObject
      * 
      * @return string
      */
-    public function ReloadGlobalNavItemLink()
+    public function ReloadGlobalNavItemLink() : string
     {
-        return Director::makeRelative("sc-action/reload-product-attribute-nav-item");
+        return (string) Director::makeRelative("sc-action/reload-product-attribute-nav-item");
+    }
+    
+    /**
+     * Returns the link to reset the selections for this attribute.
+     * 
+     * @return string|null
+     */
+    public function ResetGloballyLink() : ?string
+    {
+        $link = null;
+        if ($this->ShowAsNavigationItem
+         || $this->RequestInProductGroups
+        ) {
+            $link = Director::makeRelative("sc-action/reset-product-attribute/{$this->ID}");
+        }
+        return $link;
+    }
+    
+    /**
+     * Returns whether to allow global reset or not.
+     * 
+     * @return bool
+     */
+    public function AllowGlobalReset() : bool
+    {
+        $allow = $this->config()->allow_global_reset;
+        if ($allow
+         && Controller::has_curr()
+        ) {
+            $ctrl = Controller::curr();
+            if ($ctrl->config()->global_product_attributes_required) {
+                $allow = false;
+            }
+        }
+        return $allow;
     }
     
     /**

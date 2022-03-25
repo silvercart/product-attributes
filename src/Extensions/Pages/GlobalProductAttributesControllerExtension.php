@@ -22,6 +22,12 @@ use SilverStripe\ORM\DataList;
 class GlobalProductAttributesControllerExtension extends Extension
 {
     /**
+     * Returns whether the global attributes are required.
+     * 
+     * @var bool
+     */
+    private static $global_product_attributes_required = true;
+    /**
      * Reload the page after choosing the global attribute?
      * 
      * @var bool
@@ -57,7 +63,9 @@ class GlobalProductAttributesControllerExtension extends Extension
     {
         $show = Controller::has_curr()
              && Controller::curr()->getRequest()->getVar('scpasm') === '1';
-        if (!$show) {
+        if (!$show
+         && $this->owner->config()->global_product_attributes_required
+        ) {
             $item = $this->ProductAttributeRequestInProductGroupsItem();
             if ($item !== null
              && !$item->HasGloballyChosenValues()

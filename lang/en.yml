@@ -2,6 +2,7 @@ en:
   SilverCart\ProductAttributes:
     Choose: 'Choose {title}'
     PleaseChooseVariantFor: 'Please choose a variant for {title}'
+    ResetSelection: 'Reset selection'
     UpdateGlobalAttributes: 'Update {title}'
     YourGlobalAttributes: 'Your {title}:'
   SilverCart\ProductAttributes\Admin\Controllers\ProductAttributeAdmin:

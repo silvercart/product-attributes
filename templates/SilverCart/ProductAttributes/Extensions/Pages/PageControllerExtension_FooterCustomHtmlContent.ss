@@ -22,9 +22,14 @@
             <div class="modal-body">
                 <div class="text-center my-5 py-5"><span class="spinner spinner-border"></span></div>
             </div>
-        <% if $AllowMultipleChoice %>
-            <div class="modal-footer justify-content-end">
+        <% if $AllowMultipleChoice || $AllowGlobalReset %>
+            <div class="modal-footer justify-content-end d-none">
+            <% if $AllowGlobalReset %>
+                <a href="{$ResetGloballyLink}" class="btn btn-outline-blue-dark btn-reset"><%t SilverCart\ProductAttributes.ResetSelection 'ResetSelection' %></a>
+            <% end_if %>
+            <% if $AllowMultipleChoice %>
                 <button type="button" class="btn btn-success" data-dismiss="modal"><%t SilverCart.Done 'Done' %></button>
+            <% end_if %>
             </div>
         <% end_if %>
         </div>

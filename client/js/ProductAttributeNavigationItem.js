@@ -16,6 +16,7 @@ silvercart.attributes.navigationItem = (function () {
                 containerChooseProductAttribute: '.container-choose-product-attribute',
                 containerChosen:                 '.container-chosen',
                 btnChooseProductAttribute:       '.btn-choose-product-attribute',
+                btnReset:                        '#modal-choose-product-attribute .btn-reset',
             },
         },
         private = {
@@ -38,15 +39,74 @@ silvercart.attributes.navigationItem = (function () {
                         url:   private.getTargetLink('modalChooseProductAttribute'),
                         success: function(data) {
                             modal.find('.modal-body').html(data);
+                            var footer = modal.find('.modal-footer');
+                            if (footer.length > 0) {
+                                footer.removeClass('d-none');
+                            }
                         },
                         error: function(jqXHR, textStatus, errorThrown) {
                             modal.find('.modal-body').html('<div class="alert alert-danger mb-0">' + ss.i18n._t('SilverCart.AnErrorOccurred', 'An error occurred. Please try again.') + '</div>');
                         }
                     });
                 },
+                hideModal: function(event)
+                {
+                    var footer = $(this).find('.modal-footer');
+                    if (footer.length > 0) {
+                        footer.addClass('d-none');
+                    }
+                },
                 containerChooseProductAttributeClick: function(event)
                 {
                     $(selector.modalChooseProductAttribute.btnChooseProductAttribute, $(this)).trigger('click');
+                },
+                btnResetClick: function(event)
+                {
+                    event.preventDefault();
+                    var btn = $(this);
+                    btn.attr('disabled', 'disabled');
+                    btn.addClass('disabled');
+                    btn.prepend('<span class="spinner-border spinner-border-sm mr-10"></span>');
+                    $.ajax({
+                        url:   btn.attr('href'),
+                        type:  'POST',
+                        data: {
+                            'ajax': 1,
+                        },
+                        success: function(data) {
+                            var response = $.parseJSON(data),
+                                itemID   = $(btn).data('item-id'),
+                                input    = $('input#silvercart-product-attribute-value-' + itemID);
+                            $(selector.navItem).replaceWith(response.HTMLNavItem);
+                            $(selector.modalChooseProductAttribute.btnChooseProductAttribute).each(function() {
+                                if ($(this).hasClass('chosen')) {
+                                    $(selector.modalChooseProductAttribute.containerChosen, $(this).closest(selector.modalChooseProductAttribute.containerChooseProductAttribute))
+                                            .addClass('d-none');
+                                    $(this).removeClass('chosen');
+                                }
+                            });
+                            btn.removeAttr('disabled');
+                            btn.removeClass('disabled');
+                            $('.spinner-border', btn).remove();
+                            $('.spinner-grow', btn).remove();
+                            if (property.reloadPage) {
+                                private.modalChooseProductAttribute.reloadPage(response.URLSegment);
+                                return;
+                            } else {
+                                setTimeout(function() {
+                                    $(selector.modalChooseProductAttribute.selector).modal('hide');
+                                }, 300);
+                            }
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            $(selector.modalChooseProductAttribute.selector).find('.modal-body').prepend('<div class="alert alert-danger">' + ss.i18n._t('SilverCart.AnErrorOccurred', 'An error occurred. Please try again.') + '</div>');
+                            btn.removeAttr('disabled');
+                            btn.removeClass('disabled');
+                            $('.spinner-border', btn).remove();
+                            $('.spinner-grow', btn).remove();
+                        }
+                    });
+                    return false;
                 },
                 btnChooseProductAttributeClick: function(event)
                 {
@@ -100,25 +160,7 @@ silvercart.attributes.navigationItem = (function () {
                                 }
                                 if (!property.allowMultipleChoice) {
                                     if (property.reloadPage) {
-                                        var target     = location.origin + location.pathname,
-                                            search     = location.search,
-                                            urlParams  = new URLSearchParams(search),
-                                            urlSegment = response.URLSegment,
-                                            value      = urlParams.get('scpa[' + urlSegment + ']');
-                                        search = search.replace('&scpasm=1', '');
-                                        search = search.replace('scpasm=1', '');
-                                        if (value !== null) {
-                                            search = search.replace('&scpa%5B' + urlSegment + '%5D=' + value, '');
-                                            search = search.replace('scpa%5B' + urlSegment + '%5D=' + value, '');
-                                            search = search.replace('&scpa[' + urlSegment + ']=' + value, '');
-                                            search = search.replace('scpa[' + urlSegment + ']=' + value, '');
-                                        }
-                                        search = search.replace('?&', '?');
-                                        if (search === '?') {
-                                            location.href = target;
-                                        } else {
-                                            location.href = target + search;
-                                        }
+                                        private.modalChooseProductAttribute.reloadPage(response.URLSegment);
                                         return;
                                     } else {
                                         setTimeout(function() {
@@ -152,7 +194,28 @@ silvercart.attributes.navigationItem = (function () {
                         }
                     });
                     return false;
-                }
+                },
+                reloadPage: function(urlSegment)
+                {
+                    var target     = location.origin + location.pathname,
+                        search     = location.search,
+                        urlParams  = new URLSearchParams(search),
+                        value      = urlParams.get('scpa[' + urlSegment + ']');
+                    search = search.replace('&scpasm=1', '');
+                    search = search.replace('scpasm=1', '');
+                    if (value !== null) {
+                        search = search.replace('&scpa%5B' + urlSegment + '%5D=' + value, '');
+                        search = search.replace('scpa%5B' + urlSegment + '%5D=' + value, '');
+                        search = search.replace('&scpa[' + urlSegment + ']=' + value, '');
+                        search = search.replace('scpa[' + urlSegment + ']=' + value, '');
+                    }
+                    search = search.replace('?&', '?');
+                    if (search === '?') {
+                        location.href = target;
+                    } else {
+                        location.href = target + search;
+                    }
+                },
             },
         },
         public = {
@@ -174,7 +237,9 @@ silvercart.attributes.navigationItem = (function () {
                     }
                     $(selector.container).html('');
                     $(selector.modalChooseProductAttribute.selector).on('show.bs.modal', private.modalChooseProductAttribute.initModal);
+                    $(selector.modalChooseProductAttribute.selector).on('hide.bs.modal', private.modalChooseProductAttribute.hideModal);
                     $(document).on('click', selector.modalChooseProductAttribute.btnChooseProductAttribute, private.modalChooseProductAttribute.btnChooseProductAttributeClick);
+                    $(document).on('click', selector.modalChooseProductAttribute.btnReset, private.modalChooseProductAttribute.btnResetClick);
                     $(document).on('click', selector.modalChooseProductAttribute.containerChooseProductAttribute, private.modalChooseProductAttribute.containerChooseProductAttributeClick);
                     if ($(selector.modalChooseProductAttribute.selector).hasClass('show-on-page-load')) {
                         $(selector.modalChooseProductAttribute.selector).modal('show');

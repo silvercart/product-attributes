@@ -30,6 +30,7 @@ class ActionHandlerExtension extends Extension
     private static $allowed_actions = [
         'choose_product_attribute',
         'reload_product_attribute_nav_item',
+        'reset_product_attribute',
     ];
     
     /**
@@ -77,6 +78,39 @@ class ActionHandlerExtension extends Extension
         }
         if ($request->isAjax()) {
             return HTTPResponse::create($global->forTemplate('HeaderNavItem'));
+        } else {
+            return $this->owner->redirectBack();
+        }
+    }
+    
+    /**
+     * Chooses a product attribute value and redirects back or returns an AJAX response.
+     * 
+     * @param HTTPRequest $request HTTP request
+     * 
+     * @return HTTPResponse
+     */
+    public function reset_product_attribute(HTTPRequest $request) : HTTPResponse
+    {
+        $attribute = ProductAttribute::get()->byID($request->param('ID'));
+        /* @var $attribute ProductAttribute */
+        if ($attribute === null
+         || (!$attribute->ShowAsNavigationItem
+          && !$attribute->RequestInProductGroups)
+        ) {
+            $this->owner->httpError(400, 'bad request.');
+        }
+        $chosen = ProductAttribute::getGloballyChosen();
+        if (array_key_exists($attribute->ID, $chosen)) {
+            unset($chosen[$attribute->ID]);
+            ProductAttribute::setGloballyChosen($chosen);
+        }
+        if ($request->isAjax()) {
+            return HTTPResponse::create(json_encode([
+                'Added'       => false,
+                'HTMLNavItem' => (string) $attribute->forTemplate('HeaderNavItem'),
+                'URLSegment'  => (string) $attribute->URLSegment,
+            ]));
         } else {
             return $this->owner->redirectBack();
         }
