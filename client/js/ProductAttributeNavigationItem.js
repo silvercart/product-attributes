@@ -23,11 +23,19 @@ silvercart.attributes.navigationItem = (function () {
             getTargetLink: function(action)
             {
                 var baseLink   = $(selector.container).data('base-link'),
-                    urlSegment = $(selector.container).data('url-segment');
+                    urlSegment = $(selector.container).data('url-segment'),
+                    linkWithAction;
                 if (baseLink === '/') {
                     baseLink += urlSegment + '/';
                 }
-                return baseLink + action;
+                if (baseLink.indexOf('?') >= 0) {
+                    linkWithAction = baseLink.substring(0, baseLink.indexOf('?'))
+                                   + action
+                                   + baseLink.substring(baseLink.indexOf('?'));
+                } else {
+                    linkWithAction = baseLink + action;
+                }
+                return linkWithAction;
             },
             modalChooseProductAttribute:
             {
