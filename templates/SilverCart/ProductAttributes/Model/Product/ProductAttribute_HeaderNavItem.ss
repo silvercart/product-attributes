@@ -1,6 +1,6 @@
 <% if $HasGloballyChosenValues %>
-<div class="nav-item nav-item-product-attribute mr-8 pt-md-40" data-reload-link="{$ReloadGlobalNavItemLink}">
-    <span class="cursor-pointer text-uppercase d-inline-block" data-toggle="modal" data-target="#modal-choose-product-attribute" title="<%t SilverCart\ProductAttributes.UpdateGlobalAttributes 'Update {title}' title=$PluralTitle %>">
+<div class="nav-item nav-item-product-attribute mr-8 pt-10 pl-10 pt-md-40 pl-md-0" data-reload-link="{$ReloadGlobalNavItemLink}">
+    <span class="cursor-pointer text-uppercase text-nowrap d-inline-block" data-toggle="modal" data-target="#modal-choose-product-attribute" title="<%t SilverCart\ProductAttributes.UpdateGlobalAttributes 'Update {title}' title=$PluralTitle %>">
         <% if $FontAwesomeIcon %>
             {$FontAwesomeIconHTML('p-relative b-4 text-blue-dark')}
         <% end_if %>
