@@ -125,6 +125,9 @@ class ProductAttribute extends DataObject
         $match        = true;
         $filterValues = [];
         foreach (self::getGloballyChosen() as $attributeID => $valueIDs) {
+            if (!is_array($valueIDs)) {
+                continue;
+            }
             $filterValues = array_merge($filterValues, $valueIDs);
         }
         if (count($filterValues) > 0) {
