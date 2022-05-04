@@ -266,9 +266,6 @@ class ProductExtension extends DataExtension
      * Adds variant modifications to related attribute values.
      * 
      * @return void
-     *
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
      */
     public function onBeforeWrite() : void
     {
@@ -281,6 +278,8 @@ class ProductExtension extends DataExtension
              && $masterProduct->exists()
             ) {
                 $this->owner->MasterProductID = $masterProduct->ID;
+            } else {
+                $this->owner->MasterProductID = 0;
             }
         }
     }
