@@ -38,3 +38,8 @@
 <% require javascript("silvercart/product-attributes:client/js/ProductAttributeNavigationItem.js") %>
     <% end_with %>
 <% end_if %>
+<% if $ProductAddCartFormModals.exists %>
+    <% loop $ProductAddCartFormModals %>
+        <% include SilverCart\ProductAttributes\ModalAddToCart %>
+    <% end_loop %>
+<% end_if %>

@@ -2,6 +2,7 @@
 
 namespace SilverCart\ProductAttributes\Extensions\Pages;
 
+use SilverCart\Forms\AddToCartForm;
 use SilverCart\Model\Pages\CartPageController;
 use SilverCart\Model\Pages\CheckoutStepController;
 use SilverCart\ProductAttributes\Model\Product\ProductAttribute;
@@ -9,6 +10,7 @@ use SilverCart\ProductAttributes\Model\Product\ProductAttributeValue;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Core\Extension;
+use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\View\Requirements;
 
@@ -25,6 +27,21 @@ use SilverStripe\View\Requirements;
 class PageControllerExtension extends Extension
 {
     /**
+     * Adds a $form entry to the modal list.
+     * 
+     * @param AddToCartForm $form Form to add modal for
+     * 
+     * @return void
+     */
+    public static function addProductAddCartFormModalFor(AddToCartForm $form) : void
+    {
+        if (self::$productAddCartFormModals === null) {
+            self::$productAddCartFormModals = ArrayList::create();
+        }
+        self::$productAddCartFormModals->push($form);
+    }
+    
+    /**
      * Allowed actions.
      * 
      * @var string[]
@@ -32,6 +49,12 @@ class PageControllerExtension extends Extension
     private static $allowed_actions = [
         'modalChooseProductAttribute',
     ];
+    /**
+     * Product add cart form modals.
+     * 
+     * @var ArrayList|null
+     */
+    protected static $productAddCartFormModals = null;
     
     /**
      * Action to return the content to display inside the choose-product-attribute
@@ -115,6 +138,7 @@ class PageControllerExtension extends Extension
         if ($this->owner instanceof CartPageController
          || $this->owner instanceof CheckoutStepController
         ) {
+            $html .= $this->owner->renderWith(self::class . '_FooterCustomHtmlContentCheckout');
             return;
         }
         $html .= $this->owner->renderWith(self::class . '_FooterCustomHtmlContent');
@@ -138,5 +162,15 @@ class PageControllerExtension extends Extension
     public function ProductAttributeNavigationItem() : ?ProductAttribute
     {
         return ProductAttribute::getGlobal();
+    }
+
+    /**
+     * Returns the product add cart form modals.
+     * 
+     * @return ArrayList|null
+     */
+    public function ProductAddCartFormModals() : ?ArrayList
+    {
+        return self::$productAddCartFormModals;
     }
 }

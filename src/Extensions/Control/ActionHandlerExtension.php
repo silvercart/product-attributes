@@ -2,6 +2,7 @@
 
 namespace SilverCart\ProductAttributes\Extensions\Control;
 
+use SilverCart\Model\Product\Product;
 use SilverCart\ProductAttributes\Model\Product\ProductAttribute;
 use SilverCart\ProductAttributes\Model\Product\ProductAttributeValue;
 use SilverStripe\Control\HTTPRequest;
@@ -29,6 +30,7 @@ class ActionHandlerExtension extends Extension
      */
     private static $allowed_actions = [
         'choose_product_attribute',
+        'load_product_id',
         'reload_product_attribute_nav_item',
         'reset_product_attribute',
     ];
@@ -60,6 +62,39 @@ class ActionHandlerExtension extends Extension
         } else {
             return $this->owner->redirectBack();
         }
+    }
+    
+    /**
+     * Laods a product ID.
+     * 
+     * @param HTTPRequest $request HTTP request
+     * 
+     * @return HTTPResponse
+     */
+    public function load_product_id(HTTPRequest $request) : HTTPResponse
+    {
+        $product           = Product::get()->byID($request->postVar('productID'));
+        $variantAttributes = [];
+        foreach ($request->postVars() as $name => $value) {
+            if (strpos($name, 'ProductAttribute') !== 0) {
+                continue;
+            }
+            $id = str_replace('ProductAttribute', '', $name);
+            $variantAttributes[(int) $value] = (int) $value;
+        }
+        if ($product instanceof Product 
+         && !empty($variantAttributes)
+        ) {
+            $variant = $product->getVariantBy($variantAttributes);
+            if ($variant) {
+                if ($request->isAjax()) {
+                    return HTTPResponse::create($variant->ID);
+                } else {
+                    return $this->owner->redirectBack();
+                }
+            }
+        }
+        return $this->owner->httpError(400, 'bad request.');
     }
     
     /**

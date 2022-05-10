@@ -42,5 +42,42 @@ $(function() {
             
             form.appendTo('body').submit();
         });
+        $(document).on('change', '.silvercart-product-page-productvariant-box.multiple-load-id select', function() {
+            var form = $(this).closest('form'),
+                div  = $('<div/>')
+                        .attr('id', form.attr('id') + '-loader')
+                        .css({
+                        position: 'absolute',
+                        left: '0px',
+                        top: '0px',
+                        opacity: '0.5',
+                        backgroundColor: '#ffffff',
+                        backgroundImage: 'url(resources/vendor/silvercart/silvercart/client/img/loader.gif)',
+                        backgroundPosition: 'center center',
+                        backgroundRepeat: 'no-repeat',
+                        width: form.css('width'),
+                        height: form.css('height'),
+                        zIndex: 5
+                });
+            form.css('position', 'relative');
+            form.append(div);
+            var formData = new FormData(form[0]);
+            formData.append('isAjax', 1);
+            formData.append('ajax', 1);
+            $.ajax({
+                url:  $(form).data('product-attribute-link'),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    $('input[name="productID"]', form).val(data);
+                    $('#' + form.attr('id') + '-loader').remove();
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    $('#' + form.attr('id') + '-loader').remove();
+                }
+            });
+        });
     });
 });

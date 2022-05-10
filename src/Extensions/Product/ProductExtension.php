@@ -815,6 +815,7 @@ class ProductExtension extends DataExtension
                                 $values,
                                 $selectedValue
                         );
+                        $field->setProduct($product);
                         if (!empty($attribute->Description)) {
                             $field->setDescription($attribute->Description);
                         }
@@ -942,7 +943,7 @@ class ProductExtension extends DataExtension
                         );
                         $field->setRequiredForced(true);
                     }
-                    $field->setProductID($product->ID)
+                    $field->setProduct($product)
                             ->setProductPrices(json_encode($prices))
                             ->setProductVariantType(ProductAttributeDropdownField::VARIANT_TYPE_SINGLE);
                     if (!empty($attribute->Description)) {
@@ -993,7 +994,7 @@ class ProductExtension extends DataExtension
                         $options,
                         ''
                 );
-                $field->setProductID($this->owner->ID)
+                $field->setProduct($this->owner)
                         ->setProductPrices(json_encode($prices))
                         ->setProductVariantType(ProductAttributeDropdownField::VARIANT_TYPE_SINGLE);
                 if (!empty($userInputAttribute->Description)) {
@@ -1402,15 +1403,15 @@ class ProductExtension extends DataExtension
     /**
      * Adds the variation data to the items fields and returns them
      * 
-     * @param Product $product Product
+     * @param Product|null $product Product
      * 
      * @return ArrayList
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
      */
-    public function Fields(Product $product) : ArrayList
+    public function Fields(?Product $product = null) : ArrayList
     {
+        if ($product === null) {
+            $product = $this->owner;
+        }
         $fields = ArrayList::create();
         $fields->push(ArrayData::create(["Name" => 'ProductNumber', "Value" => $product->ProductNumberShop, "Link" => $product->Link()]));
         $fields->push(ArrayData::create(["Name" => 'Title',         "Value" => $product->Title,             "Link" => $product->Link()]));

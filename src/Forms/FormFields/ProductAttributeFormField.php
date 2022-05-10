@@ -2,6 +2,7 @@
 
 namespace SilverCart\ProductAttributes\Forms\FormFields;
 
+use SilverCart\Model\Product\Product;
 use SilverStripe\Control\Controller;
 use SilverStripe\View\ArrayData;
 
@@ -19,6 +20,12 @@ use SilverStripe\View\ArrayData;
  */
 trait ProductAttributeFormField
 {
+    /**
+     * Product
+     *
+     * @var Product|null
+     */
+    protected $product = null;
     /**
      * Product ID
      *
@@ -78,6 +85,16 @@ trait ProductAttributeFormField
     }
 
     /**
+     * Returns the product.
+     * 
+     * @return Product|null
+     */
+    public function getProduct() : ?Product
+    {
+        return $this->product;
+    }
+
+    /**
      * Returns the product ID.
      * 
      * @return int
@@ -108,6 +125,22 @@ trait ProductAttributeFormField
             $this->setProductVariantType(self::VARIANT_TYPE_MULTIPLE);
         }
         return (string) $this->productVariantType;
+    }
+
+    /**
+     * Sets the product.
+     * 
+     * @param Product|null $product Product
+     * 
+     * @return $this
+     */
+    public function setProduct(?Product $product) : object
+    {
+        $this->product = $product;
+        if ($product !== null) {
+            $this->setProductID($product->ID);
+        }
+        return $this;
     }
 
     /**

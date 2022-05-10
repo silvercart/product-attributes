@@ -2,8 +2,11 @@
 
 namespace SilverCart\ProductAttributes\Extensions\Forms;
 
+use SilverCart\Control\ActionHandler;
+use SilverCart\ProductAttributes\Extensions\Pages\PageControllerExtension;
 use SilverCart\Model\Product\Product;
 use SilverStripe\Core\Extension;
+use SilverStripe\Control\Director;
 
 /**
  * Delivers additional information for the AddToCartForm.
@@ -66,6 +69,17 @@ class AddToCartFormExtension extends Extension
           || $product->hasSingleProductVariants())
         ) {
             $rendered .= $this->owner->renderWith(static::class . "_{$this->owner->getViewContext()}");
+            PageControllerExtension::addProductAddCartFormModalFor($this->owner);
         }
+    }
+    
+    /**
+     * Returns the load_product_id action link
+     * 
+     * @return string
+     */
+    public function ProductAttributeLoadProductIDLink() : string
+    {
+        return Director::makeRelative(ActionHandler::config()->url_segment . '/load-product-id');
     }
 }
