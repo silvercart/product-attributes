@@ -2,7 +2,9 @@
 
 namespace SilverCart\ProductAttributes\Extensions\Pages;
 
+use SilverCart\Model\Pages\CartPage;
 use SilverCart\ProductAttributes\Model\Product\ProductAttribute;
+use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Controller;
 use SilverStripe\Core\Extension;
 use SilverStripe\ORM\DataList;
@@ -21,6 +23,15 @@ use SilverStripe\ORM\DataList;
  */
 class GlobalProductAttributesControllerExtension extends Extension
 {
+    use \SilverStripe\Core\Config\Configurable;
+    /**
+     * List of class names to skip modal for.
+     * 
+     * @var string[]
+     */
+    private static $skip_show_modal_for = [
+        CartPage::class,
+    ];
     /**
      * Returns whether the global attributes are required.
      * 
@@ -53,7 +64,7 @@ class GlobalProductAttributesControllerExtension extends Extension
     {
         return $this->ProductAttributeRequestInProductGroupsItems()->first();
     }
-    
+
     /**
      * Returns whether to show the modal to choose a lobal product attribute.
      * 
@@ -63,6 +74,21 @@ class GlobalProductAttributesControllerExtension extends Extension
     {
         $show = Controller::has_curr()
              && Controller::curr()->getRequest()->getVar('scpasm') === '1';
+        $referer = $this->owner->RefererPage($this->owner->getReturnReferer());
+        if ($referer instanceof SiteTree
+         && in_array($referer->ClassName, $this->config()->skip_show_modal_for)
+        ) {
+            return false;
+        }
+        if (Controller::has_curr()) {
+            $controller = Controller::curr();
+            if ($controller->hasMethod('isProductDetailView')
+             && $controller->isProductDetailView()
+             && $controller->getDetailViewProduct()->isInCart()
+            ) {
+                return false;   
+            }
+        }
         if (!$show
          && $this->owner->config()->global_product_attributes_required
         ) {
