@@ -128,7 +128,7 @@ class ShoppingCartPositionExtension extends DataExtension
              || $attributeValues->count() < count($attributesArray)
             ) {
                 foreach ($userInputAttributes as $ID => $userInputAttribute) {
-                    if (array_key_exists($ID, $userInputValues)) {
+                    if ($userInputValues->find('ID', $ID) !== null) {
                         continue;
                     }
                     $attribute = ProductAttribute::get()->byID($ID);
