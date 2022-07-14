@@ -131,7 +131,10 @@ class ProductAttribute extends DataObject
             $filterValues = array_merge($filterValues, $valueIDs);
         }
         if (count($filterValues) > 0) {
-            $match = $product->ProductAttributeValues()->filter('ID', $filterValues)->exists();
+            $match = $product->ProductAttributeValues()->filter([
+                'ID'                                    => $filterValues,
+                'ProductAttribute.ShowAsNavigationItem' => true,
+            ])->exists();
         }
         return $match;
     }
@@ -143,6 +146,10 @@ class ProductAttribute extends DataObject
      */
     public static function getGloballyChosen() : array
     {
+        $globals = self::getGlobals()->map('ID')->toArray();
+        if (empty($globals)) {
+            return [];
+        }
         $sessionStore   = (array) Tools::Session()->get(self::SESSION_KEY_GLOBALLY_CHOSEN);
         $customerConfig = [];
         $currentUser    = Customer::currentRegisteredCustomer();
@@ -158,6 +165,13 @@ class ProductAttribute extends DataObject
                    && empty ($customerConfig)
             ) {
                 $currentUser->getCustomerConfig()->writeProductAttributeSettings($sessionStore);
+            }
+        }
+        if (!empty($sessionStore)) {
+            foreach ($sessionStore as $attributeID => $values) {
+                if (!in_array($attributeID, $globals)) {
+                    unset($sessionStore[$attributeID]);
+                }
             }
         }
         return $sessionStore;
