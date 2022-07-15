@@ -146,7 +146,7 @@ class ProductAttribute extends DataObject
      */
     public static function getGloballyChosen() : array
     {
-        $globals = self::getGlobals()->map('ID')->toArray();
+        $globals = self::getGlobals()->map('ID', 'ID')->toArray();
         if (empty($globals)) {
             return [];
         }
