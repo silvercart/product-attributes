@@ -1,6 +1,10 @@
 
 $(function() {
     $(document).ready(function() {
+        var resourcesDir = 'resources';
+        if (typeof silvercart.RESOURCES_DIR === 'string') {
+            resourcesDir = silvercart.RESOURCES_DIR;
+        }
         $('select[data-type="single-variant"]').change(function() {
             var productID    = $(this).data('product-id'),
                 productPrice = $('option:selected', $(this)).data('price');
@@ -21,7 +25,7 @@ $(function() {
                         top: '0px',
                         opacity: '0.5',
                         backgroundColor: '#ffffff',
-                        backgroundImage: 'url(resources/vendor/silvercart/silvercart/client/img/loader.gif)',
+                        backgroundImage: 'url(' + resourcesDir + '/vendor/silvercart/silvercart/client/img/loader.gif)',
                         backgroundPosition: 'center center',
                         backgroundRepeat: 'no-repeat',
                         width: originalForm.css('width'),
@@ -52,7 +56,7 @@ $(function() {
                         top: '0px',
                         opacity: '0.5',
                         backgroundColor: '#ffffff',
-                        backgroundImage: 'url(resources/vendor/silvercart/silvercart/client/img/loader.gif)',
+                        backgroundImage: 'url(' + resourcesDir + '/vendor/silvercart/silvercart/client/img/loader.gif)',
                         backgroundPosition: 'center center',
                         backgroundRepeat: 'no-repeat',
                         width: form.css('width'),
