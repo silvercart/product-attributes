@@ -5,6 +5,7 @@ namespace SilverCart\ProductAttributes\Extensions\Pages;
 use SilverCart\Forms\AddToCartForm;
 use SilverCart\Model\Pages\CartPageController;
 use SilverCart\Model\Pages\CheckoutStepController;
+use SilverCart\Model\Pages\RegistrationPageController;
 use SilverCart\ProductAttributes\Model\Product\ProductAttribute;
 use SilverCart\ProductAttributes\Model\Product\ProductAttributeValue;
 use SilverStripe\Control\HTTPRequest;
@@ -12,6 +13,7 @@ use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Core\Extension;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
+use SilverStripe\Security\Security;
 use SilverStripe\View\Requirements;
 
 /**
@@ -137,6 +139,9 @@ class PageControllerExtension extends Extension
     {
         if ($this->owner instanceof CartPageController
          || $this->owner instanceof CheckoutStepController
+         || $this->owner instanceof RegistrationPageController
+         || ($this->owner->getRequest()->param('Action')
+          && strpos($this->owner->getRequest()->getURL(), 'Security/login') !== false)
         ) {
             $html .= $this->owner->renderWith(self::class . '_FooterCustomHtmlContentCheckout');
             return;
