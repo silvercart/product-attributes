@@ -11,7 +11,7 @@ use SilverCart\ProductAttributes\Model\Product\ProductAttributeValue;
  * ModelAdmin for ProductAttribute.
  * 
  * @package SilverCart
- * @subpackage ProductAttributes_Admin_Controllers
+ * @subpackage ProductAttributes\Admin\Controllers
  * @author Sebastian Diel <sdiel@pixeltricks.de>
  * @copyright 2018 pixeltricks GmbH
  * @since 30.05.2018
@@ -43,6 +43,18 @@ class ProductAttributeAdmin extends ModelAdmin
      * @var string
      */
     private static $menu_title = 'Product Attributes';
+    /**
+     * Menu icon
+     * 
+     * @var string
+     */
+    private static $menu_icon = null;
+    /**
+     * Menu icon CSS class
+     * 
+     * @var string
+     */
+    private static $menu_icon_class = 'font-icon-sliders';
     /**
      * Managed models
      *
