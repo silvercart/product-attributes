@@ -9,7 +9,7 @@ sv:
     VARIANTDEFINITION: 'Beskrivning av varianter'
   SilverCart\ProductAttributes\Extensions\Product\ProductExtension:
     MASTER_PRODUCT: 'Denna artikel är en variant av artikeln med artikelnumret'
-    NoUserInput: Utan
+    NoUserInput: Ingen
     PRODUCT_ATTRIBUTE: Funktion
     PRODUCT_ATTRIBUTES: Funktioner
     PRODUCT_ATTRIBUTE_VALUE: Värde
@@ -65,7 +65,7 @@ sv:
     Default: Standard
     DefaultModifyAction: Åtgärd
     DefaultModifyActionAdd: 'Lägg till / Lägg till'
-    DefaultModifyActionNone: '- utan -'
+    DefaultModifyActionNone: '- ingen -'
     DefaultModifyActionSetTo: 'Skriv över'
     DefaultModifyActionSubtract: 'Ta bort / skala av'
     DefaultModifyDesc: 'Används som standardvärde för länkade objekt. Kan skrivas över individuellt för varje objekt.'
