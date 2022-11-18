@@ -1288,6 +1288,9 @@ class ProductExtension extends DataExtension
             $attributeIDs    = array_keys($attributes);
             foreach ($attributeIDs as $attributeID) {
                 $attribute = $this->owner->ProductAttributes()->byID($attributeID);
+                if ($attribute === null) {
+                    continue;
+                }
                 if (!$attribute->CanBeUsedForSingleVariants) {
                     continue;
                 }

@@ -9,6 +9,8 @@ use SilverCart\Forms\FormFields\TextField;
 use SilverCart\Model\Customer\Customer;
 use SilverCart\Model\Product\Product;
 use SilverCart\Model\Translation\TranslatableDataObjectExtension;
+use SilverCart\Model\URLSegmentable;
+use SilverCart\ORM\ExtensibleDataObject;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
 use SilverStripe\Forms\FieldList;
@@ -20,10 +22,15 @@ use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\ORM\Filters\ExactMatchFilter;
 use SilverStripe\ORM\Filters\PartialMatchFilter;
+use SilverStripe\ORM\HasManyList;
+use SilverStripe\ORM\ManyManyList;
 use SilverStripe\ORM\SS_List;
+use SilverStripe\ORM\UnsavedRelationList;
 use SilverStripe\Security\Member;
 use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 use UndefinedOffset\SortableGridField\Forms\GridFieldSortableRows;
+use const TEMP_PATH;
+use function _t;
 
 /**
  * Attribute to relate to a product.
@@ -54,19 +61,18 @@ use UndefinedOffset\SortableGridField\Forms\GridFieldSortableRows;
  * @property string $URLSegment                   URLSegment
  * @property int    $Sort                         Sort
  * 
- * @method \SilverStripe\ORM\HasManyList ProductAttributeTranslations() Returns the related ProductAttributeTranslations.
- * @method \SilverStripe\ORM\HasManyList ProductAttributeValues()       Returns the related ProductAttributeValues.
+ * @method HasManyList ProductAttributeTranslations() Returns the related ProductAttributeTranslations.
+ * @method HasManyList ProductAttributeValues()       Returns the related ProductAttributeValues.
  * 
- * @method \SilverStripe\ORM\ManyManyList Products()             Returns the related Products.
- * @method \SilverStripe\ORM\ManyManyList ProductAttributeSets() Returns the related ProductAttributeSets.
+ * @method ManyManyList ProductAttributeSets() Returns the related ProductAttributeSets.
  * 
  * @mixin TranslatableDataObjectExtension
  * @mixin FontAwesomeExtension
  */
 class ProductAttribute extends DataObject
 {
-    use \SilverCart\ORM\ExtensibleDataObject;
-    use \SilverCart\Model\URLSegmentable;
+    use ExtensibleDataObject;
+    use URLSegmentable;
     
     const SESSION_KEY_GLOBALLY_CHOSEN = 'SilverCart.ProductAttributes.GloballyChosen';
     
@@ -606,6 +612,33 @@ class ProductAttribute extends DataObject
     }
     
     /**
+     * Returns the related products
+     * 
+     * @return ManyManyList|UnsavedRelationList
+     */
+    public function Products() : SS_List
+    {
+        $products = $this->getManyManyComponents('Products');
+        if ($products instanceof ManyManyList) {
+            $productAttribute = $this;
+            $products->removeCallbacks()->add(function(ManyManyList $list, array $itemIDs) use ($productAttribute) {
+                foreach ($itemIDs as $itemID) {
+                    $item = Product::get()->byID($itemID);
+                    if ($item === null) {
+                        continue;
+                    }
+                    $item->ProductAttributeValues()
+                            ->filter([
+                                'ProductAttributeID' => $productAttribute->ID,
+                            ])
+                            ->removeAll();
+                }
+            }, 'callback-remove-product-attribute-values');
+        }
+        return $products;
+    }
+    
+    /**
      * Returns the translated title
      *
      * @return string
@@ -978,7 +1011,7 @@ class ProductAttribute extends DataObject
      * @param array $fileData    Uploaded file data
      * @param int   $attributeID Attribute ID
      * 
-     * @return string|\SilverStripe\ORM\FieldType\DBHTMLText
+     * @return string|DBHTMLText
      */
     public function getUploadedFilePreview(array $fileData, int $attributeID = null)
     {

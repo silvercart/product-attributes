@@ -3,12 +3,14 @@
 namespace SilverCart\ProductAttributes\Model\Product;
 
 use NumberFormatter;
-use SilverCart\Dev\Tools;
 use SilverCart\Admin\Forms\AlertField;
+use SilverCart\Dev\Tools;
 use SilverCart\Extensions\Model\FontAwesomeExtension;
 use SilverCart\Forms\FormFields\FieldGroup;
 use SilverCart\Model\Product\Product;
 use SilverCart\Model\Translation\TranslatableDataObjectExtension;
+use SilverCart\Model\URLSegmentable;
+use SilverCart\ORM\ExtensibleDataObject;
 use SilverStripe\Assets\Image;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
@@ -23,6 +25,8 @@ use SilverStripe\ORM\Filters\ExactMatchFilter;
 use SilverStripe\ORM\Filters\PartialMatchFilter;
 use SilverStripe\ORM\ManyManyList;
 use SilverStripe\ORM\SS_List;
+use SilverStripe\ORM\UnsavedRelationList;
+use function _t;
 
 /**
  * Value of a product attribute
@@ -50,8 +54,8 @@ use SilverStripe\ORM\SS_List;
  */
 class ProductAttributeValue extends DataObject
 {
-    use \SilverCart\ORM\ExtensibleDataObject;
-    use \SilverCart\Model\URLSegmentable;
+    use ExtensibleDataObject;
+    use URLSegmentable;
     
     /**
      * Adds this value to or removes this value from the list of globally chosen
@@ -436,7 +440,7 @@ class ProductAttributeValue extends DataObject
     /**
      * Returns the related products
      * 
-     * @return ManyManyList|\SilverStripe\ORM\UnsavedRelationList
+     * @return ManyManyList|UnsavedRelationList
      */
     public function Products() : SS_List
     {
@@ -446,6 +450,26 @@ class ProductAttributeValue extends DataObject
             $products->addCallbacks()->add(function(ManyManyList $list, Product $item, $extraFields) use ($productAttributeValue) {
                 $item->ProductAttributes()->add($productAttributeValue->ProductAttribute());
             }, 'callback-add-product-attribute');
+            $products->removeCallbacks()->add(function(ManyManyList $list, array $itemIDs) use ($productAttributeValue) {
+                foreach ($itemIDs as $itemID) {
+                    $item = Product::get()->byID($itemID);
+                    if ($item === null) {
+                        continue;
+                    }
+                    $sistersExists = $item->ProductAttributeValues()
+                            ->filter([
+                                'ProductAttributeID' => $productAttributeValue->ProductAttributeID,
+                            ])
+                            ->exclude([
+                                'ID' => $productAttributeValue->ID,
+                            ])
+                            ->exists();
+                    if ($sistersExists) {
+                        return;
+                    }
+                    $item->ProductAttributes()->remove($productAttributeValue->ProductAttribute());
+                }
+            }, 'callback-remove-product-attribute');
         }
         return $products;
     }
