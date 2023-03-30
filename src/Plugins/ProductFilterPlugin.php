@@ -22,24 +22,21 @@ use SilverStripe\ORM\DB;
  * @license see license file in modules root directory
  * @copyright 2018 pixeltricks GmbH
  */
-class ProductFilterPlugin {
-    
+class ProductFilterPlugin
+{
     use \SilverStripe\Core\Extensible;
-    
     /**
      * Set this to true to skip filter
      *
      * @var bool
      */
     public static $skip_filter = false;
-    
     /**
      * Set this to true to skip filter once
      *
      * @var bool
      */
     public static $skip_filter_once = false;
-
     /**
      *
      * @var ProductGroupPageController 
@@ -56,22 +53,21 @@ class ProductFilterPlugin {
      * Returns the plugins filters
      * 
      * @return array
-     *
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 30.05.2018
      */
-    public function filter() {
+    public function filter() : array|null
+    {
         if (self::$skip_filter) {
-            return;
+            return null;
         }
         if (self::$skip_filter_once) {
             self::$skip_filter_once = false;
-            return;
+            return null;
         }
         $filters = [];
-        if (Controller::curr() instanceof ProductGroupPageController &&
-            !Controller::curr()->isProductDetailView()) {
-            $productTableName = Tools::get_table_name(Product::class);
+        if (Controller::curr() instanceof ProductGroupPageController
+         && !Controller::curr()->isProductDetailView()
+        ) {
+            $productTableName = Product::singleton()->getStageTableName();
             $productGroup     = $this->getProductGroup();
             if ($productGroup->filterEnabled()) {
                 $productIDs = $this->getProductIDs();
@@ -90,11 +86,12 @@ class ProductFilterPlugin {
             $minPrice = Convert::raw2sql($productGroup->getMinPriceForWidget());
             $maxPrice = Convert::raw2sql($productGroup->getMaxPriceForWidget());
             $priceField = 'PriceGrossAmount';
-            if (Config::Pricetype() == 'net') {
+            if (Config::Pricetype() === 'net') {
                 $priceField = 'PriceNetAmount';
             }
-            if (!empty($minPrice) &&
-                !empty($maxPrice)) {
+            if (!empty($minPrice)
+             && !empty($maxPrice)
+            ) {
                 $filters[static::class] = sprintf(
                         'AND "%s"."%s" BETWEEN \'%s\' AND \'%s\'',
                         $productTableName,
@@ -126,11 +123,12 @@ class ProductFilterPlugin {
      *
      * @return ProductGroupPageController
      */
-    public function getProductGroup() {
+    public function getProductGroup() : ProductGroupPageController
+    {
         if (is_null($this->productGroup)) {
             $productGroup = Controller::curr();
-            if (!$productGroup instanceof ProductGroupPageController) {
-                $productGroup = new ProductGroupPageController();
+            if (!($productGroup instanceof ProductGroupPageController)) {
+                $productGroup = ProductGroupPageController::create();
                 $productGroup->permanentlyDisableFilter();
             }
             $this->productGroup = $productGroup;
@@ -175,7 +173,8 @@ class ProductFilterPlugin {
      * 
      * @return array
      */
-    protected function getMultipleChoiceProductIDs() {
+    protected function getMultipleChoiceProductIDs() : array
+    {
         $productIDs = [];
         $query      = $this->getMultipleChoiceQuery();
         $records    = DB::query($query);
@@ -192,21 +191,18 @@ class ProductFilterPlugin {
      * 
      * @return string
      */
-    protected function getMultipleChoiceQuery() {
+    protected function getMultipleChoiceQuery() : string
+    {
         $filterValues                   = $this->getProductGroup()->getFilterValues();
-        $productTableName               = Tools::get_table_name(Product::class);
-        $productAttributeValueTableName = Tools::get_table_name(ProductAttributeValue::class);
-        $query = sprintf(
-                'SELECT DISTINCT "SPSPAV"."%sID" AS PID
-                FROM "%s_ProductAttributeValues" AS SPSPAV
-                WHERE "SPSPAV"."%sID" IN (%s)',
-                $productTableName,
-                $productTableName,
-                $productAttributeValueTableName,
-                "'" . implode("','", $filterValues) . "'"
-        );
+        $productBaseTable               = Product::config()->table_name;
+        $productAttributeValueBaseTable = ProductAttributeValue::config()->table_name;
+        $filterValueList                = implode("','", $filterValues);
+        $query                          = ""
+                . "SELECT DISTINCT SPSPAV.{$productBaseTable}ID AS PID"
+                . "FROM {$productBaseTable}_ProductAttributeValues AS SPSPAV"
+                . "WHERE SPSPAV.{$productAttributeValueBaseTable}ID IN ('{$filterValueList}')";
         $this->extend('updateMultipleChoiceQuery', $query, $filterValues);
-        return $query;
+        return (string) $query;
     }
     
     /**
@@ -214,7 +210,8 @@ class ProductFilterPlugin {
      * 
      * @return array
      */
-    protected function getSingleChoiceProductIDs() {
+    protected function getSingleChoiceProductIDs() : array
+    {
         $productIDs   = [];
         $filterValues = $this->getProductGroup()->getFilterValues();
         foreach ($filterValues as $filterValue) {
@@ -238,35 +235,21 @@ class ProductFilterPlugin {
      * 
      * @return string
      */
-    protected function getSingleChoiceQuery($productIDs, $filterValue) {
-        $productTableName               = Tools::get_table_name(Product::class);
-        $productAttributeValueTableName = Tools::get_table_name(ProductAttributeValue::class);
-        
-        $additionalWhereClause = "";
+    protected function getSingleChoiceQuery($productIDs, $filterValue) : string
+    {
+        $productBaseTable               = Product::config()->table_name;
+        $productAttributeValueBaseTable = ProductAttributeValue::config()->table_name;
+        $additionalWhereClause          = "";
         if (count($productIDs) > 0) {
-            $additionalWhereClause = sprintf(
-                'AND "SPSPAV"."%sID" IN (%s)',
-                $productTableName,
-                implode(',', $productIDs)
-            );
+            $productIDList         = implode(',', $productIDs);
+            $additionalWhereClause = "AND SPSPAV.{$productBaseTable}ID IN ({$productIDList})";
         }
-        
-        $query = sprintf(
-                'SELECT DISTINCT
-                    "SPSPAV"."%sID" AS PID
-                FROM
-                    "%s_ProductAttributeValues" AS SPSPAV
-                WHERE
-                    "SPSPAV"."%sID" = %s
-                %s',
-                $productTableName,
-                $productTableName,
-                $productAttributeValueTableName,
-                $filterValue,
-                $additionalWhereClause
-        );
+        $query = "SELECT DISTINCT SPSPAV.{$productBaseTable}ID AS PID"
+               . " FROM {$productBaseTable}_ProductAttributeValues AS SPSPAV"
+               . " WHERE SPSPAV.{$productAttributeValueBaseTable}ID = {$filterValue}"
+               . " {$additionalWhereClause}";
         $this->extend('updateSingleChoiceQuery', $query, $productIDs, $filterValue);
-        return $query;
+        return (string) $query;
     }
     
 }

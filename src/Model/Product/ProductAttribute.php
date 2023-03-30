@@ -108,11 +108,12 @@ class ProductAttribute extends DataObject
             }
             if (count($filterValues) > 0) {
                 $filterValuesString         = "'" . implode("','", $filterValues) . "'";
-                $productTable               = Product::config()->table_name;
+                $productStageTable          = Product::singleton()->getStageTableName();
+                $productBaseTable           = Product::config()->table_name;
                 $productAttributeValueTable = ProductAttributeValue::config()->table_name;
                 $tableAlias                 = 'P_PAV';
                 return $products
-                        ->leftJoin("{$productTable}_ProductAttributeValues", "{$tableAlias}.{$productTable}ID = {$productTable}.ID", $tableAlias)
+                        ->leftJoin("{$productBaseTable}_ProductAttributeValues", "{$tableAlias}.{$productBaseTable}ID = {$productStageTable}.ID", $tableAlias)
                         ->where("{$tableAlias}.{$productAttributeValueTable}ID IN ({$filterValuesString})");
             }
         }
