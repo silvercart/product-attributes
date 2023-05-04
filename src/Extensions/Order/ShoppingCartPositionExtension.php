@@ -56,7 +56,7 @@ class ShoppingCartPositionExtension extends DataExtension
     public function getVariantAttributes() : SS_List
     {
         $attributeValues      = ArrayList::create();
-        $serializedAttributes = $this->owner->ProductAttributes;
+        $serializedAttributes = (string) $this->owner->ProductAttributes;
         $attributesArray      = unserialize($serializedAttributes);
         if (is_array($attributesArray)
          && count($attributesArray) > 0
@@ -83,7 +83,7 @@ class ShoppingCartPositionExtension extends DataExtension
     {
         $attributeValues      = null;
         $userInputValues      = ArrayList::create();
-        $serializedAttributes = $this->owner->ProductAttributes;
+        $serializedAttributes = (string) $this->owner->ProductAttributes;
         $attributesArray      = unserialize($serializedAttributes);
         if (is_array($attributesArray)
          && count($attributesArray) > 0
