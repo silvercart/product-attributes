@@ -279,8 +279,9 @@ class ProductGroupPageControllerExtension extends GlobalProductAttributesControl
                        && !$this->owner->getRequest()->isPOST()
                 ) {
                     $chosen = ProductAttribute::getGloballyChosen();
-                    print "<pre>";
-                    var_dump($chosen);
+                    // TODO
+                    //print "<pre>";
+                    //var_dump($chosen);
                 }
             }
         }
