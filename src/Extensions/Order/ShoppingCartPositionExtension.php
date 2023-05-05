@@ -152,7 +152,7 @@ class ShoppingCartPositionExtension extends DataExtension
     {
         $uploadValues         = ArrayList::create();
         $serializedAttributes = $this->owner->ProductAttributes;
-        $attributesArray      = unserialize($serializedAttributes);
+        $attributesArray      = unserialize((string) $serializedAttributes);
         if (is_array($attributesArray)
          && count($attributesArray) > 0
         ) {
