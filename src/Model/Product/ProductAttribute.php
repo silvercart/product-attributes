@@ -963,7 +963,7 @@ class ProductAttribute extends DataObject
     public function getUploadedFileContent(array $fileData, int $attributeID = null) : ?string
     {
         $content = null;
-        if (file_exists($this->getUploadedFilePath($fileData, $attributeID))) {
+        if (file_exists((string) $this->getUploadedFilePath($fileData, $attributeID))) {
             $content = file_get_contents($this->getUploadedFilePath($fileData, $attributeID));
         }
         return $content;

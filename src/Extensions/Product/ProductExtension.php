@@ -1178,7 +1178,7 @@ class ProductExtension extends DataExtension
             ]));
             return false;
         }
-        if (!file_exists($fileTmpName)) {
+        if (!file_exists((string) $fileTmpName)) {
             $ctrl->setErrorMessage(_t(self::class . '.ErrorFileUploadFailed', 'File upload failed! Please try again.'));
             return false;
         }
