@@ -16,6 +16,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    {$ModalAddToCartContent}
                     <div class="clearfix silvercart-product-page-productvariant-box <% if $Product.hasVariants %>multiple-load-id<% end_if %>">
                         <% loop $Fields %>
                             <% if $Name.LimitCharacters(16, '') == 'ProductAttribute' %>

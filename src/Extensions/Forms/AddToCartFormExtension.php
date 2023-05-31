@@ -3,10 +3,12 @@
 namespace SilverCart\ProductAttributes\Extensions\Forms;
 
 use SilverCart\Control\ActionHandler;
-use SilverCart\ProductAttributes\Extensions\Pages\PageControllerExtension;
+use SilverCart\Forms\AddToCartForm;
 use SilverCart\Model\Product\Product;
-use SilverStripe\Core\Extension;
+use SilverCart\ProductAttributes\Extensions\Pages\PageControllerExtension;
 use SilverStripe\Control\Director;
+use SilverStripe\Core\Extension;
+use SilverStripe\ORM\FieldType\DBHTMLText;
 
 /**
  * Delivers additional information for the AddToCartForm.
@@ -18,7 +20,7 @@ use SilverStripe\Control\Director;
  * @license see license file in modules root directory
  * @copyright 2018 pixeltricks GmbH
  * 
- * @property \SilverCart\Forms\AddToCartForm $owner Owner
+ * @property AddToCartForm $owner Owner
  */
 class AddToCartFormExtension extends Extension
 {
@@ -81,5 +83,17 @@ class AddToCartFormExtension extends Extension
     public function ProductAttributeLoadProductIDLink() : string
     {
         return Director::makeRelative(ActionHandler::config()->url_segment . '/load-product-id');
+    }
+    
+    /**
+     * Updates the ModalAddToCartContent.
+     * 
+     * @return DBHTMLText
+     */
+    public function ModalAddToCartContent() : DBHTMLText
+    {
+        $content = '';
+        $this->owner->extend('updateModalAddToCartContent', $content);
+        return DBHTMLText::create()->setValue($content);
     }
 }
