@@ -101,7 +101,7 @@ class ProductAttributeValue extends DataObject
      *
      * @var array
      */
-    private static $db = [
+    private static array $db = [
         'URLSegment'                       => 'Varchar',
         'DisableGlobally'                  => 'Boolean',
         'DefaultModifyTitleAction'         => 'Enum(",add,setTo",null)',
@@ -117,7 +117,7 @@ class ProductAttributeValue extends DataObject
      *
      * @var array
      */
-    private static $has_one = [
+    private static array $has_one = [
         'ProductAttribute' => ProductAttribute::class,
         'Image'            => Image::class,
     ];
@@ -126,7 +126,7 @@ class ProductAttributeValue extends DataObject
      *
      * @var array
      */
-    private static $has_many = [
+    private static array $has_many = [
         'ProductAttributeValueTranslations' => ProductAttributeValueTranslation::class,
     ];
     /**
@@ -134,15 +134,15 @@ class ProductAttributeValue extends DataObject
      *
      * @var array
      */
-    private static $belongs_many_many = [
-        'Products' => Product::class,
+    private static array $belongs_many_many = [
+        'Products' => Product::class . '.ProductAttributeValues',
     ];
     /**
      * Casted attributes
      *
      * @var array
      */
-    private static $casting = [
+    private static array $casting = [
         'Title'                          => 'Text',
         'FinalModifyTitleAction'         => 'Text',
         'FinalModifyTitleValue'          => 'Text',
@@ -158,19 +158,19 @@ class ProductAttributeValue extends DataObject
      *
      * @var string
      */
-    private static $default_sort = 'Sort, "SilvercartProductAttributeValueTranslation"."Title"';
+    private static string $default_sort = 'Sort, "SilvercartProductAttributeValueTranslation"."Title"';
     /**
      * DB table name
      *
      * @var string
      */
-    private static $table_name = 'SilvercartProductAttributeValue';
+    private static string $table_name = 'SilvercartProductAttributeValue';
     /**
      * Extensions.
      * 
      * @var string[]
      */
-    private static $extensions = [
+    private static array $extensions = [
         TranslatableDataObjectExtension::class,
         FontAwesomeExtension::class,
     ];
@@ -179,13 +179,13 @@ class ProductAttributeValue extends DataObject
      * 
      * @var bool
      */
-    private static $insert_translation_cms_fields = true;
+    private static bool $insert_translation_cms_fields = true;
     /**
      * Determines to insert the translation CMS fields before this field.
      * 
      * @var string
      */
-    private static $insert_translation_cms_fields_before = 'URLSegment';
+    private static string $insert_translation_cms_fields_before = 'URLSegment';
 
     /**
      * Returns the translated singular name of the object. If no translation exists

@@ -2,7 +2,9 @@
 
 namespace SilverCart\ProductAttributes\Extensions\CustomerRebates;
 
+use SilverCart\CustomerRebates\Model\CustomerRebate;
 use SilverCart\Model\Order\ShoppingCartPosition;
+use SilverCart\Model\Product\Product;
 use SilverCart\ProductAttributes\Model\Product\ProductAttributeValue;
 use SilverStripe\ORM\DataExtension;
 
@@ -16,6 +18,8 @@ use SilverStripe\ORM\DataExtension;
  * @copyright 2018 pixeltricks GmbH
  * @since 13.12.2018
  * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License
+ * 
+ * @property CustomerRebate $owner Owner
  */
 class CustomerRebateExtension extends DataExtension
 {
@@ -24,7 +28,7 @@ class CustomerRebateExtension extends DataExtension
      *
      * @var array
      */
-    private static $many_many = [
+    private static array $many_many = [
         'ProductAttributeValues' => ProductAttributeValue::class,
     ];
     
@@ -34,9 +38,6 @@ class CustomerRebateExtension extends DataExtension
      * @param array &$labels Labels to update
      * 
      * @return void
-     * 
-     * @author Sebastian Diel <sdiel@pixeltricks.de>
-     * @since 13.12.2018
      */
     public function updateFieldLabels(&$labels) : void
     {
@@ -62,7 +63,7 @@ class CustomerRebateExtension extends DataExtension
         ) {
             $isMatching = false;
             $product    = $position->Product();
-            /* @var $product \SilverCart\Model\Product\Product */
+            /* @var $product Product */
             foreach ($rebateAttributeValues as $attributeValue) {
                 $relatedValue = $product->ProductAttributeValues()->byID($attributeValue->ID);
                 if ($relatedValue instanceof ProductAttributeValue

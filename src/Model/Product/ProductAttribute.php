@@ -232,7 +232,7 @@ class ProductAttribute extends DataObject
      *
      * @var array
      */
-    private static $db = [
+    private static array $db = [
         'AllowMultipleChoice'          => 'Boolean(1)',
         'DisableFilterReset'           => 'Boolean(0)',
         'ShowAsNavigationItem'         => 'Boolean(0)',
@@ -257,7 +257,7 @@ class ProductAttribute extends DataObject
      *
      * @var array
      */
-    private static $has_many = [
+    private static array $has_many = [
         'ProductAttributeTranslations' => ProductAttributeTranslation::class,
         'ProductAttributeValues'       => ProductAttributeValue::class,
     ];
@@ -266,16 +266,16 @@ class ProductAttribute extends DataObject
      *
      * @var array
      */
-    private static $belongs_many_many = [
-        'Products'             => Product::class,
-        'ProductAttributeSets' => ProductAttributeSet::class,
+    private static array $belongs_many_many = [
+        'Products'             => Product::class . '.ProductAttributes',
+        'ProductAttributeSets' => ProductAttributeSet::class . '.ProductAttributes',
     ];
     /**
      * Castings
      *
      * @var array
      */
-    private static $casting = [
+    private static array $casting = [
         'Title'                            => 'Text',
         'PluralTitle'                      => 'Text',
         'AdTitle'                          => 'Text',
@@ -296,7 +296,7 @@ class ProductAttribute extends DataObject
      * 
      * @var array 
      */
-    private static $indexes = [
+    private static array $indexes = [
         'CanBeUsedForFilterWidget'   => '("CanBeUsedForFilterWidget")',
         'CanBeUsedForDataSheet'      => '("CanBeUsedForDataSheet")',
         'CanBeUsedForVariants'       => '("CanBeUsedForVariants")',
@@ -307,19 +307,19 @@ class ProductAttribute extends DataObject
      *
      * @var string
      */
-    private static $default_sort = 'Sort, "SilvercartProductAttribute"."CanBeUsedForVariants" DESC, "SilvercartProductAttributeTranslation"."Title"';
+    private static string $default_sort = 'Sort, "SilvercartProductAttribute"."CanBeUsedForVariants" DESC, "SilvercartProductAttributeTranslation"."Title"';
     /**
      * DB table name
      *
      * @var string
      */
-    private static $table_name = 'SilvercartProductAttribute';
+    private static string $table_name = 'SilvercartProductAttribute';
     /**
      * Extensions.
      * 
      * @var string[]
      */
-    private static $extensions = [
+    private static array $extensions = [
         TranslatableDataObjectExtension::class,
         FontAwesomeExtension::class,
     ];
@@ -328,19 +328,19 @@ class ProductAttribute extends DataObject
      * 
      * @var bool
      */
-    private static $insert_translation_cms_fields = true;
+    private static bool $insert_translation_cms_fields = true;
     /**
      * Determines to insert the translation CMS fields before this field.
      * 
      * @var string
      */
-    private static $insert_translation_cms_fields_before = 'CanBeUsedForFilterWidget';
+    private static string $insert_translation_cms_fields_before = 'CanBeUsedForFilterWidget';
     /**
      * Determines whether to allow global reset or not.
      * 
      * @var bool
      */
-    private static $allow_global_reset = false;
+    private static bool $allow_global_reset = false;
     /**
      * Assigned values
      *
