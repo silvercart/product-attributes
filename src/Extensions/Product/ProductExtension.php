@@ -4,6 +4,8 @@ namespace SilverCart\ProductAttributes\Extensions\Product;
 
 use SilverCart\Admin\Forms\GridField\GridFieldAddExistingAutocompleter as SilverCartGridFieldAddExistingAutocompleter;
 use SilverCart\Dev\Tools;
+use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
+use UndefinedOffset\SortableGridField\Forms\GridFieldSortableRows;
 use SilverCart\Forms\FormFields\MoneyField;
 use SilverCart\Forms\FormFields\TextField;
 use SilverCart\Model\Order\ShoppingCartPosition;
@@ -37,7 +39,7 @@ use SilverStripe\View\ArrayData;
  * @since 30.05.2018
  * @license see license file in modules root directory
  * @copyright 2018 pixeltricks GmbH
- * 
+ *
  * @property Product $owner Owner
  */
 class ProductExtension extends DataExtension
@@ -51,6 +53,7 @@ class ProductExtension extends DataExtension
         'ProductAttributes'      => ProductAttribute::class,
         'ProductAttributeValues' => ProductAttributeValue::class,
     ];
+
     /**
      * Extra fields for many to many relations.
      *
@@ -67,11 +70,14 @@ class ProductExtension extends DataExtension
             'ModifyProductNumberAction' => 'Enum(",add,setTo","")',
             'ModifyProductNumberValue'  => "Varchar(50)",
         ],
+        'ProductAttributes' => [
+            'SortAttributes' => 'Int'
+        ]
     ];
     /**
      * Set of variants related with this product
      *
-     * @var ArrayList[] 
+     * @var ArrayList[]
      */
     protected $variants = [];
     /**
@@ -92,14 +98,14 @@ class ProductExtension extends DataExtension
      * @var ArrayList[]
      */
     protected $dataSheetAttributesWithValues = [];
-    
+
     /**
      * A request cached map of attribute value IDs
      *
      * @var array
      */
     protected $relatedAttributeValueMap = [];
-    
+
     /**
      * Indicator whether updateCMSFields is already called
      *
@@ -108,34 +114,34 @@ class ProductExtension extends DataExtension
     protected $updateCMSFieldsIsCalled = false;
     /**
      * Stores the hasSingleProductVariants options.
-     * 
+     *
      * @var bool[]
      */
     protected $hasSingleProductVariants = [];
     /**
      * Stores the hasVariants options.
-     * 
+     *
      * @var bool[]
      */
     protected $hasVariants = [];
     /**
      * Variant form fields.
-     * 
+     *
      * @var array
      */
     protected $variantFormFields = [];
     /**
      * Single variant form fields.
-     * 
+     *
      * @var array
      */
     protected $singleProductVariantFormFields = [];
-    
+
     /**
      * Updates the CMS fields
      *
      * @param FieldList $fields Fields to update
-     * 
+     *
      * @return void
      *
      * @author Sebastian Diel <sdiel@pixeltricks.de>
@@ -155,7 +161,17 @@ class ProductExtension extends DataExtension
                 $attributeField->getConfig()->addComponent(new SilverCartGridFieldAddExistingAutocompleter('buttons-before-right'));
             }
         }
-        
+
+        $productAttributesGridField =  $fields->dataFieldByName('ProductAttributes');
+        if ($productAttributesGridField) {
+            $productAttributesConfig = $productAttributesGridField->getConfig();
+            if (class_exists(GridFieldOrderableRows::class)) {
+                $productAttributesConfig->addComponent(new GridFieldOrderableRows('SortAttributes'));
+            } elseif (class_exists(GridFieldSortableRows::class)) {
+                $productAttributesConfig->addComponent(new GridFieldSortableRows('SortAttributes'));
+            }
+        }
+
         if ($this->owner->exists()
          && $this->CanBeUsedAsVariant()
         ) {
@@ -168,12 +184,12 @@ class ProductExtension extends DataExtension
             }
         }
     }
-    
+
     /**
      * Adds the slave product fields.
-     * 
+     *
      * @param FieldList $fields Fields
-     * 
+     *
      * @return Product
      *
      * @author Sebastian Diel <sdiel@pixeltricks.de>
@@ -195,12 +211,12 @@ class ProductExtension extends DataExtension
         $fields->addFieldToTab('Root.ProductAttributes', $slaveProductsField);
         return $this->owner;
     }
-    
+
     /**
      * Updates the field labels
      *
      * @param array &$labels Labels to update
-     * 
+     *
      * @return void
      *
      * @author Sebastian Diel <sdiel@pixeltricks.de>
@@ -222,12 +238,12 @@ class ProductExtension extends DataExtension
                 ]
         );
     }
-    
+
     /**
      * Inherits the short description of the master product if not set
-     * 
+     *
      * @param string &$shortDescription Original short description
-     * 
+     *
      * @return void
      *
      * @author Sebastian Diel <sdiel@pixeltricks.de>
@@ -241,12 +257,12 @@ class ProductExtension extends DataExtension
             $shortDescription = $this->owner->MasterProduct()->ShortDescription;
         }
     }
-    
+
     /**
      * Inherits the long description of the master product if not set
-     * 
+     *
      * @param string &$longDescription Original long description
-     * 
+     *
      * @return void
      *
      * @author Sebastian Diel <sdiel@pixeltricks.de>
@@ -260,11 +276,11 @@ class ProductExtension extends DataExtension
             $longDescription = $this->owner->MasterProduct()->LongDescription;
         }
     }
-    
+
     /**
      * On before write.
      * Adds variant modifications to related attribute values.
-     * 
+     *
      * @return void
      */
     public function onBeforeWrite() : void
@@ -283,11 +299,11 @@ class ProductExtension extends DataExtension
             }
         }
     }
-    
+
     /**
      * On after write.
      * Adds variant modifications to related attribute values.
-     * 
+     *
      * @return void
      *
      * @author Sebastian Diel <sdiel@pixeltricks.de>
@@ -341,7 +357,7 @@ class ProductExtension extends DataExtension
 
     /**
      * Returns the products attributes with related values
-     * 
+     *
      * @return ArrayList
      */
     public function getAttributesWithValues() : ArrayList
@@ -366,7 +382,7 @@ class ProductExtension extends DataExtension
 
     /**
      * Returns the products attributes with related values
-     * 
+     *
      * @return ArrayList
      */
     public function getDataSheetAttributesWithValues() : ArrayList
@@ -391,9 +407,9 @@ class ProductExtension extends DataExtension
 
     /**
      * Returns the products attributed values for the given attribute
-     * 
+     *
      * @param ProductAttribute $attribute Attribute to get values for
-     * 
+     *
      * @return DataList
      */
     public function getAttributedValuesFor(ProductAttribute $attribute) : ArrayList
@@ -424,7 +440,7 @@ class ProductExtension extends DataExtension
 
     /**
      * Returns whether this product has variants or not
-     * 
+     *
      * @return bool
      */
     public function hasVariants() : bool
@@ -444,7 +460,7 @@ class ProductExtension extends DataExtension
 
     /**
      * Returns whether this product has single product variants or not
-     * 
+     *
      * @return bool
      */
     public function hasSingleProductVariants() : bool
@@ -459,22 +475,22 @@ class ProductExtension extends DataExtension
         }
         return $this->hasSingleProductVariants[$this->owner->ID];
     }
-    
+
     /**
      * Returns the single product variant attributes.
-     * 
+     *
      * @return DataList
      */
     public function getSingleProductVariantAttributes() : DataList
     {
         return $this->owner->ProductAttributes()->filter('CanBeUsedForSingleVariants', true);
     }
-    
+
     /**
      * Returns the variants for the given Attribute ID
-     * 
+     *
      * @param int $attributeID Attribute ID to get variants for
-     * 
+     *
      * @return ArrayList
      */
     public function getVariantsFor(int $attributeID) : ArrayList
@@ -500,12 +516,12 @@ class ProductExtension extends DataExtension
         }
         return $matchedVariants;
     }
-    
+
     /**
      * Returns the products variant matching with the given attribute value IDs
-     * 
+     *
      * @param array $attributeValueIDs IDs of the attribute values to match against
-     * 
+     *
      * @return Product
      */
     public function getVariantBy(array $attributeValueIDs) : ?Product
@@ -526,10 +542,10 @@ class ProductExtension extends DataExtension
         }
         return $matchedVariant;
     }
-    
+
     /**
      * Returns the context product to get variant data for.
-     * 
+     *
      * @return Product
      */
     public function getVariantAttributeContext() : Product
@@ -542,33 +558,33 @@ class ProductExtension extends DataExtension
         }
         return $context;
     }
-    
+
     /**
      * Returns the product attributes which can be used for variants
-     * 
+     *
      * @return ArrayList
      */
     public function getVariantAttributes() : ArrayList
     {
         $context    = $this->getVariantAttributeContext();
-        $attributes = $context->ProductAttributes();
+        $attributes = $context->ProductAttributes()->sort('SortAttributes ASC');
         return ArrayList::create($attributes->filter('CanBeUsedForVariants', true)->toArray());
     }
-    
+
     /**
-     * Returns the product attributes as a comma seperated list (last item is 
+     * Returns the product attributes as a comma seperated list (last item is
      * seperated with "&").
-     * 
+     *
      * @return DBHTMLText
      */
     public function getVariantAttributesNice() : DBHTMLText
     {
         return DBHTMLText::create()->setValue($this->getVariantAttributes()->implode('Title', ', ', ' & '));
     }
-    
+
     /**
      * Returns the product attributes which can be used for variants
-     * 
+     *
      * @return ArrayList
      */
     public function getVariantAttributeValues() : ArrayList
@@ -587,7 +603,7 @@ class ProductExtension extends DataExtension
 
     /**
      * Returns the variants of this product
-     * 
+     *
      * @return ArrayList
      */
     public function getVariants() : ArrayList
@@ -619,12 +635,12 @@ class ProductExtension extends DataExtension
         }
         return $this->variants[$this->owner->ID]->exclude('ID', $this->owner->ID);
     }
-    
+
     /**
      * Sets the variants for this product
-     * 
+     *
      * @param DataList $variants Variants to use
-     * 
+     *
      * @return Product
      */
     public function setVariants($variants) : Product
@@ -636,9 +652,9 @@ class ProductExtension extends DataExtension
 
     /**
      * Returns whether this product is a variant of another product
-     * 
+     *
      * @return bool
-     * 
+     *
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 12.09.2012
      */
@@ -653,15 +669,15 @@ class ProductExtension extends DataExtension
         }
         return $isVariant;
     }
-    
+
     /**
      * Returns the variants for the given Attribute ID
-     * 
+     *
      * @param Product          $product   Product to check variation for
      * @param ProductAttribute $attribute Attribute to check variation for
-     * 
+     *
      * @return bool
-     * 
+     *
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 04.06.2018
      */
@@ -695,9 +711,9 @@ class ProductExtension extends DataExtension
 
     /**
      * Returns whether this product can be used as variant or not
-     * 
+     *
      * @return bool
-     * 
+     *
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 18.09.2014
      */
@@ -719,19 +735,19 @@ class ProductExtension extends DataExtension
 
     /**
      * Returns this products slave products if exists
-     * 
+     *
      * @return DataList
      */
     public function getSlaveProducts() : DataList
     {
         return Product::get()->filter('MasterProductID', $this->owner->ID);
     }
-    
+
     /**
      * Returns whether this is a master product or not
-     * 
+     *
      * @return bool
-     * 
+     *
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 12.09.2012
      */
@@ -746,12 +762,12 @@ class ProductExtension extends DataExtension
         }
         return $isMasterProduct;
     }
-    
+
     /**
      * Returns whether this is a slave product or not
-     * 
+     *
      * @return bool
-     * 
+     *
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 12.09.2012
      */
@@ -764,10 +780,10 @@ class ProductExtension extends DataExtension
         }
         return $isSlaveProduct;
     }
-    
+
     /**
      * Returns the form fields for the choice of a products variant to use.
-     * 
+     *
      * @return array
      */
     public function getVariantFormFields() : array
@@ -827,15 +843,15 @@ class ProductExtension extends DataExtension
         $this->variantFormFields[$product->ID] = $fields;
         return $this->variantFormFields[$product->ID];
     }
-    
+
     /**
      * Returns the field modifier notes for the given context.
-     * 
+     *
      * @param Product          $product           Product
      * @param ProductAttribute $attribute         Attribute
      * @param ArrayList        &$attributedValues Attribute values
      * @param int              $selectedValue     Selected value
-     * 
+     *
      * @return string[]
      */
     protected function getVariantFormFieldModifierNotes(Product $product, ProductAttribute $attribute, ArrayList &$attributedValues, int $selectedValue) : array
@@ -855,13 +871,13 @@ class ProductExtension extends DataExtension
         }
         return $fieldModifierNotes;
     }
-    
+
     /**
      * Returns a list of attribute names.
-     * 
+     *
      * @param SS_List $attributedValues   Attributed values
      * @param array   $fieldModifierNotes Field modifier notes
-     * 
+     *
      * @return string[]
      */
     protected function getVariantFormFieldAttributeNames(SS_List $attributedValues, array $fieldModifierNotes) : array
@@ -885,9 +901,9 @@ class ProductExtension extends DataExtension
     }
 
     /**
-     * Returns the form fields for the choice of a products single variant to 
+     * Returns the form fields for the choice of a products single variant to
      * use.
-     * 
+     *
      * @return array
      */
     public function getSingleProductVariantFormFields() : array
@@ -956,11 +972,11 @@ class ProductExtension extends DataExtension
         $this->singleProductVariantFormFields[$product->ID] = array_merge($fields, $this->getVariantUserInputFields(), $this->getVariantUploadFields());
         return $this->singleProductVariantFormFields[$product->ID];
     }
-    
+
     /**
      * Returns the form fields for the choice of a products user input variant
      * fields.
-     * 
+     *
      * @return array
      */
     protected function getVariantUserInputFields() : array
@@ -987,7 +1003,7 @@ class ProductExtension extends DataExtension
                 } else {
                     $options[0] = $userInputAttribute->Title;
                 }
-                
+
                 $field = ChooseEngravingField::create(
                         "ProductAttribute{$userInputAttribute->ID}",
                         $userInputAttribute->Title,
@@ -1008,11 +1024,11 @@ class ProductExtension extends DataExtension
         }
         return $fields;
     }
-    
+
     /**
      * Returns the form fields for the choice of a products user input variant
      * fields.
-     * 
+     *
      * @return array
      */
     protected function getVariantUploadFields() : array
@@ -1024,7 +1040,7 @@ class ProductExtension extends DataExtension
         $uploadAttributes = $this->owner->getSingleProductVariantAttributes()->filter('IsUploadField', true);
         if ($uploadAttributes->exists()) {
             foreach ($uploadAttributes as $uploadAttribute) {
-                
+
                 $field = FileField::create(
                         "ProductAttribute{$uploadAttribute->ID}",
                         $uploadAttribute->Title,
@@ -1040,14 +1056,14 @@ class ProductExtension extends DataExtension
         }
         return $fields;
     }
-    
+
     /**
      * Returns the price difference string to show when choosing a product variant.
-     * 
+     *
      * @param ProductAttributeValue $attributeValue   Attribute value
      * @param array                 &$prices          List of variant prices
      * @param bool                  $returnAsAddition Return string as addition? (e.g. "+15,00 €"/"+$15,00")
-     * 
+     *
      * @return string
      */
     protected function getVariantPriceStringIfDifferent(ProductAttributeValue $attributeValue, array &$prices, bool $returnAsAddition = false) : string
@@ -1091,16 +1107,16 @@ class ProductExtension extends DataExtension
         $prices[$attributeValue->ID] = $totalPrice->Nice();
         return $priceString;
     }
-    
+
     /**
      * Updates the original addToCart() method.
-     * 
+     *
      * @param int                  $cartID               Cart ID
      * @param int                  $quantity             Quantity to add
      * @param bool                 $increment            Increment instead of adding an absolute quantity?
      * @param bool                 $addToCartAllowed     Add to cart action is allowed?
      * @param ShoppingCartPosition $shoppingCartPosition Cart position
-     * 
+     *
      * @return void
      */
     public function updateAddToCart(int $cartID, int $quantity, bool $increment, bool &$addToCartAllowed, ShoppingCartPosition $shoppingCartPosition = null) : void
@@ -1135,12 +1151,12 @@ class ProductExtension extends DataExtension
             }
         }
     }
-    
+
     /**
      * Validates the uploaded file.
-     * 
+     *
      * @param ProductAttribute $attribute Attribute
-     * 
+     *
      * @return bool
      */
     public function validateSingleProductVariantFileUpload(ProductAttribute $attribute) : bool
@@ -1185,9 +1201,9 @@ class ProductExtension extends DataExtension
         $attribute->setUploadedFileContent(file_get_contents($fileTmpName), $fileData);
         return true;
     }
-    
+
     /**
-     * Adds a product to the ShoppingCart and attaches the given attributes to the 
+     * Adds a product to the ShoppingCart and attaches the given attributes to the
      * position.
      *
      * @param int   $cartID              ID of the users shopping cart
@@ -1196,7 +1212,7 @@ class ProductExtension extends DataExtension
      * @param array $userInputAttributes Optional: the user generated attributes that shall be attached to the created position
      *
      * @return ShoppingCartPosition
-     * 
+     *
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 07.11.2016
      */
@@ -1242,14 +1258,14 @@ class ProductExtension extends DataExtension
                         'ProductAttributes' => $serializedAttributes,
                     ]);
         }
-        
+
         $quantityToAdd = $quantity - $shoppingCartPosition->Quantity;
         if ($shoppingCartPosition->isQuantityIncrementableBy($quantityToAdd, $this->owner)) {
             $shoppingCartPosition->Quantity += $quantityToAdd;
         } elseif ($this->owner->StockQuantity > 0) {
             $shoppingCartPosition->Quantity += $this->owner->StockQuantity - $shoppingCartPosition->Quantity;
             $shoppingCartPosition->write(); //we have to write because we need the ID
-            ShoppingCartPositionNotice::setNotice($shoppingCartPosition->ID, "remaining");  
+            ShoppingCartPositionNotice::setNotice($shoppingCartPosition->ID, "remaining");
         } else {
             return null;
         }
@@ -1257,14 +1273,14 @@ class ProductExtension extends DataExtension
         $this->owner->extend('onAfterAddToCart', $shoppingCartPosition, $isNewPosition);
         return $shoppingCartPosition;
     }
-    
+
     /**
      * Adds a tab for product attribute information information
      *
      * @param ArrayList &$pluggedInTabs List of plugged in tabs
-     * 
-     * @return void 
-     * 
+     *
+     * @return void
+     *
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
@@ -1281,7 +1297,7 @@ class ProductExtension extends DataExtension
                 ]));
             }
         }
-        
+
         if ($this->owner->ProductAttributeValues()->exclude('ImageID', 0)->exists()) {
             $valuesWithImage = $this->owner->ProductAttributeValues()->filter('IsActive', true)->exclude('ImageID', 0);
             $attributes      = GroupedList::create($valuesWithImage)->groupBy('ProductAttributeID');
@@ -1310,14 +1326,14 @@ class ProductExtension extends DataExtension
             }
         }
     }
-    
+
     /**
      * Adds some information to display between Images and Content.
      *
      * @param ArrayList &$pluggedInAfterImageContent List of plugged in after image content
-     * 
-     * @return void 
-     * 
+     *
+     * @return void
+     *
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
@@ -1335,14 +1351,14 @@ class ProductExtension extends DataExtension
             }
         }
     }
-    
+
     /**
      * Adds the variation data to the headings and returns them
-     * 
+     *
      * @param DataList $variants Variants
-     * 
+     *
      * @return ArrayList
-     * 
+     *
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 30.05.2018
      */
@@ -1374,15 +1390,15 @@ class ProductExtension extends DataExtension
         $headings->push(ArrayData::create(["Name" => 'Price', "Title" => $this->owner->fieldLabel('Price')]));
         return $headings;
     }
-    
+
     /**
      * Returns the items.
-     * 
+     *
      * @param ArrayList $variants Variants
      * @param Product   $original Original product
-     * 
+     *
      * @return ArrayList
-     * 
+     *
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 11.08.2014
      */
@@ -1405,9 +1421,9 @@ class ProductExtension extends DataExtension
 
     /**
      * Adds the variation data to the items fields and returns them
-     * 
+     *
      * @param Product|null $product Product
-     * 
+     *
      * @return ArrayList
      */
     public function Fields(?Product $product = null) : ArrayList
@@ -1432,12 +1448,12 @@ class ProductExtension extends DataExtension
         $fields->push(ArrayData::create(["Name" => 'Price', "Value" => $product->getPriceNice(), "Link" => $product->Link()]));
         return $fields;
     }
-    
+
     /**
      * Returns the variant field list to use for the items
-     * 
+     *
      * @return array
-     * 
+     *
      * @author Sebastian Diel <sdiel@pixeltricks.de>
      * @since 13.09.2012
      */
