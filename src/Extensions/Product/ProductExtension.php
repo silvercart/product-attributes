@@ -365,7 +365,7 @@ class ProductExtension extends DataExtension
         $this->owner->extend('overwriteAttributesWithValues', $this->attributesWithValues);
         if (!array_key_exists($this->owner->ID, $this->attributesWithValues)) {
             $attributesWithValues = ArrayList::create();
-            foreach ($this->owner->ProductAttributes() as $attribute) {
+            foreach ($this->owner->ProductAttributes()->sort('SortAttributes ASC') as $attribute) {
                 $attributedValues = $this->getAttributedValuesFor($attribute);
                 if ($attributedValues->count() > 0) {
                     $attributesWithValues->push(ArrayData::create([
@@ -390,7 +390,7 @@ class ProductExtension extends DataExtension
         $this->owner->extend('overwriteDataSheetAttributesWithValues', $this->dataSheetAttributesWithValues);
         if (!array_key_exists($this->owner->ID, $this->dataSheetAttributesWithValues)) {
             $attributesWithValues = ArrayList::create();
-            foreach ($this->owner->ProductAttributes()->filter('CanBeUsedForDataSheet', true) as $attribute) {
+            foreach ($this->owner->ProductAttributes()->sort('SortAttributes ASC')->filter('CanBeUsedForDataSheet', true) as $attribute) {
                 $attributedValues = $this->getAttributedValuesFor($attribute);
                 if ($attributedValues->count() > 0) {
                     $attributesWithValues->push(ArrayData::create([
@@ -483,7 +483,7 @@ class ProductExtension extends DataExtension
      */
     public function getSingleProductVariantAttributes() : DataList
     {
-        return $this->owner->ProductAttributes()->filter('CanBeUsedForSingleVariants', true);
+        return $this->owner->ProductAttributes()->sort('SortAttributes ASC')->filter('CanBeUsedForSingleVariants', true);
     }
 
     /**
@@ -504,7 +504,7 @@ class ProductExtension extends DataExtension
             $matchingAttributeValues->merge($this->owner->getAttributedValuesFor($variantAttribute));
         }
         foreach ($variants as $variant) {
-            if ($variant->ProductAttributes()->find('ID', $attributeID)) {
+            if ($variant->ProductAttributes()->sort('SortAttributes ASC')->find('ID', $attributeID)) {
                 $attributeValueMatches = [];
                 foreach ($matchingAttributeValues as $matchingAttributeValue) {
                     if ($variant->ProductAttributeValues()->find('ID', $matchingAttributeValue->ID)) {
