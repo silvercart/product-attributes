@@ -623,7 +623,7 @@ class ProductExtension extends DataExtension
             } else {
                 $arrayList = ArrayList::create($variants->toArray());
             }
-            $activeVariants = $arrayList->filter('isActive',1);
+            $activeVariants = $arrayList->filter('isActive', 1);
             if (!is_null($activeVariants)
              && $activeVariants->exists()
             ) {
@@ -783,10 +783,28 @@ class ProductExtension extends DataExtension
 
     /**
      * Returns the form fields for the choice of a products variant to use.
+     * 
+     * @param string|null $fieldNameIndex Field name index
      *
      * @return array
      */
-    public function getVariantFormFields() : array
+    public function getVariantFormFieldList(string|null $fieldNameIndex = null) : FieldList
+    {
+        $list = FieldList::create();
+        foreach ($this->getVariantFormFields($fieldNameIndex) as $formField) {
+            $list->push($formField);
+        }
+        return $list;
+    }
+
+    /**
+     * Returns the form fields for the choice of a products variant to use.
+     * 
+     * @param string|null $fieldNameIndex Field name index
+     *
+     * @return array
+     */
+    public function getVariantFormFields(string|null $fieldNameIndex = null) : array
     {
         if (array_key_exists($this->owner->ID, $this->variantFormFields)) {
             return $this->variantFormFields[$this->owner->ID];
@@ -796,6 +814,10 @@ class ProductExtension extends DataExtension
         if ($product->hasVariants()) {
             $attributes = $product->getVariantAttributes();
             foreach ($attributes as $attribute) {
+                $fieldName = "ProductAttribute{$attribute->ID}";
+                if ($fieldNameIndex !== null) {
+                    $fieldName = "{$fieldName}[{$fieldNameIndex}]";
+                }
                 $selectedValue    = 0;
                 $attributedValues = $product->getAttributedValuesFor($attribute);
                 if ($attributedValues->count() > 0) {
@@ -816,7 +838,7 @@ class ProductExtension extends DataExtension
                      && $this->owner->hasMethod('get' . ucfirst($attribute->useCustomFormField))
                     ) {
                         $field = $this->owner->{'get' . ucfirst($attribute->useCustomFormField)}(
-                                "ProductAttribute{$attribute->ID}",
+                                $fieldName,
                                 $attribute->Title,
                                 $values,
                                 $selectedValue
@@ -826,7 +848,7 @@ class ProductExtension extends DataExtension
                         }
                     } else {
                         $field = ProductAttributeDropdownField::create(
-                                "ProductAttribute{$attribute->ID}",
+                                $fieldName,
                                 $attribute->Title,
                                 $values,
                                 $selectedValue
