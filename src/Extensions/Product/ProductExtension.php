@@ -4,8 +4,6 @@ namespace SilverCart\ProductAttributes\Extensions\Product;
 
 use SilverCart\Admin\Forms\GridField\GridFieldAddExistingAutocompleter as SilverCartGridFieldAddExistingAutocompleter;
 use SilverCart\Dev\Tools;
-use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
-use UndefinedOffset\SortableGridField\Forms\GridFieldSortableRows;
 use SilverCart\Forms\FormFields\MoneyField;
 use SilverCart\Forms\FormFields\TextField;
 use SilverCart\Model\Order\ShoppingCartPosition;
@@ -28,7 +26,11 @@ use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\ORM\GroupedList;
 use SilverStripe\ORM\SS_List;
+use SilverStripe\ORM\UnsavedRelationList;
 use SilverStripe\View\ArrayData;
+use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
+use UndefinedOffset\SortableGridField\Forms\GridFieldSortableRows;
+use function _t;
 
 /**
  * Extension for a product.
@@ -479,9 +481,9 @@ class ProductExtension extends DataExtension
     /**
      * Returns the single product variant attributes.
      *
-     * @return DataList
+     * @return DataList|UnsavedRelationList
      */
-    public function getSingleProductVariantAttributes() : DataList
+    public function getSingleProductVariantAttributes() : DataList|UnsavedRelationList
     {
         return $this->owner->ProductAttributes()->sort('SortAttributes ASC')->filter('CanBeUsedForSingleVariants', true);
     }
