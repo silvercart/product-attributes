@@ -184,6 +184,10 @@ class ProductExtension extends DataExtension
                 $masterProductField = TextField::create('MasterProductNumber', $this->owner->fieldLabel('MasterProduct'), $this->owner->MasterProduct()->ProductNumberShop);
                 $fields->addFieldToTab('Root.ProductAttributes', $masterProductField);
             }
+        } elseif (!empty($this->owner->MasterProductID)) {
+            $masterProductField = TextField::create('MasterProductNumber', $this->owner->fieldLabel('MasterProduct'), $this->owner->MasterProduct()->ProductNumberShop);
+            $masterProductField->setDescription();
+            $fields->addFieldToTab('Root.ProductAttributes', $masterProductField);
         }
     }
 
@@ -629,6 +633,11 @@ class ProductExtension extends DataExtension
             if (!is_null($activeVariants)
              && $activeVariants->exists()
             ) {
+                foreach ($activeVariants as $activeVariant) {
+                    if (!$activeVariant->CanBeUsedAsVariant()) {
+                        $activeVariants->remove($activeVariant);
+                    }
+                }
                 $this->variants[$this->owner->ID] = $activeVariants;
             }
         }
