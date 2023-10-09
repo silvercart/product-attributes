@@ -29,7 +29,6 @@ use SilverStripe\ORM\SS_List;
 use SilverStripe\ORM\UnsavedRelationList;
 use SilverStripe\View\ArrayData;
 use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
-use UndefinedOffset\SortableGridField\Forms\GridFieldSortableRows;
 use function _t;
 
 /**
@@ -169,8 +168,6 @@ class ProductExtension extends DataExtension
             $productAttributesConfig = $productAttributesGridField->getConfig();
             if (class_exists(GridFieldOrderableRows::class)) {
                 $productAttributesConfig->addComponent(new GridFieldOrderableRows('SortAttributes'));
-            } elseif (class_exists(GridFieldSortableRows::class)) {
-                $productAttributesConfig->addComponent(new GridFieldSortableRows('SortAttributes'));
             }
         }
 

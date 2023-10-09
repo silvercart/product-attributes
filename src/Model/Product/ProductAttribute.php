@@ -28,7 +28,6 @@ use SilverStripe\ORM\SS_List;
 use SilverStripe\ORM\UnsavedRelationList;
 use SilverStripe\Security\Member;
 use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
-use UndefinedOffset\SortableGridField\Forms\GridFieldSortableRows;
 use const TEMP_PATH;
 use function _t;
 
@@ -483,8 +482,6 @@ class ProductAttribute extends DataObject
                 $valueGridField = $fields->dataFieldByName('ProductAttributeValues');
                 if (class_exists(GridFieldOrderableRows::class)) {
                     $valueGridField->getConfig()->addComponent(GridFieldOrderableRows::create('Sort'));
-                } elseif (class_exists(GridFieldSortableRows::class)) {
-                    $valueGridField->getConfig()->addComponent(new GridFieldSortableRows('Sort'));
                 }
             }
             if ($this->ShowAsNavigationItem) {
