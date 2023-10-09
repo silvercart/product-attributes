@@ -186,7 +186,6 @@ class ProductExtension extends DataExtension
             }
         } elseif (!empty($this->owner->MasterProductID)) {
             $masterProductField = TextField::create('MasterProductNumber', $this->owner->fieldLabel('MasterProduct'), $this->owner->MasterProduct()->ProductNumberShop);
-            $masterProductField->setDescription();
             $fields->addFieldToTab('Root.ProductAttributes', $masterProductField);
         }
     }
@@ -894,8 +893,6 @@ class ProductExtension extends DataExtension
         $productMap         = $product->getAttributedValuesFor($attribute)->map('ID','ID');
         foreach ($productMap as $ID) {
             $fieldModifierNotes[$ID] = $product->getPrice()->Nice();
-            if ($ID != $selectedValue) {
-            }
         }
         foreach ($variants as $variant) {
             if ($product->isVariantOf($variant, $attribute)) {
