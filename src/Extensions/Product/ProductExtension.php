@@ -891,6 +891,12 @@ class ProductExtension extends DataExtension
     {
         $variants           = $product->getVariantsFor($attribute->ID);
         $fieldModifierNotes = [];
+        $productMap         = $product->getAttributedValuesFor($attribute)->map('ID','ID');
+        foreach ($productMap as $ID) {
+            $fieldModifierNotes[$ID] = $product->getPrice()->Nice();
+            if ($ID != $selectedValue) {
+            }
+        }
         foreach ($variants as $variant) {
             if ($product->isVariantOf($variant, $attribute)) {
                 $attributedValues->merge($variant->getAttributedValuesFor($attribute));
@@ -925,7 +931,7 @@ class ProductExtension extends DataExtension
             }
 
             if (!empty($fieldModifierNote)) {
-                $attributeName .= ' (' . $fieldModifierNote . ')';
+                $attributeName .= " ({$fieldModifierNote})";
             }
 
             $attributeNames[$attributedValue->ID] = $attributeName;

@@ -122,7 +122,7 @@ trait ProductAttributeFormField
     public function getProductVariantType() : string
     {
         if (empty($this->productVariantType)) {
-            $this->setProductVariantType(self::VARIANT_TYPE_MULTIPLE);
+            $this->setProductVariantType(ProductAttributeDropdownField::VARIANT_TYPE_MULTIPLE);
         }
         return (string) $this->productVariantType;
     }
