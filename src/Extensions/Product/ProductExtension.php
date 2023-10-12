@@ -25,6 +25,7 @@ use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\ORM\GroupedList;
+use SilverStripe\ORM\Sortable;
 use SilverStripe\ORM\SS_List;
 use SilverStripe\ORM\UnsavedRelationList;
 use SilverStripe\View\ArrayData;
@@ -908,12 +909,12 @@ class ProductExtension extends DataExtension
     /**
      * Returns a list of attribute names.
      *
-     * @param SS_List $attributedValues   Attributed values
-     * @param array   $fieldModifierNotes Field modifier notes
+     * @param SS_List&Sortable $attributedValues   Attributed values
+     * @param array            $fieldModifierNotes Field modifier notes
      *
      * @return string[]
      */
-    protected function getVariantFormFieldAttributeNames(SS_List $attributedValues, array $fieldModifierNotes) : array
+    protected function getVariantFormFieldAttributeNames(SS_List&Sortable $attributedValues, array $fieldModifierNotes) : array
     {
         $attributedValues->sort('Title');
         $attributeNames = [];
