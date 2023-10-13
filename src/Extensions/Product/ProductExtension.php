@@ -619,12 +619,10 @@ class ProductExtension extends DataExtension
             } else {
                 $master = $this->owner;
             }
-            $variants = $master->getSlaveProducts();
-            if ($this->isSlaveProduct()) {
-                $arrayList = ArrayList::create($variants->toArray());
+            $variants  = $master->getSlaveProducts();
+            $arrayList = ArrayList::create($variants->toArray());
+            if (!$arrayList->byID($master->ID)) {
                 $arrayList->push($master);
-            } else {
-                $arrayList = ArrayList::create($variants->toArray());
             }
             $activeVariants = $arrayList->filter('isActive', 1);
             if (!is_null($activeVariants)
@@ -748,7 +746,7 @@ class ProductExtension extends DataExtension
      */
     public function getSlaveProducts() : DataList
     {
-        return Product::get()->filter('MasterProductID', $this->owner->ID);
+        return $this->owner->SlaveProducts();
     }
 
     /**
