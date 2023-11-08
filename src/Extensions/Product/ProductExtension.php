@@ -288,13 +288,14 @@ class ProductExtension extends DataExtension
      */
     public function onBeforeWrite() : void
     {
-        if (array_key_exists('MasterProductNumber', $_POST)
+        if ($this->owner->isRequestedItem()
+         && array_key_exists('MasterProductNumber', $_POST)
          && $this->owner->canEdit()
         ) {
             $masterProductNumber = $_POST['MasterProductNumber'];
             $masterProduct       = Product::get()->filter('ProductNumberShop', $masterProductNumber)->first();
             if ($masterProduct instanceof Product
-             && $masterProduct->exists()
+            && $masterProduct->exists()
             ) {
                 $this->owner->MasterProductID = $masterProduct->ID;
             } else {
