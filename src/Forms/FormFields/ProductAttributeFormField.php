@@ -52,8 +52,15 @@ trait ProductAttributeFormField
      */
     public function getProductAttributeAttributes() : array
     {
+        $action = null;
+        if (Controller::has_curr()) {
+            $ctrl = Controller::curr();
+            if ($ctrl->hasMethod('data')) {
+                $action = $ctrl->data()->Link() . '/' . ProductAttributeDropdownField::config()->load_variant_action;
+            }
+        }
         return [
-            'data-action'     => Controller::curr()->data()->Link() . '/' . ProductAttributeDropdownField::config()->load_variant_action,
+            'data-action'     => $action,
             'data-prices'     => $this->getProductPrices(),
             'data-type'       => $this->getProductVariantType(),
             'data-product-id' => $this->getProductID(),

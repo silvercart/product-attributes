@@ -887,17 +887,30 @@ class ProductExtension extends DataExtension
     {
         $variants           = $product->getVariantsFor($attribute->ID);
         $fieldModifierNotes = [];
+        /*
         $productMap         = $product->getAttributedValuesFor($attribute)->map('ID','ID');
         foreach ($productMap as $ID) {
             $fieldModifierNotes[$ID] = $product->getPrice()->Nice();
         }
+        */
         foreach ($variants as $variant) {
             if ($product->isVariantOf($variant, $attribute)) {
                 $attributedValues->merge($variant->getAttributedValuesFor($attribute));
                 $variantMap = $variant->getAttributedValuesFor($attribute)->map('ID','ID');
                 foreach ($variantMap as $ID) {
                     if ($ID != $selectedValue) {
-                        $fieldModifierNotes[$ID] = $variant->getPrice()->Nice();
+                        //$fieldModifierNotes[$ID] = $variant->getPrice()->Nice();
+                        if ($product->getPrice()->getAmount() > $variant->getPrice()->getAmount()) {
+                            $diff = DBMoney::create()
+                                ->setAmount($product->getPrice()->getAmount() - $variant->getPrice()->getAmount())
+                                ->setCurrency($variant->getPrice()->getCurrency());
+                            $fieldModifierNotes[$ID] = "-{$diff->Nice()}";
+                        } elseif ($product->getPrice()->getAmount() < $variant->getPrice()->getAmount()) {
+                            $diff = DBMoney::create()
+                                ->setAmount($variant->getPrice()->getAmount() - $product->getPrice()->getAmount())
+                                ->setCurrency($variant->getPrice()->getCurrency());
+                            $fieldModifierNotes[$ID] = "+{$diff->Nice()}";
+                        }
                     }
                 }
             }

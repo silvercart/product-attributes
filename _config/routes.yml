@@ -1,0 +1,11 @@
+---
+Name: silvercart-product-attribute-routes
+After:
+  - '#rootroutes'
+  - '#coreroutes'
+---
+SilverStripe\Control\Director:
+  rules:
+    'sc-pa//$Action': SilverCart\ProductAttributes\Control\Controller
+    'sc-pa//$Action/$ID': SilverCart\ProductAttributes\Control\Controller
+    'sc-pa//$Action/$ID/$OtherID': SilverCart\ProductAttributes\Control\Controller
