@@ -898,6 +898,12 @@ class ProductExtension extends DataExtension
                 $attributedValues->merge($variant->getAttributedValuesFor($attribute));
                 $variantMap = $variant->getAttributedValuesFor($attribute)->map('ID','ID');
                 foreach ($variantMap as $ID) {
+                    if ($product->hasField('IsSubscription')
+                     && $variant->BillingPeriod !== $product->BillingPeriod
+                    ) {
+                        $fieldModifierNotes[$ID] = strip_tags("{$variant->getPriceNice()}");
+                        continue;
+                    }
                     if ($ID != $selectedValue) {
                         //$fieldModifierNotes[$ID] = $variant->getPrice()->Nice();
                         if ($product->getPrice()->getAmount() > $variant->getPrice()->getAmount()) {
